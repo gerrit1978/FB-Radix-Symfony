@@ -1,0 +1,15 @@
+radix_recruitment_homepage:
+    pattern:  /hallo/{name}
+    defaults: { _controller: RadixRecruitmentBundle:Default:index }
+
+radix_frontend:
+  pattern: /{accountid}/frontend
+  defaults: { _controller: RadixRecruitmentBundle:Frontend:frontend }
+
+radix_backend:
+  pattern: /{accountid}/backend
+  defaults: { _controller: RadixRecruitmentBundle:Backend:backend }
+  
+radix_import:
+  pattern: /{accountid}/import
+  defaults: { _controller: RadixRecruitmentBundle:Import:import }

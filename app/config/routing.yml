@@ -1,0 +1,4 @@
+radix_recruitment:
+    resource: "@RadixRecruitmentBundle/Resources/config/routing.yml"
+    prefix:   /
+

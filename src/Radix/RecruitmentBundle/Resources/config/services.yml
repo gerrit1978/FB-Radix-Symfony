@@ -1,0 +1,7 @@
+parameters:
+#    radix_recruitment.example.class: Radix\RecruitmentBundle\Example
+
+services:
+#    radix_recruitment.example:
+#        class: %radix_recruitment.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
