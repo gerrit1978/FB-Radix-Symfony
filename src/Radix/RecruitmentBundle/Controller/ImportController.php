@@ -50,13 +50,22 @@ class ImportController extends Controller
       
 	    
 	    /* We import the XML source file */
+	    $jobs_xml = array();
 	    $file = file_get_contents($xmlurl, false, $context) or die('Kan niet laden');    
 	    $xml = simplexml_load_string($file);
 	    foreach ($xml->$xmlroot as $item) {
-	      print "nieuwe job<br />";
+	      $title = 
+	      $description = $item->$mapping['description'];
+	      $guid = $item->$mapping['guid'];
+	      $jobs_xml[(string)$item->$mapping['guid']] = array(
+	        'title' => (string)$item->$mapping['title'],
+	        'description' => (string)$item->$mapping['description'],
+	      );
 	    }
-	    exit();
-
+	    print "<pre>";
+      print_r($jobs_xml);
+      print "</pre>";
+exit();
 
       /* We get all the current jobs */
       $jobs_original = $this->getDoctrine()
