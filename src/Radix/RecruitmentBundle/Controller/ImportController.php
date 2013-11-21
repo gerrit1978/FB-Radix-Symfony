@@ -4,6 +4,7 @@ namespace Radix\RecruitmentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Radix\RecruitmentBundle\Entity\Config;
+use Radix\RecruitmentBundle\Entity\Job;
 
 class ImportController extends Controller
 {
@@ -54,25 +55,89 @@ class ImportController extends Controller
 	    $file = file_get_contents($xmlurl, false, $context) or die('Kan niet laden');    
 	    $xml = simplexml_load_string($file);
 	    foreach ($xml->$xmlroot as $item) {
-	      $title = 
-	      $description = $item->$mapping['description'];
-	      $guid = $item->$mapping['guid'];
 	      $jobs_xml[(string)$item->$mapping['guid']] = array(
 	        'title' => (string)$item->$mapping['title'],
 	        'description' => (string)$item->$mapping['description'],
+	        'source' => 'import',
 	      );
 	    }
-	    print "<pre>";
-      print_r($jobs_xml);
-      print "</pre>";
-exit();
 
       /* We get all the current jobs */
       $jobs_original = $this->getDoctrine()
         ->getRepository('RadixRecruitmentBundle:Job')
         ->findBy(array('accountid' => $accountid));
 
+      $jobs_db = array();
+      foreach ($jobs_original as $job_original) {
+        $guid = $job_original->getGuid();
+        $title = $job_original->getTitle();
+        $description = $job_original->getDescription();
+        $source = $job_original->getSource();
+        $jobs_db[$guid] = array(
+          'title' => $title,
+          'description' => $description,
+          'source' => $source,
+        );
+      }
 
+      /* TODO: optimize this */
+      /* Define the new jobs to be added */
+      $jobs_to_add = array();
+      foreach ($jobs_xml as $guid_xml => $job_xml) {
+        $add = TRUE;
+        foreach ($jobs_db as $guid_db => $job_db) {
+          if ($guid_xml == $guid_db) {
+            $add = FALSE;
+          }
+        }
+        if ($add) {
+          $jobs_to_add[] = $guid_xml;
+        }
+      }
+
+     /* Define the jobs to be removed */
+     $jobs_to_remove = array();
+     foreach ($jobs_db as $guid_db => $job_db) {
+       // only for imported jobs
+       if ($job_db['source'] == 'import') {
+         $remove = TRUE;
+         foreach ($jobs_xml as $guid_xml => $job_xml) {
+           if ($guid_db == $guid_xml) {
+             $remove = FALSE;
+           }
+         }
+         if ($remove) {
+           $jobs_to_remove[] = $guid_db;
+         }
+       }
+     }
+
+     /* Add the new jobs */
+     foreach ($jobs_to_add as $guid) {
+       $job_xml = $jobs_xml[$guid];
+       $job = new Job();
+       $job->setTitle($job_xml['title']);
+       $job->setDescription($job_xml['description']);
+       $job->setGuid($guid);
+       $job->setSource($job_xml['source']);
+       $job->setCreated(time());
+       $job->setAccountid($accountid);
+       
+       $em = $this->getDoctrine()->getManager();
+       $em->persist($job);
+       $em->flush();
+     }
+     
+     /* Add the new jobs */
+     foreach ($jobs_to_remove as $guid) {
+     
+       $job = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:job')
+         ->findBy(array('guid' => $guid));
+
+       $em = $this->getDoctrine()->getManager();
+       $em->remove($job[0]);
+       $em->flush();
+		 }
 
 
    
