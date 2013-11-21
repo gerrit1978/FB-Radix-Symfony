@@ -4,13 +4,12 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('/css/main.css') }}" />
 {% endblock %}
 
-{% block title %}Frontend{% endblock %}
+{% block title %}{{ job.title }}{% endblock %}
 
 {% block body %}
-<h1>Jobs</h1>
-{% for job in jobs %}
-<div class="job">
-<h2><a href="{{ job.pagelink }}">{{ job.title }}</a></h2>
+<h1>{{ job.title }}</h1>
+<a href="{{ overview_link }}">Naar overzicht</a>
+<div class="detail">
+{{ job.description|raw }}
 </div>
-{% endfor %}
 {% endblock %}

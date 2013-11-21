@@ -1,10 +1,10 @@
-radix_recruitment_homepage:
-    pattern:  /hallo/{name}
-    defaults: { _controller: RadixRecruitmentBundle:Default:index }
-
 radix_frontend:
   pattern: /{accountid}/frontend
   defaults: { _controller: RadixRecruitmentBundle:Frontend:frontend }
+
+radix_detail:
+  pattern: /{accountid}/job/{guid}
+  defaults: { _controller: RadixRecruitmentBundle:Frontend:detail }
 
 radix_backend:
   pattern: /{accountid}/backend
