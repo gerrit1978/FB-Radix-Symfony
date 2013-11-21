@@ -3,5 +3,11 @@
 {% block title %}Frontend{% endblock %}
 
 {% block body %}
-Welkom in de frontend, account nummer {{ account }}.
+<h1>Jobs</h1>
+{% for job in jobs %}
+<div class="job">
+<h2>{{ job.title }}</h2>
+<div class="description">{{ job.description|raw }}</div>
+</div>
+{% endfor %}
 {% endblock %}
