@@ -1,5 +1,0 @@
-_assetic:
-    resource: .
-    type: assetic
-_app:
-    resource: /home/projects/domains/fb.projects.radix-recruitment.be/public_html/Symfony/app/config/routing_dev.yml
