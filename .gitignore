@@ -1,6 +1,7 @@
 # Ignore parameters
-app/config/parameters.yml
-app/cache/*
-app/cache/dev/*
-app/cache/prod/*
-app/logs/*
+/web/bundles/
+/app/bootstrap*
+/app/cache/*
+/app/logs/*
+/vendor/
+/app/config/parameters.yml
