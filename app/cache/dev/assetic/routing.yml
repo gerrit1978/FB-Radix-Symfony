@@ -2,4 +2,4 @@ _assetic:
     resource: .
     type: assetic
 _app:
-    resource: /Applications/MAMP/htdocs/projects.local/fb.radix/Symfony/app/config/routing_dev.yml
+    resource: /home/projects/domains/fb.projects.radix-recruitment.be/public_html/Symfony/app/config/routing_dev.yml
