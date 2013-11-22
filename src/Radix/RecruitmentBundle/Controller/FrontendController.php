@@ -31,6 +31,7 @@ class FrontendController extends Controller
           'description' => $job->getDescription(),
           'pagelink' => $this->generateUrl('radix_detail', array('accountid' => $accountid, 'guid' => $job->getGuid())),
           'applink' => 'http://apps.facebook.com/radix-symfony/job/' . $job->getGuid(),
+          'onlineSince' => date('d.m.Y', $job->getCreated()),
         );
       }      
       return $this->render('RadixRecruitmentBundle:Frontend:frontend.html.twig', array('jobs' => $jobs_output));
