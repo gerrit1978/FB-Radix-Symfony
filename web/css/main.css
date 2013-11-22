@@ -1,4 +1,14 @@
 body {
-  font-family: Arial;
+  font-family: "Lucida Sans", "Lucida Grande";
   font-size: 82.5%;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+  border-bottom: 1px solid #888;
+}
+
+a:hover {
+  border-bottom: 1px solid #000;
 }
