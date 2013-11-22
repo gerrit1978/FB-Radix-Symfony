@@ -9,7 +9,16 @@ class FrontendController extends Controller
 {
     public function frontendAction($accountid)
     {
-    
+
+			$facebook = new \Facebook(array(
+			  'appId'  => '450174708427108',
+			  'secret' => 'ecf0d6cbb3918c56f3ded1b61b8f8645',
+			));    
+
+      $signed_request = $facebook->getSignedRequest();
+      print_r($signed_request);
+      exit();
+
       /* We get the config parameters (XML URL/USER/PASS) */
       $config = $this->getDoctrine()
         ->getRepository('RadixRecruitmentBundle:Config')
