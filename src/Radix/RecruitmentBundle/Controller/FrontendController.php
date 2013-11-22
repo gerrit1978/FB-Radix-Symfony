@@ -7,17 +7,12 @@ use Radix\RecruitmentBundle\Entity\Job;
 
 class FrontendController extends Controller
 {
+
+    /** CONTROLLER ACTION FOR "FRONTPAGE": overview page of jobs **/
     public function frontendAction($accountid)
     {
-
-			$facebook = new \Facebook(array(
-			  'appId'  => '450174708427108',
-			  'secret' => 'ecf0d6cbb3918c56f3ded1b61b8f8645',
-			));    
-
-      $signed_request = $facebook->getSignedRequest();
-      print_r($signed_request);
-      exit();
+      $helper = $this->get('radix.helper.facebook');
+      $isPageAdmin = $helper->isPageAdmin();
 
       /* We get the config parameters (XML URL/USER/PASS) */
       $config = $this->getDoctrine()
@@ -42,10 +37,19 @@ class FrontendController extends Controller
           'applink' => 'http://apps.facebook.com/radix-symfony/job/' . $job->getGuid(),
           'onlineSince' => date('d.m.Y', $job->getCreated()),
         );
-      }      
-      return $this->render('RadixRecruitmentBundle:Frontend:frontend.html.twig', array('jobs' => $jobs_output));
+      }
+      
+      if ($isPageAdmin) {
+        $adminLink = $this->generateUrl('radix_backend', array('accountid' => $accountid));
+      } else {
+        $adminLink = "";
+      }
+      
+      
+      return $this->render('RadixRecruitmentBundle:Frontend:frontend.html.twig', array('jobs' => $jobs_output, 'adminLink' => $adminLink));
     }
     
+    /** CONTROLLER ACTION FOR JOB DETAIL PAGE **/
     public function detailAction($accountid, $guid) {
     
       $config = $this->getDoctrine()
