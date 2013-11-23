@@ -11,7 +11,11 @@ class BackendController extends Controller
     // main page action
     public function backendAction($accountid)
     {
-        return $this->render('RadixRecruitmentBundle:Backend:backend.html.twig', array('account' => $accountid));
+        $links = array(
+          'addJob' => $this->generateUrl('radix_backend_job_add', array('accountid' => $accountid)),
+        );
+        
+        return $this->render('RadixRecruitmentBundle:Backend:backend.html.twig', array('account' => $accountid, 'links' => $links));
     }
     
     // job add action
