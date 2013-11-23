@@ -141,7 +141,8 @@ class ImportController extends Controller
 
 
    
-      $custom = "XMLURL: " . $xmlurl . "<br />";
+      $custom = "Aantal jobs toegevoegd: " . count($jobs_to_add). "<br />"
+        . "Aantal jobs verwijderd: " . count($jobs_to_remove);
    
       return $this->render('RadixRecruitmentBundle:Import:import.html.twig', array('custom' => $custom));
     }

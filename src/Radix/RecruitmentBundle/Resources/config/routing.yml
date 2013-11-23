@@ -10,6 +10,14 @@ radix_backend:
   pattern: /{accountid}/backend
   defaults: { _controller: RadixRecruitmentBundle:Backend:backend }
   
+radix_backend_job_add:
+  pattern: /{accountid}/backend/job/add
+  defaults: { _controller: RadixRecruitmentBundle:Backend:jobAdd }
+
+radix_backend_job_add_success:
+  pattern: /{accountid}/backend/job/add/success
+  defaults: { _controller: RadixRecruitmentBundle:Backend:jobAddSuccess }
+
 radix_import:
   pattern: /{accountid}/import
   defaults: { _controller: RadixRecruitmentBundle:Import:import }
