@@ -33,7 +33,7 @@ class FrontendController extends Controller
         $jobs_output[] = array(
           'title' => $job->getTitle(),
           'description' => $job->getDescription(),
-          'pagelink' => $this->generateUrl('radix_detail', array('accountid' => $accountid, 'guid' => $job->getGuid())),
+          'pagelink' => $this->generateUrl('radix_detail', array('accountid' => $accountid, 'id' => $job->getId())),
           'applink' => 'http://apps.facebook.com/radix-symfony/job/' . $job->getGuid(),
           'onlineSince' => date('d.m.Y', $job->getCreated()),
         );
@@ -50,7 +50,7 @@ class FrontendController extends Controller
     }
     
     /** CONTROLLER ACTION FOR JOB DETAIL PAGE **/
-    public function detailAction($accountid, $guid) {
+    public function detailAction($accountid, $id) {
     
       $config = $this->getDoctrine()
         ->getRepository('RadixRecruitmentBundle:Config')
@@ -63,7 +63,7 @@ class FrontendController extends Controller
       // get the job details
       $job = $this->getDoctrine()
         ->getRepository('RadixRecruitmentBundle:Job')
-        ->findOneBy(array('guid' => $guid));
+        ->findOneBy(array('id' => $id));
       
       $job_output = array('title' => $job->getTitle(), 'description' => $job->getDescription());
       

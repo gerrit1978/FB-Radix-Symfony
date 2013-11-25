@@ -3,7 +3,7 @@ radix_frontend:
   defaults: { _controller: RadixRecruitmentBundle:Frontend:frontend }
 
 radix_detail:
-  pattern: /{accountid}/frontend/job/{guid}
+  pattern: /{accountid}/frontend/job/{id}
   defaults: { _controller: RadixRecruitmentBundle:Frontend:detail }
 
 radix_backend:
@@ -17,6 +17,14 @@ radix_backend_job_add:
 radix_backend_job_add_success:
   pattern: /{accountid}/backend/job/add/success
   defaults: { _controller: RadixRecruitmentBundle:Backend:jobAddSuccess }
+
+radix_backend_job_edit:
+  pattern: /{accountid}/backend/job/{id}/edit
+  defaults: { _controller: RadixRecruitmentBundle:Backend:jobEdit }
+
+radix_backend_job_delete:
+  pattern: /{accountid}/backend/job/{id}/delete
+  defaults: { _controller: RadixRecruitmentBundle:Backend:jobDelete }
 
 radix_import:
   pattern: /{accountid}/import

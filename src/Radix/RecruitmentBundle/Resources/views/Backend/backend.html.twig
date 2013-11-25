@@ -7,7 +7,25 @@
 {% block title %}Backend{% endblock %}
 
 {% block body %}
-Welkom in de backend, account nummer {{ account }}.
+<h1>Jobs overzicht</h1>
+
+<table>
+<tr>
+<th>Titel</th>
+<th>Bewerken</th>
+<th>Verwijderen</th>
+</tr>
+
+{% for job in jobs %}
+<tr>
+<td>{{ job.title }}</td>
+<td><a href="{{ job.editlink }}">bewerk</a></td>
+<td><a href="{{ job.deletelink }}">verwijder</a></td>
+</tr>
+{% endfor %}
+
+</table>
+
 
 <a href="{{ links.addJob }}" >Job toevoegen</a>
 {% endblock %}

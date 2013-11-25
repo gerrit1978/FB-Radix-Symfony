@@ -11,11 +11,27 @@ class BackendController extends Controller
     // main page action
     public function backendAction($accountid)
     {
-        $links = array(
-          'addJob' => $this->generateUrl('radix_backend_job_add', array('accountid' => $accountid)),
+    
+      // make a list of all jobs
+      $repository = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job');
+      $jobs = $repository->findAll();
+      
+      $jobs_output = array();
+      
+      foreach ($jobs as $job) {
+        $jobs_output[] = array(
+          'title' => $job->getTitle(),
+          'editlink' => $this->generateUrl('radix_backend_job_edit', array('accountid' => $accountid, 'id' => $job->getId())),
+          'deletelink' => $this->generateUrl('radix_backend_job_delete', array('accountid' => $accountid, 'id' => $job->getId())),
         );
+      }
+      
+    
+      $links = array(
+        'addJob' => $this->generateUrl('radix_backend_job_add', array('accountid' => $accountid)),
+      );
         
-        return $this->render('RadixRecruitmentBundle:Backend:backend.html.twig', array('account' => $accountid, 'links' => $links));
+      return $this->render('RadixRecruitmentBundle:Backend:backend.html.twig', array('account' => $accountid, 'links' => $links, 'jobs' => $jobs_output));
     }
     
     // job add action
