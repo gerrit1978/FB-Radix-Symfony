@@ -58,15 +58,58 @@ class BackendController extends Controller
         $em->persist($job);
         $em->flush();
         
-        return $this->redirect($this->generateUrl('radix_backend_job_add_success', array('accountid' => $accountid)));
+        return $this->redirect($this->generateUrl('radix_backend', array('accountid' => $accountid)));
       }
     
       return $this->render('RadixRecruitmentBundle:Backend:jobAdd.html.twig', array('form' => $form->createView()));
     }
     
-    // job add success action
-    public function jobAddSuccessAction($accountid) {
-      return $this->render('RadixRecruitmentBundle:Backend:jobAddSuccess.html.twig', array('account' => $accountid));
+    // job delete action
+    public function jobDeleteAction(Request $request, $accountid, $id) {
+      $em = $this->getDoctrine()->getManager();
+      $job = $em->getRepository('RadixRecruitmentBundle:Job')->find($id);
+      
+      if (!$job) {
+        throw $this->createNotFoundException(
+          'No job found for this id ' . $id . '.'
+        );
+      }
+      
+      $em->remove($job);
+      $em->flush();
+      
+      return $this->redirect($this->generateUrl('radix_backend', array('accountid' => $accountid)));
     }
+    
+    // job edit action
+    public function jobEditAction(Request $request, $accountid, $id) {
+      $em = $this->getDoctrine()->getManager();
+      $job = $em->getRepository('RadixRecruitmentBundle:Job')->find($id);
+      
+      if (!$job) {
+        throw $this->createNotFoundException(
+          'No job found for this id ' . $id . '.'
+        );
+      }
+      
+      $form = $this->createFormBuilder($job)
+        ->add('title', 'text')
+        ->add('description', 'textarea')
+        ->add('Save', 'submit')
+        ->getForm();
+      
+      $form->handleRequest($request);
+      
+      if ($form->isValid()) {
+        $em->persist($job);
+        $em->flush();
+        
+        return $this->redirect($this->generateurl('radix_backend', array('accountid' => $accountid)));
+      }
+      
+      return $this->render('RadixRecruitmentBundle:Backend:jobEdit.html.twig', array('form' => $form->createView()));
+      
+    }
+    
     
 }

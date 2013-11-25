@@ -14,10 +14,6 @@ radix_backend_job_add:
   pattern: /{accountid}/backend/job/add
   defaults: { _controller: RadixRecruitmentBundle:Backend:jobAdd }
 
-radix_backend_job_add_success:
-  pattern: /{accountid}/backend/job/add/success
-  defaults: { _controller: RadixRecruitmentBundle:Backend:jobAddSuccess }
-
 radix_backend_job_edit:
   pattern: /{accountid}/backend/job/{id}/edit
   defaults: { _controller: RadixRecruitmentBundle:Backend:jobEdit }

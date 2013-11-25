@@ -65,6 +65,10 @@ class FrontendController extends Controller
         ->getRepository('RadixRecruitmentBundle:Job')
         ->findOneBy(array('id' => $id));
       
+      if (!$job) {
+        throw $this->createNotFoundException('No job found for this id.');
+      }
+      
       $job_output = array('title' => $job->getTitle(), 'description' => $job->getDescription());
       
       $overview_link = $this->generateUrl('radix_frontend', array('accountid' => $accountid));
