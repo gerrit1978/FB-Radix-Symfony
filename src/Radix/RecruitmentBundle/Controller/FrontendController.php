@@ -45,9 +45,38 @@ class FrontendController extends Controller
         $adminLink = "";
       }
       
+      $frontendNextLink = $this->generateUrl('radix_frontend_advanced', array('accountid' => $accountid));
       
-      return $this->render('RadixRecruitmentBundle:Frontend:frontend.html.twig', array('jobs' => $jobs_output, 'adminLink' => $adminLink));
+      
+      return $this->render('RadixRecruitmentBundle:Frontend:frontend.html.twig', array('jobs' => $jobs_output, 'adminLink' => $adminLink, 'frontendNextLink' => $frontendNextLink));
     }
+    
+    
+    /** CONTROLLER ACTION FOR ADVANCED FEATURES **/
+    public function frontendAdvancedAction($accountid) {
+      $helper = $this->get('radix.helper.facebook');
+      $isPageAdmin = $helper->isPageAdmin();
+
+      if ($isPageAdmin) {
+        $adminLink = $this->generateUrl('radix_backend', array('accountid' => $accountid));
+      } else {
+        $adminLink = "";
+      }
+    
+      $config = $this->getDoctrine()
+        ->getRepository('RadixRecruitmentBundle:Config')
+        ->findBy(array('accountid' => $accountid));
+      
+      if (!$config) {
+        throw $this->createNotFoundException('No config found for this accountid.');
+      }
+      
+      $hasAuthorized = $helper->hasAuthorized();
+      
+      return $this->render('RadixRecruitmentBundle:Frontend:frontendAdvanced.html.twig', array('adminLink' => $adminLink));
+      
+    }
+    
     
     /** CONTROLLER ACTION FOR JOB DETAIL PAGE **/
     public function detailAction($accountid, $id) {

@@ -2,6 +2,10 @@ radix_frontend:
   pattern: /{accountid}/frontend
   defaults: { _controller: RadixRecruitmentBundle:Frontend:frontend }
 
+radix_frontend_advanced:
+  pattern: /{accountid}/frontend/advanced
+  defaults: { _controller: RadixRecruitmentBundle:Frontend:frontendAdvanced }
+
 radix_detail:
   pattern: /{accountid}/frontend/job/{id}
   defaults: { _controller: RadixRecruitmentBundle:Frontend:detail }

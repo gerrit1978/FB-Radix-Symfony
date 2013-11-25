@@ -42,6 +42,11 @@ class FacebookHelper {
 */
     return FALSE;
   }
+  
+  public function hasAuthorized() {
+    exit('functie aangeroepen');
+  }
+  
 }
 
 ?>
