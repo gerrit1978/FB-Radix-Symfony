@@ -7,16 +7,12 @@
 {% block title %}{{ job.title }}{% endblock %}
 
 {% block body %}
-<h1>{{ job.title }}</h1>
+{{ message }}
+<h1>Solliciteren voor {{ job.title }}</h1>
 
-<div class="links">
-<a href="{{ overview_link }}">Naar overzicht</a>
-<a href="{{ apply_manual_link|raw }}">Apply manually</a>
-<a href="{{ apply_facebook_link|raw }}">Apply with Facebook</a>
-</div>
 
 <div class="detail">
-{{ job.description|raw }}
+{{ form(form) }}
 </div>
 
 {% endblock %}

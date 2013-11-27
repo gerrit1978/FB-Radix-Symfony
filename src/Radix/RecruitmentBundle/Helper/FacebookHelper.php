@@ -2,23 +2,33 @@
 
 namespace Radix\RecruitmentBundle\Helper;
 
+use Symfony\Component\HttpFoundation\Session\Session;
+
 class FacebookHelper {
 
-  private $facebook;
+  private $appid;
+  private $secret;
 
-  public function __construct() {
-    $config = array(
-      'appId' => '600850943303218',
-      'secret' => '41938c8ed1d54041769cb346ffac04d2',
+  public function __construct($appid, $secret) {
+    
+    $this->config = array(
+      'appId' => $appid,
+      'secret' => $secret,
+      'cookie' => TRUE,
     );
-
-    $this->facebook = new \Facebook($config);
 
   }
   
+  public function getConfig() {
+    return $this->config;
+  }
+  
   public function isPageAdmin() {
-    
-    $signed_request = $this->facebook->getSignedRequest();
+  
+/*
+    $facebook = new \Facebook($this->config);
+  
+    $signed_request = $facebook->getSignedRequest();
     
     if (isset($signed_request['page']['admin']) && $signed_request['page']['admin'] == 1) {
       $_SESSION['signed_request'] = $signed_request;
@@ -31,68 +41,88 @@ class FacebookHelper {
 				}
 			}
     }
-/*
-    if (isset($_REQUEST['signed_request'])) {
-			$signed_request = $_REQUEST["signed_request"];
-			list($encoded_sig, $payload) = explode('.', $signed_request, 2);
-			
-			$data = json_decode(base64_decode(strtr($payload, '-_', '+/')), true);
-			
-			if ($data['page']['admin'] == 1) {
-			  return TRUE;
-			}    
-    }
-*/
     return FALSE;
+*/
+  }
+  
+  
+  public function getProfileData() {
+    $facebook = new \Facebook($this->config);
+    $user = $facebook->getUser();
+    if ($user) {
+      try {
+        $user_profile = $facebook->api('/me');
+        return $user_profile;	      
+      } catch (FacebookApiException $e) {
+        error_log($e);
+        $user = NULL;
+        return $user;
+      }
+    } else {
+      return NULL;
+    }
+  }
+  
+  public function doRedirect() {
+
+    $facebook = new \Facebook($this->config);
+    
+    $signed_request = $facebook->getSignedRequest();
+    
+    if (isset($signed_request['app_data'])) {
+      return $signed_request['app_data'];
+    }
   }
   
   public function hasAuthorized() {
+    $facebook = new \Facebook($this->config);
+
+    $user = $facebook->getUser();
     
-    $user_id = $this->facebook->getUser();
-
-    if($user_id) {
-
-      // We have a user ID, so probably a logged in user.
-      // If not, we'll get an exception, which we handle below.
+    if ($user) {
       try {
-        $ret_obj = $this->facebook->api('/me/feed', 'POST',
-                                    array(
-                                      'link' => 'www.example.com',
-                                      'message' => 'Posting with the PHP SDK!'
-                                 ));
-        echo '<pre>Post ID: ' . $ret_obj['id'] . '</pre>';
-
-        // Give the user a logout link 
-        echo '<br /><a href="' . $this->facebook->getLogoutUrl() . '">logout</a>';
-      } catch(FacebookApiException $e) {
-        // If the user is logged out, you can have a 
-        // user ID even though the access token is invalid.
-        // In this case, we'll get an exception, so we'll
-        // just ask the user to login again here.
-        $login_url = $this->facebook->getLoginUrl( array(
-                       'scope' => 'publish_stream'
-                       )); 
-        echo 'Please <a href="' . $login_url . '">login.</a>';
-        error_log($e->getType());
-        error_log($e->getMessage());
-      }   
+        $user_profile = $facebook->api('/me');
+        $message = "Goed geauthorized!";
+        $ret = array(
+          'status' => 'authorized',
+          'message' => $message,
+          'user_profile' => $user_profile,
+        );
+      }
+      catch (FacebookApiException $e) {
+        error_log($e);
+        $user = null;
+        exit('Gecatcht');
+      }
     } else {
-
-      // No user, so print a link for the user to login
-      // To post to a user's wall, we need publish_stream permission
-      // We'll use the current URL as the redirect_uri, so we don't
-      // need to specify it here.
-      $login_url = $this->facebook->getLoginUrl( array( 'scope' => 'publish_stream' ) );
-      //$login_url = "http://www.facebook.com/dialog/oauth?app_id=600850943303218&display=popup&redirect_uri=http://apps.facebook.com/radix-symfony&response_type=token%2Csigned_request&scope=user_birthday%2Cuser_interests%2Cuser_work_history%2Cuser_education_history%2Cuser_location%2Cemail%2Cpublish_stream&sdk=joey";
-      echo 'Please <a target="_top" href="' . $login_url . '">login.</a>';
-
-    } 
+      $login_params = array(
+        'scope' => 'email,user_work_history,user_education_history',
+      );
     
-    exit('einde');
+      $loginUrl = $facebook->getLoginUrl($login_params);
+      $message = "<a href='" . $loginUrl . "' target='_top'>Log hier eerst in</a>";
+      $ret = array(
+        'status' => 'not_authorized',
+        'message' => $message,
+      );
+    }
+    
+    return $ret;
+   
     
   }
   
+  public function post($params = array()) {
+  }
+  
+  
+  public function inCanvas() {
+    // THIS SUCKS….
+    if (isset($_REQUEST['code'])) {
+      return FALSE;
+    } else {
+      return TRUE;
+    }
+  }
   
 }
-
-?>

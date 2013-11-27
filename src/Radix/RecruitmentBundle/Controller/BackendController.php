@@ -26,12 +26,25 @@ class BackendController extends Controller
         );
       }
       
+      // make a list of all applications
+      $repository = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Application');
+      $applications = $repository->findAll();
+      
+      $applications_output = array();
+      
+      foreach ($applications as $application) {
+        $applications_output[] = array(
+          'name' => $application->getName(),
+          'email' => $application->getEmail(),
+          'city' => $application->getCity(),
+        );
+      }
     
       $links = array(
         'addJob' => $this->generateUrl('radix_backend_job_add', array('accountid' => $accountid)),
       );
         
-      return $this->render('RadixRecruitmentBundle:Backend:backend.html.twig', array('account' => $accountid, 'links' => $links, 'jobs' => $jobs_output));
+      return $this->render('RadixRecruitmentBundle:Backend:backend.html.twig', array('account' => $accountid, 'links' => $links, 'jobs' => $jobs_output, 'applications' => $applications_output));
     }
     
     // job add action
@@ -54,10 +67,17 @@ class BackendController extends Controller
       $form->handleRequest($request);
     
       if ($form->isValid()) {
+      
+        // persist object to database
         $em = $this->getDoctrine()->getManager();
         $em->persist($job);
         $em->flush();
         
+        // post to fb wall
+        $helper = $this->get('radix.helper.facebook');
+        $params = array('title' => $job->getTitle());
+        $helper->post($params);
+
         return $this->redirect($this->generateUrl('radix_backend', array('accountid' => $accountid)));
       }
     

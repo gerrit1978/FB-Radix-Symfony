@@ -1,5 +1,7 @@
 parameters:
 #    radix_recruitment.example.class: Radix\RecruitmentBundle\Example
+  radix_facebook_appid: 600850943303218
+  radix_facebook_secret: 41938c8ed1d54041769cb346ffac04d2
 
 services:
 #    radix_recruitment.example:
@@ -8,3 +10,4 @@ services:
 
   radix.helper.facebook:
     class: Radix\RecruitmentBundle\Helper\FacebookHelper
+    arguments: [%radix_facebook_appid%, %radix_facebook_secret%]

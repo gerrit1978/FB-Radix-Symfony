@@ -25,7 +25,23 @@
 {% endfor %}
 
 </table>
-
-
 <a href="{{ links.addJob }}" >Job toevoegen</a>
+
+<h1>Sollicitatie overzicht</h1>
+<table>
+<tr>
+<th>Naam</th>
+<th>E-mail</th>
+<th>Woonplaats</th>
+</tr>
+
+{% for application in applications %}
+<tr>
+<td>{{ application.name }}</td>
+<td>{{ application.email }}</td>
+<td>{{ application.city }}</td>
+</tr>
+{% endfor %}
+
+</table>
 {% endblock %}

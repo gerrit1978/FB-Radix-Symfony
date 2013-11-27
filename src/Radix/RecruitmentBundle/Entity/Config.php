@@ -56,6 +56,20 @@ class Config
      */
     private $xmlroot;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="pageid", type="string", length=255)
+     */
+    private $pageid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="pagetitle", type="string", length=255)
+     */
+    private $pagetitle;
+
 
     /**
      * Get id
@@ -180,6 +194,52 @@ class Config
     public function getXmlroot()
     {
         return $this->xmlroot;
+    }
+
+    /**
+     * Set pageid
+     *
+     * @param string $pageid
+     * @return Config
+     */
+    public function setPageid($pageid)
+    {
+        $this->pageid = $pageid;
+    
+        return $this;
+    }
+
+    /**
+     * Get pageid
+     *
+     * @return string 
+     */
+    public function getPageid()
+    {
+        return $this->pageid;
+    }
+
+    /**
+     * Set pagetitle
+     *
+     * @param string $pagetitle
+     * @return Config
+     */
+    public function setPagetitle($pagetitle)
+    {
+        $this->pagetitle = $pagetitle;
+    
+        return $this;
+    }
+
+    /**
+     * Get pagetitle
+     *
+     * @return string 
+     */
+    public function getPagetitle()
+    {
+        return $this->pagetitle;
     }
     
 }
