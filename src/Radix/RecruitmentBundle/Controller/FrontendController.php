@@ -47,6 +47,8 @@ class FrontendController extends Controller
         $jobs_output[] = array(
           'title' => $job->getTitle(),
           'description' => $job->getDescription(),
+          'industry' => $job->getIndustry(),
+          'location' => $job->getLocation(),
           'pagelink' => $this->generateUrl('radix_frontend_job_detail', array('accountid' => $accountid, 'id' => $job->getId())),
           'applink' => 'http://fb.projects.radix-recruitment.be/job-redirect/' . $accountid . '/' . $job->getId(),
           'onlineSince' => date('d.m.Y', $job->getCreated()),

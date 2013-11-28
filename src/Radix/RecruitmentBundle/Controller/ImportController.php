@@ -58,6 +58,8 @@ class ImportController extends Controller
 	      $jobs_xml[(string)$item->$mapping['guid']] = array(
 	        'title' => (string)$item->$mapping['title'],
 	        'description' => (string)$item->$mapping['description'],
+	        'industry' => isset($mapping['industry']) ? (string)$item->$mapping['industry']: '',
+	        'location' => isset($mapping['location']) ? (string)$item->$mapping['location']: '', 
 	        'source' => 'import',
 	      );
 	    }
@@ -72,10 +74,14 @@ class ImportController extends Controller
         $guid = $job_original->getGuid();
         $title = $job_original->getTitle();
         $description = $job_original->getDescription();
+        $industry = $job_original->getIndustry();
+        $location = $job_original->getLocation();
         $source = $job_original->getSource();
         $jobs_db[$guid] = array(
           'title' => $title,
           'description' => $description,
+          'industry' => $industry,
+          'location' => $location,
           'source' => $source,
         );
       }
@@ -118,6 +124,8 @@ class ImportController extends Controller
        $job = new Job();
        $job->setTitle($job_xml['title']);
        $job->setDescription($job_xml['description']);
+       $job->setIndustry($job_xml['industry']);
+       $job->setLocation($job_xml['location']);
        $job->setGuid($guid);
        $job->setSource($job_xml['source']);
        $job->setCreated(time());

@@ -25,7 +25,6 @@ class FacebookHelper {
   
   public function isPageAdmin() {
   
-/*
     $facebook = new \Facebook($this->config);
   
     $signed_request = $facebook->getSignedRequest();
@@ -42,7 +41,6 @@ class FacebookHelper {
 			}
     }
     return FALSE;
-*/
   }
   
   

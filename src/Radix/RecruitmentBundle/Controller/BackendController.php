@@ -61,6 +61,8 @@ class BackendController extends Controller
       $form = $this->createFormBuilder($job)
         ->add('title', 'text')
         ->add('description', 'textarea')
+        ->add('industry', 'text')
+        ->add('location', 'text')
         ->add('Save', 'submit')
         ->getForm();
     
@@ -73,10 +75,12 @@ class BackendController extends Controller
         $em->persist($job);
         $em->flush();
         
+/*
         // post to fb wall
         $helper = $this->get('radix.helper.facebook');
         $params = array('title' => $job->getTitle());
         $helper->post($params);
+*/
 
         return $this->redirect($this->generateUrl('radix_backend', array('accountid' => $accountid)));
       }
@@ -115,6 +119,8 @@ class BackendController extends Controller
       $form = $this->createFormBuilder($job)
         ->add('title', 'text')
         ->add('description', 'textarea')
+        ->add('industry', 'text')
+        ->add('location', 'text')
         ->add('Save', 'submit')
         ->getForm();
       

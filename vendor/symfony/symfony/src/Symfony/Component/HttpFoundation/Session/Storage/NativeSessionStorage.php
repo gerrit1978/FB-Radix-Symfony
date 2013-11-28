@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Symfony\Component\HttpFoundation\Session\Storage;
 
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
@@ -131,9 +130,11 @@ class NativeSessionStorage implements SessionStorageInterface
             return true;
         }
 
+/*
         if (version_compare(phpversion(), '5.4.0', '>=') && \PHP_SESSION_ACTIVE === session_status()) {
             throw new \RuntimeException('Failed to start the session: already started by PHP.');
         }
+*/
 
 /*
         if (version_compare(phpversion(), '5.4.0', '<') && isset($_SESSION) && session_id()) {

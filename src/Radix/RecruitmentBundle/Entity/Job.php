@@ -59,6 +59,20 @@ class Job
     /**
      * @var string
      *
+     * @ORM\Column(name="industry", type="text")
+     */
+    private $industry;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="location", type="text")
+     */
+    private $location;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="created", type="string", length=20)
      */
     private $created;
@@ -188,6 +202,55 @@ class Job
     {
         return $this->description;
     }
+
+    /**
+     * Set industry
+     *
+     * @param string $industry
+     * @return Job
+     */
+    public function setIndustry($industry)
+    {
+        $this->industry = $industry;
+    
+        return $this;
+    }
+
+    /**
+     * Get industry
+     *
+     * @return string 
+     */
+    public function getIndustry()
+    {
+        return $this->industry;
+    }
+
+
+    /**
+     * Set location
+     *
+     * @param string $location
+     * @return Job
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
+    
+        return $this;
+    }
+
+    /**
+     * Get location
+     *
+     * @return string 
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+
 
     /**
      * Set created

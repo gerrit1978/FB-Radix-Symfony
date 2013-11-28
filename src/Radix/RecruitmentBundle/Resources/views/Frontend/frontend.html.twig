@@ -24,6 +24,14 @@
 {% for job in jobs %}
 <div class="job">
 <h2><a href="{{ job.pagelink }}">{{ job.title }}</a></h2>
+
+{% if job.industry %}
+<div class="industry">{{ job.industry }}</div>
+{% endif %}
+{% if job.location %}
+<div class="location">{{ job.location }}</div>
+{% endif %}
+
 <div class="online">Online since {{ job.onlineSince }}</div>
 <div class="fb-like fb_edge_widget_with_comment fb_iframe_widget" data-href="{{ job.applink }}" data-send="true" data-layout="button_count" data-width="300" data-show-faces="false" data-font="lucida grande" ref="list_like" fb-xfbml-state="rendered"><span style="height: 20px; width: 169px;"></div>
 <a href="https://twitter.com/share" class="twitter-share-button" data-url="{{ job.applink }}" data-text="{{ job.title }}" data-count="none">Tweet</a>
