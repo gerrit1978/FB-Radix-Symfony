@@ -33,10 +33,23 @@ class BackendController extends Controller
       $applications_output = array();
       
       foreach ($applications as $application) {
+      
+        // get application id
+        $applicationid = $application->getId();
+      
+        // get job title for this application
+        $application_jobid = $application->getJobid();
+        $job = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job')->find($application_jobid);
+      
+        // define detail link
+        $application_detail_link = $this->generateUrl('radix_backend_application_detail', array('accountid' => $accountid, 'applicationid' => $applicationid));
+      
         $applications_output[] = array(
           'name' => $application->getName(),
           'email' => $application->getEmail(),
           'city' => $application->getCity(),
+          'jobtitle' => $job->getTitle(),
+          'detaillink' => $application_detail_link,
         );
       }
     
@@ -135,6 +148,75 @@ class BackendController extends Controller
       
       return $this->render('RadixRecruitmentBundle:Backend:jobEdit.html.twig', array('form' => $form->createView()));
       
+    }
+    
+    
+    // application detail action
+    public function applicationDetailAction(Request $request, $accountid, $applicationid) {
+
+      $application = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Application')->find($applicationid);
+
+      if (!$application) {
+        throw $this->createNotFoundException(
+          'No application found for this id ' . $applicationid . '.'
+        );
+      }
+      
+      // parse the application data
+      $name = $application->getName();
+      $email = $application->getEmail();
+      $city = $application->getCity();
+      
+      $application_output = array(
+        'name' => $name,
+        'email' => $email,
+        'city' => $city,
+      );
+      
+      // parse the job data
+      $job = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job')->find($application->getJobid());
+      $job_title = $job->getTitle();
+      
+      $job_output = array(
+        'title' => $job_title,
+      );
+      
+      // parse the work data
+      $work_items = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Work')->findBy(array('applicationid' => $applicationid));
+      
+      $work_output = array();
+      if (is_array($work_items) && count($work_items)) {
+        foreach ($work_items as $work) {
+          $work_output[] = array(
+            'employer' => $work->getEmployer(),
+            'location' => $work->getLocation(),
+            'position' => $work->getPosition(),
+          );
+        }
+      }
+      
+      // parse the education data
+      $education_items = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Education')->findBy(array('applicationid' => $applicationid));
+      
+      $education_output = array();
+      if (is_array($education_items) && count($education_items)) {
+        foreach ($education_items as $education) {
+          $education_output[] = array(
+            'school' => $education->getSchool(),
+            'year' => $education->getYear(),
+            'type' => $education->getType(),
+          );
+        }
+      }
+      
+      return $this->render('RadixRecruitmentBundle:Backend:applicationDetail.html.twig', array(
+        'application_output' => $application_output, 
+        'work_output' => $work_output,
+        'education_output' => $education_output,
+        'job_output' => $job_output,
+      ));
+
+
     }
     
     

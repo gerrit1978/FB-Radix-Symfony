@@ -3,6 +3,7 @@
 namespace Radix\RecruitmentBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Application
@@ -12,6 +13,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Application
 {
+
+	  public function __construct() {
+	    $this->work = new ArrayCollection();
+	    $this->education = new ArrayCollection();
+	  }
+
+	  private $work;
+	  private $education;
+
+
     /**
      * @var integer
      *
@@ -211,6 +222,24 @@ class Application
     {
         return $this->created;
     }
+
+
+	  public function getWork() {
+	    return $this->work;
+	  }
+	  
+	  public function setWork($work) {
+	    $this->work = $work;
+	  }
+	  
+	  public function getEducation() {
+	    return $this->education;
+	  }
+	  
+	  public function setEducation($education) {
+	    $this->education = $education;
+	  }
+    
 
 
 }

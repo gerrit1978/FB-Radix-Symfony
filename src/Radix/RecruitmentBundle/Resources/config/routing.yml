@@ -34,6 +34,9 @@ radix_backend_job_delete:
   pattern: /{accountid}/backend/job/{id}/delete
   defaults: { _controller: RadixRecruitmentBundle:Backend:jobDelete }
 
+radix_backend_application_detail:
+  pattern: /{accountid}/backend/application/{applicationid}
+  defaults: { _controller: RadixRecruitmentBundle:Backend:applicationDetail }
 
 
 

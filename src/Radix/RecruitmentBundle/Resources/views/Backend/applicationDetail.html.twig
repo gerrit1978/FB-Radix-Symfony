@@ -1,0 +1,26 @@
+{% extends "RadixRecruitmentBundle:Default:base.html.twig" %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('/css/main.css') }}" />
+{% endblock %}
+
+{% block title %}Backend{% endblock %}
+
+{% block body %}
+
+<h1>Application for {{ job_output.title }}</h1>
+Name : {{ application_output.name }}<br />
+Email : {{ application_output.email }}<br />
+City : {{ application_output.city }}<br />
+<h2>Work experience</h2>
+{% for work in work_output %}
+{{ work.employer}} - {{ work.location }} - {{ work.position }}<br />
+<br />
+{% endfor %}
+
+<h2>Education</h2>
+{% for education in education_output %}
+{{ education.school }} - {{ education.type }} - {{ education.year }}<br />
+<br />
+{% endfor %}
+{% endblock %}

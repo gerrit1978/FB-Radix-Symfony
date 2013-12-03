@@ -5,11 +5,18 @@ namespace Radix\RecruitmentBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
+
 use Radix\RecruitmentBundle\Entity\Job;
 use Radix\RecruitmentBundle\Entity\Application;
+use Radix\RecruitmentBundle\Entity\Work;
+use Radix\RecruitmentBundle\Entity\Education;
+
+use Radix\RecruitmentBundle\Form\Type\ApplicationType;
 
 class FrontendController extends Controller
 {
+
+/**********************************************************************************************************/
 
     /**
      * Controller action for frontpage
@@ -19,23 +26,23 @@ class FrontendController extends Controller
     public function indexAction(Request $request, $accountid)
     {
 
-      // DO A REDIRECT IF NECESSARY
+      /**** SERVICES START ****/
+
+      // CARROT service: bootstrap
+      $carrot = $this->get('radix.helper.carrot');
+      $carrot->bootstrap($accountid);
+
+      // FACEBOOK service: redirect
       $helper = $this->get('radix.helper.facebook');
-      
       if ($redirect_url = $helper->doRedirect()) {
         return $this->redirect($redirect_url);
       } 
       
+      // FACEBOOK service: page admin?
       $isPageAdmin = $helper->isPageAdmin();
 
-      /* We get the config parameters (XML URL/USER/PASS) */
-      $config = $this->getDoctrine()
-        ->getRepository('RadixRecruitmentBundle:Config')
-        ->findBy(array('accountid' => $accountid));
- 
-      if (!$config) {
-        throw $this->createNotFoundException('No config found for this accountid.');
-      }
+      /**** SERVICES END ****/
+
 
       /* We get the jobs */
       $jobs = $this->getDoctrine()
@@ -63,19 +70,30 @@ class FrontendController extends Controller
       
       return $this->render('RadixRecruitmentBundle:Frontend:frontend.html.twig', array('jobs' => $jobs_output, 'adminLink' => $adminLink));
     }
+
+/**********************************************************************************************************/
     
     /**
      * Controller action for detail page
      **/
     public function jobDetailAction($accountid, $id) {
     
-      $config = $this->getDoctrine()
-        ->getRepository('RadixRecruitmentBundle:Config')
-        ->findBy(array('accountid' => $accountid));
+      /**** SERVICES START ****/
+
+      // CARROT service: bootstrap
+      $carrot = $this->get('radix.helper.carrot');
+      $carrot->bootstrap($accountid);
+
+      // FACEBOOK service: redirect
+      $helper = $this->get('radix.helper.facebook');
+      if ($redirect_url = $helper->doRedirect()) {
+        return $this->redirect($redirect_url);
+      } 
       
-      if (!$config) {
-        throw $this->createNotFoundException('No config found for this accountid.');
-      }
+      // FACEBOOK service: page admin?
+      $isPageAdmin = $helper->isPageAdmin();
+
+      /**** SERVICES END ****/
       
       // get the job details
       $job = $this->getDoctrine()
@@ -103,6 +121,7 @@ class FrontendController extends Controller
       ));
     }
     
+/**********************************************************************************************************/    
     
     /**
      * Controller Action for application page (manual)
@@ -111,71 +130,190 @@ class FrontendController extends Controller
       
       $message = "";
     
-      $config = $this->getDoctrine()
-        ->getRepository('RadixRecruitmentBundle:Config')
-        ->findBy(array('accountid' => $accountid));
+      /**** SERVICES START ****/
+
+      // CARROT service: bootstrap
+      $carrot = $this->get('radix.helper.carrot');
+      $carrot->bootstrap($accountid);
+
+      // FACEBOOK service: redirect
+      $helper = $this->get('radix.helper.facebook');
+      if ($redirect_url = $helper->doRedirect()) {
+        return $this->redirect($redirect_url);
+      } 
       
-      if (!$config) {
-        throw $this->createNotFoundException('No config found for this accountid.');
-      }
+      // FACEBOOK service: page admin?
+      $isPageAdmin = $helper->isPageAdmin();
+
+      /**** SERVICES END ****/
       
       $job = $this->getDoctrine()
         ->getRepository('RadixRecruitmentBundle:Job')
         ->findOneBy(array('id' => $id));
-    
+      $job_output = array();
       if (!$job) {
         throw $this->createNotFoundException('No job found for this id.');
+      } else {
+        $job_output['title'] = $job->getTitle();
       }
 
       $time = time();
-     
+
+
       $application = new Application();
+      
+      // set necessary ID values
       $application->setAccountid($accountid);
       $application->setJobid($id);
       $application->setCreated($time);
 
-      // check if we have access to the user data
+      // get the profile data from Facebook, if possible      
       $helper = $this->get('radix.helper.facebook');
-      $user_profile = $helper->getProfileData();
-      if ($user_profile) {
-        $application->setName($user_profile['name']);
-        $application->setEmail($user_profile['email']);
-      }
+      if ($user_profile = $helper->getProfileData()) {
       
-      $form = $this->createFormBuilder($application)
-        ->add('name', 'text')
-        ->add('email', 'text')
-        ->add('city', 'text')
-        ->add('Save', 'submit')
-        ->getForm();
-    
+        // get basic stuff
+        if (isset($user_profile['name'])) {
+          $application->setName($user_profile['name']);
+        }
+        
+        if (isset($user_profile['email'])) {
+          $application->setEmail($user_profile['email']);
+        }
+      
+        // get work stuff
+        if (isset($user_profile['work'])) {
+          $fb_work = $user_profile['work'];
+          if (is_array($fb_work) && count($fb_work)) {
+            foreach ($fb_work as $item) {
+            
+              $employer = isset($item['employer']['name']) ? $item['employer']['name'] : '';
+              $location = isset($item['location']['name']) ? $item['location']['name'] : '';
+              $position = isset($item['position']['name']) ? $item['position']['name'] : '';
+              $description = isset($item['description']) ? $item['description'] : '';
+              $startdate = isset($item['start_date']) ? $item['start_date'] : '';
+              $enddate = isset($item['end_date']) ? $item['end_date'] : '';
+                            
+              $work = new Work();
+              $work->setEmployer($employer);
+              $work->setLocation($location);
+              $work->setPosition($position);
+              $work->setDescription($description);
+              $work->setStartdate($startdate);
+              $work->setEnddate($enddate);
+
+              $application->getWork()->add($work);
+              
+            }
+          } else {
+            $work = new Work();
+            $application->getWork()->add($work);
+          }
+        } else {
+          $work = new Work();
+          $application->getWork()->add($work);
+        }
+        
+        // get education stuff
+        if (isset($user_profile['education'])) {
+          $fb_education = $user_profile['education'];
+          if (is_array($fb_education) && count($fb_education)) {
+            foreach ($fb_education as $item) {
+              
+              $school = isset($item['school']['name']) ? $item['school']['name'] : '';
+              $year = isset($item['year']['name']) ? $item['year']['name'] : '';
+              $type = isset($item['type']) ? $item['type'] : '';
+              
+              $education = new Education();
+              $education->setSchool($school);
+              $education->setYear($year);
+              $education->setType($type);
+              
+              $application->getEducation()->add($education);
+              
+            }
+          } else {
+            $education = new Education();
+            $application->getEducation()->add($education);
+          }
+        } else {
+          $education = new Education();
+          $application->getEducation()->add($education);
+        }
+      }
+
+      $form = $this->createForm(new ApplicationType(), $application);
+      $form->add('Save', 'submit');
+      
       $form->handleRequest($request);
-    
+      
       if ($form->isValid()) {
       
-        // persist object to database
+        // save the basic application data
         $em = $this->getDoctrine()->getManager();
         $em->persist($application);
         $em->flush();
         
-        return $this->redirect($this->generateUrl('radix_frontend', array('accountid' => $accountid)));
+        // get the id from this application so we can save the work & education data
+        $application_id = $application->getId();
+
+        // get form data        
+        $data = $form->getData();
+
+        // iterate over the Work experience items
+        $workitems = $data->getWork();
+        
+        foreach ($workitems as $work) {
+          $work->setAccountid($accountid);
+          $work->setJobid($id);
+          $work->setApplicationid($application_id);
+          
+          $employer = $work->getEmployer();
+          if ($employer) {
+	          $em = $this->getDoctrine()->getManager();
+	          $em->persist($work);
+	          $em->flush();
+          }
+        }
+        
+        // and iterate over the Education items
+        $educationitems = $data->getEducation();
+        
+        foreach ($educationitems as $education) {
+          $education->setAccountid($accountid);
+          $education->setJobid($id);
+          $education->setApplicationid($application_id);
+          
+          $school = $education->getSchool();
+          
+          if ($school) {
+	          $em = $this->getDoctrine()->getManager();
+	          $em->persist($education);
+	          $em->flush();
+	        }
+        }
+        
+        exit('het formulier is opgeslagen');
+
       }
-
       
-      $job_output = array('title' => $job->getTitle());
-
-     
-    
-      return $this->render('RadixRecruitmentBundle:Frontend:apply.html.twig', array('message' => $message, 'job' => $job_output, 'form' => $form->createView()));
+      return $this->render('RadixRecruitmentBundle:Frontend:apply.html.twig', array('form' => $form->createView(), 'job' => $job_output));
     }
-    
+
+/**********************************************************************************************************/    
     
     /**
      * Controller Action for application page (facebook)
      **/
     public function jobApplyFacebookAction(Request $request, $accountid, $id) {
+
+      /**** SERVICES START ****/
+
+      // CARROT service: bootstrap
+      $carrot = $this->get('radix.helper.carrot');
+      $carrot->bootstrap($accountid);
+
+      // FACEBOOK service: has authorized application
       $helper = $this->get('radix.helper.facebook');
-      
       $ret = $helper->hasAuthorized();
       if (isset($ret['status'])) {
         switch ($ret['status']) {
@@ -194,6 +332,8 @@ class FrontendController extends Controller
             break;
         }
       }
+
+      $isPageAdmin = $helper->isPageAdmin();
     
     }
     

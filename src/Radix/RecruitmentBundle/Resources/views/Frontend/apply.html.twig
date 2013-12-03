@@ -1,4 +1,80 @@
-{% extends "::base.html.twig" %}
+{% extends "RadixRecruitmentBundle:Default:base.html.twig" %}
+
+{% block headerscripts %}
+<script type="text/javascript">
+  // get the div that holds the tags
+  var workCollectionHolder = $('ul.work');
+  
+  var educationCollectionHolder = $('ul.education');
+  
+  // setup an Add a work link
+  var $addWorkLink = $('<a href="#" class="add_work_link">Add a work</a>');
+  var $newLinkLi = $('<li></li>').append($addWorkLink);
+
+  // setup an Add an education link
+  var $addEducationLink = $('<a href="#" class="add_education_link">Add an education</a>');
+  var $newLinkEducationLi = $('<li></li>').append($addEducationLink);
+
+
+
+$(document).ready(function() {
+  $('ul.work').append($newLinkLi);
+  
+  $('ul.education').append($newLinkEducationLi);
+
+  $('ul.work').find('li').each(function() {
+    addFormDeleteLink($(this));
+  });
+  
+  $('ul.education').find('li').each(function() {
+    addFormDeleteLink($(this));
+  });
+
+  
+  $addWorkLink.on('click', function(e) {
+    e.preventDefault();
+    addWorkForm($('ul.work'), $newLinkLi);
+  });
+
+  $addEducationLink.on('click', function(e) {
+    e.preventDefault();
+    addEducationForm($('ul.education'), $newLinkEducationLi);
+  });
+  
+});
+
+function addWorkForm(workCollectionHolder, $newLinkLi) {
+  var prototype = workCollectionHolder.attr('data-prototype');
+  var newForm = prototype.replace(/__name__/g, workCollectionHolder.children().length);
+  
+  var $newFormLi = $('<li></li>').append(newForm);
+  $newLinkLi.before($newFormLi);
+}
+
+function addEducationForm(educationCollectionHolder, $newLinkEducationLi) {
+  var prototype = educationCollectionHolder.attr('data-prototype');
+  var newEducationForm = prototype.replace(/__name__/g, educationCollectionHolder.children().length);
+  
+  var $newEducationFormLi = $('<li></li>').append(newEducationForm);
+  $newLinkEducationLi.before($newEducationFormLi);
+}
+
+
+function addFormDeleteLink($tagFormLi) {
+  var $removeFormA = $('<a href="#">delete</a>');
+  $tagFormLi.append($removeFormA);
+  
+  $removeFormA.on('click', function(e) {
+    e.preventDefault();
+    
+    $tagFormLi.remove();
+  });
+  
+}
+
+
+</script>
+{% endblock %}
 
 {% block stylesheets %}
 <link rel="stylesheet" type="text/css" href="{{ asset('/css/main.css') }}" />
@@ -7,12 +83,44 @@
 {% block title %}{{ job.title }}{% endblock %}
 
 {% block body %}
-{{ message }}
 <h1>Solliciteren voor {{ job.title }}</h1>
 
+Hier komt het formulier!
 
-<div class="detail">
-{{ form(form) }}
-</div>
+<form method="POST" {{ form_enctype(form) }}>
+    {# render the task's only field: description #}
+    {{ form_row(form.name) }}
+    {{ form_row(form.city) }}
+    {{ form_row(form.email) }}    
+
+    <h3>Work</h3>
+    <ul class="work" data-prototype="{{ form_widget(form.work.vars.prototype)|e }}">
+        {% for work in form.work %}
+            <li>
+              {{ form_row(work.employer) }}<br />
+              {{ form_row(work.location) }}<br />
+              {{ form_row(work.position) }}<br />
+              {{ form_row(work.description) }}<br />
+              {{ form_row(work.startdate) }}<br />
+              {{ form_row(work.enddate) }}<br />                                                                      
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h3>Education</h3>
+    <ul class="education" data-prototype="{{ form_widget(form.education.vars.prototype)|e }}">
+        {% for education in form.education %}
+            <li>
+              {{ form_row(education.school) }}<br />
+              {{ form_row(education.year) }}<br />
+              {{ form_row(education.type) }}<br />
+            </li>
+        {% endfor %}
+    </ul>
+
+
+    {{ form_rest(form) }}
+    {# ... #}
+</form>
 
 {% endblock %}

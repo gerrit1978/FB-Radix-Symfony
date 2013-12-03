@@ -11,3 +11,7 @@ services:
   radix.helper.facebook:
     class: Radix\RecruitmentBundle\Helper\FacebookHelper
     arguments: [%radix_facebook_appid%, %radix_facebook_secret%]
+    
+  radix.helper.carrot:
+    class: Radix\RecruitmentBundle\Helper\CarrotHelper
+    arguments: [@doctrine]
