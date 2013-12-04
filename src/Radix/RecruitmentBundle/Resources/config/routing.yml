@@ -18,10 +18,24 @@ radix_frontend_fb_ok:
   pattern: /{accountid}/frontend/fb_ok
   defaults: { _controller: RadixRecruitmentBundle:Frontend:fbOk }
 
+
+
 radix_backend:
   pattern: /{accountid}/backend
-  defaults: { _controller: RadixRecruitmentBundle:Backend:backend }
-  
+  defaults: { _controller: RadixRecruitmentBundle:Backend:index }
+
+radix_backend_jobs:
+  pattern: /{accountid}/backend/jobs
+  defaults: { _controller: RadixRecruitmentBundle:Backend:jobs }
+
+radix_backend_applications:
+  pattern: /{accountid}/backend/applications
+  defaults: { _controller: RadixRecruitmentBundle:Backend:applications }
+
+radix_backend_config:
+  pattern: /{accountid}/backend/config
+  defaults: { _controller: RadixRecruitmentBundle:Backend:config }
+
 radix_backend_job_add:
   pattern: /{accountid}/backend/job/add
   defaults: { _controller: RadixRecruitmentBundle:Backend:jobAdd }
@@ -33,6 +47,10 @@ radix_backend_job_edit:
 radix_backend_job_delete:
   pattern: /{accountid}/backend/job/{id}/delete
   defaults: { _controller: RadixRecruitmentBundle:Backend:jobDelete }
+
+radix_backend_job_applications:
+  pattern: /{accountid}/backend/job/{id}/applications
+  defaults: { _controller: RadixRecruitmentBundle:Backend:jobApplications }
 
 radix_backend_application_detail:
   pattern: /{accountid}/backend/application/{applicationid}

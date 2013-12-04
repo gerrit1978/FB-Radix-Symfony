@@ -1,12 +1,32 @@
-{% extends "::base.html.twig" %}
-
-{% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="{{ asset('/css/main.css') }}" />
-{% endblock %}
+{% extends "RadixRecruitmentBundle:Backend:base.html.twig" %}
 
 {% block title %}Backend{% endblock %}
 
+{% form_theme form _self %}
+
+{% block form_row %}
+    <div class="form-item clearfix">
+      <div class="label">{{ form_label(form) }}</div>
+      <div class="errors">{{ form_errors(form) }}</div>
+      <div class="widget">{{ form_widget(form) }}</div>
+    </div>
+{% endblock form_row %}
+
 {% block body %}
-Job bewerken
-{{ form(form) }}
+
+<div class='frontend-link'>
+{{ carrot.pageLinks.frontendLink|raw }}
+</div>
+
+<div class='backend-pagelinks'>
+{{ carrot.pageLinks.backendLinks|raw }}
+</div>
+
+<h1>Job "{{ carrot.job.title }}" bewerken</h1>
+
+<div id="form">
+{{ form_start(form) }}
+{{ form_end(form) }}
+</div>
+
 {% endblock %}

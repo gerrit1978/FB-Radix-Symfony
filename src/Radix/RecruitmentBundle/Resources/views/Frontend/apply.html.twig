@@ -1,101 +1,36 @@
 {% extends "RadixRecruitmentBundle:Default:base.html.twig" %}
 
 {% block headerscripts %}
-<script type="text/javascript">
-  // get the div that holds the tags
-  var workCollectionHolder = $('ul.work');
-  
-  var educationCollectionHolder = $('ul.education');
-  
-  // setup an Add a work link
-  var $addWorkLink = $('<a href="#" class="add_work_link">Add a work</a>');
-  var $newLinkLi = $('<li></li>').append($addWorkLink);
-
-  // setup an Add an education link
-  var $addEducationLink = $('<a href="#" class="add_education_link">Add an education</a>');
-  var $newLinkEducationLi = $('<li></li>').append($addEducationLink);
-
-
-
-$(document).ready(function() {
-  $('ul.work').append($newLinkLi);
-  
-  $('ul.education').append($newLinkEducationLi);
-
-  $('ul.work').find('li').each(function() {
-    addFormDeleteLink($(this));
-  });
-  
-  $('ul.education').find('li').each(function() {
-    addFormDeleteLink($(this));
-  });
-
-  
-  $addWorkLink.on('click', function(e) {
-    e.preventDefault();
-    addWorkForm($('ul.work'), $newLinkLi);
-  });
-
-  $addEducationLink.on('click', function(e) {
-    e.preventDefault();
-    addEducationForm($('ul.education'), $newLinkEducationLi);
-  });
-  
-});
-
-function addWorkForm(workCollectionHolder, $newLinkLi) {
-  var prototype = workCollectionHolder.attr('data-prototype');
-  var newForm = prototype.replace(/__name__/g, workCollectionHolder.children().length);
-  
-  var $newFormLi = $('<li></li>').append(newForm);
-  $newLinkLi.before($newFormLi);
-}
-
-function addEducationForm(educationCollectionHolder, $newLinkEducationLi) {
-  var prototype = educationCollectionHolder.attr('data-prototype');
-  var newEducationForm = prototype.replace(/__name__/g, educationCollectionHolder.children().length);
-  
-  var $newEducationFormLi = $('<li></li>').append(newEducationForm);
-  $newLinkEducationLi.before($newEducationFormLi);
-}
-
-
-function addFormDeleteLink($tagFormLi) {
-  var $removeFormA = $('<a href="#">delete</a>');
-  $tagFormLi.append($removeFormA);
-  
-  $removeFormA.on('click', function(e) {
-    e.preventDefault();
-    
-    $tagFormLi.remove();
-  });
-  
-}
-
-
-</script>
+<script type="text/javascript" src="{{ asset('/scripts/apply.js') }}"></script>
 {% endblock %}
 
-{% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="{{ asset('/css/main.css') }}" />
-{% endblock %}
-
-{% block title %}{{ job.title }}{% endblock %}
+{% block title %}{{ carrot.job.title }}{% endblock %}
 
 {% block body %}
-<h1>Solliciteren voor {{ job.title }}</h1>
 
-Hier komt het formulier!
+{% if carrot.pageLinks.adminLink %}
+<div class='admin-link'>
+{{ carrot.pageLinks.adminLink|raw }}
+</div>
+{% endif %}
 
-<form method="POST" {{ form_enctype(form) }}>
+
+<h1>Solliciteren voor {{ carrot.job.title }}</h1>
+
+<div class="links">
+<a href='{{ carrot.pageLinks.overview }}'>To overview</a> | <a href='{{ carrot.pageLinks.detail }}'>To job</a>
+</div>
+
+
+<form method="POST" {{ form_enctype(carrot.form) }}>
     {# render the task's only field: description #}
-    {{ form_row(form.name) }}
-    {{ form_row(form.city) }}
-    {{ form_row(form.email) }}    
+    {{ form_row(carrot.form.name) }}
+    {{ form_row(carrot.form.city) }}
+    {{ form_row(carrot.form.email) }}    
 
     <h3>Work</h3>
-    <ul class="work" data-prototype="{{ form_widget(form.work.vars.prototype)|e }}">
-        {% for work in form.work %}
+    <ul class="work" data-prototype="{{ form_widget(carrot.form.work.vars.prototype)|e }}">
+        {% for work in carrot.form.work %}
             <li>
               {{ form_row(work.employer) }}<br />
               {{ form_row(work.location) }}<br />
@@ -108,8 +43,8 @@ Hier komt het formulier!
     </ul>
 
     <h3>Education</h3>
-    <ul class="education" data-prototype="{{ form_widget(form.education.vars.prototype)|e }}">
-        {% for education in form.education %}
+    <ul class="education" data-prototype="{{ form_widget(carrot.form.education.vars.prototype)|e }}">
+        {% for education in carrot.form.education %}
             <li>
               {{ form_row(education.school) }}<br />
               {{ form_row(education.year) }}<br />
@@ -119,8 +54,7 @@ Hier komt het formulier!
     </ul>
 
 
-    {{ form_rest(form) }}
-    {# ... #}
+    {{ form_rest(carrot.form) }}
 </form>
 
 {% endblock %}

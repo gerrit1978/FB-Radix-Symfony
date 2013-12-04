@@ -1,0 +1,35 @@
+{% extends "RadixRecruitmentBundle:Backend:base.html.twig" %}
+
+{% block title %}Backend{% endblock %}
+
+{% block body %}
+
+<div class='frontend-link'>
+{{ carrot.pageLinks.frontendLink|raw }}
+</div>
+
+<div class='backend-pagelinks'>
+{{ carrot.pageLinks.backendLinks|raw }}
+</div>
+
+<h1>Applications overzicht voor job {{ carrot.job.title }}</h1>
+
+<table>
+<tr>
+<th>Naam</th>
+<th>Email</th>
+<th>City</th>
+<th>Detail</th>
+</tr>
+
+{% for application in carrot.applications %}
+<tr class="{{ application.class }}">
+<td>{{ application.name }}</td>
+<td>{{ application.email }}</td>
+<td>{{ application.city }}</td>
+<td>{{ application.detailLink|raw }}</td>
+</tr>
+{% endfor %}
+
+
+{% endblock %}

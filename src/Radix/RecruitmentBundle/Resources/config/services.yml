@@ -14,4 +14,4 @@ services:
     
   radix.helper.carrot:
     class: Radix\RecruitmentBundle\Helper\CarrotHelper
-    arguments: [@doctrine]
+    arguments: ['@service_container']

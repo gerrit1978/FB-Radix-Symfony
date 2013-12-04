@@ -1,0 +1,20 @@
+{% extends "RadixRecruitmentBundle:Backend:base.html.twig" %}
+
+{% block title %}Backend{% endblock %}
+
+{% block body %}
+
+<div class='frontend-link'>
+{{ carrot.pageLinks.frontendLink|raw }}
+</div>
+
+<div class='backend-pagelinks'>
+{{ carrot.pageLinks.backendLinks|raw }}
+</div>
+
+<h1>Configuratie instellingen</h1>
+
+{{ form(form) }}
+
+
+{% endblock %}

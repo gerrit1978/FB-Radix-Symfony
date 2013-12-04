@@ -1,0 +1,96 @@
+/* Frontend link */
+.frontend-link {
+  background: #fafafa;
+  padding: 20px;
+  border: 1px solid #d8dfea;
+  margin-bottom: 20px;
+}
+
+.frontend-link a {
+  color: #3b5998;
+  border: none;
+}
+
+.frontend-link a:hover {
+  border-bottom: 1px solid #3b5998;
+}
+
+/* Backend page links */
+.backend-pagelinks {}
+
+.backend-pagelinks a {
+  display: inline-block;
+  border: 1px solid #d8dfea;
+  background: #3b5998;
+  padding: 6px 10px;
+  color: white;
+}
+
+/* General table styles */
+table {
+  width: 100%;
+  margin-bottom: 20px;
+  border-collapse: collapse;
+}
+
+table tr {
+  background: #fafafa;
+}
+
+table tr.even {
+  background: white;
+}
+
+table tr th {
+  text-align: left;
+  font-size: 1.304em;
+  padding: 10px 6px;
+}
+
+table tr td {
+  padding: 10px 6px;
+}
+
+/* Jobs table */
+table.jobs th.title,
+table.jobs td.title {
+  width: 60%;
+}
+
+/* Backend forms */
+.form-item {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+input[type=text],
+textarea {
+  width: 100%;
+  border: 1px solid #999;
+  height: 25px;
+  line-height: 25px;
+}
+
+textarea {
+  height: 200px;
+}
+
+button[type=submit] {
+  background: #3b5998;
+  padding: 8px 14px;
+  color: white;
+  display: block;
+  font-size: 1.384em;
+  text-align: center;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border: none;
+  margin-bottom: 10px;
+  cursor: pointer;  
+}
