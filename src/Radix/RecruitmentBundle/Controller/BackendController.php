@@ -74,7 +74,7 @@ class BackendController extends Controller
       }
       
       $carrot['jobs'] = $jobs_output;
-      $carrot['pageLinks']['addJob'] = $this->generateUrl('radix_backend_job_add', array('accountid' => $accountid));
+      $carrot['pageLinks']['addJob'] = "<a href='" . $this->generateUrl('radix_backend_job_add', array('accountid' => $accountid)) . "' class='add-job'>Add a job</a>";
 
       return $this->render('RadixRecruitmentBundle:Backend:jobs.html.twig', array('carrot' => $carrot));
     }
@@ -439,7 +439,37 @@ class BackendController extends Controller
       // add flash message
       $this->get('session')->getFlashBag()->add('notice', 'The job was deleted.');
       
-      // TODO: also delete all applications connected to this job
+      // Delete all application entries related to this job
+      $repository = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Application');
+      $query = $repository->createQueryBuilder('a')
+        ->delete()
+        ->where('a.jobid = :jobid')
+        ->setParameters(array(
+          'jobid' => $id
+        ))
+        ->getQuery();
+      $result = $query->getResult();
+      // Delete all work entries related to this job
+      $repository = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Work');
+      $query = $repository->createQueryBuilder('w')
+        ->delete()
+        ->where('w.jobid = :jobid')
+        ->setParameters(array(
+          'jobid' => $id
+        ))
+        ->getQuery();
+      $result = $query->getResult();
+      // Delete all education entries related to this job
+      $repository = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Education');
+      $query = $repository->createQueryBuilder('e')
+        ->delete()
+        ->where('e.jobid = :jobid')
+        ->setParameters(array(
+          'jobid' => $id
+        ))
+        ->getQuery();
+      $result = $query->getResult();
+      
       
       return $this->redirect($this->generateUrl('radix_backend', array('accountid' => $accountid)));
     }

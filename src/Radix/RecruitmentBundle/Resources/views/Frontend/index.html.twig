@@ -13,6 +13,11 @@
 </div>
 {% endif %}
 
+{% for flashMessage in app.session.flashbag.get('notice') %}
+<div class="flash-notice">
+{{ flashMessage }}
+</div>
+{% endfor %}
 
 <h1 class="index-page">Jobs</h1>
 <ul class="jobs">

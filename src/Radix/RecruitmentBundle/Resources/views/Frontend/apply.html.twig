@@ -6,6 +6,17 @@
 
 {% block title %}{{ carrot.job.title }}{% endblock %}
 
+{% form_theme carrot.form _self %}
+
+{% block form_row %}
+    <div class="form-item clearfix">
+      <div class="label">{{ form_label(form) }}</div>
+      <div class="errors">{{ form_errors(form) }}</div>
+      <div class="widget">{{ form_widget(form) }}</div>
+    </div>
+{% endblock form_row %}
+
+
 {% block body %}
 
 {% if carrot.pageLinks.adminLink %}
@@ -17,8 +28,8 @@
 
 <h1>Solliciteren voor {{ carrot.job.title }}</h1>
 
-<div class="links">
-<a href='{{ carrot.pageLinks.overview }}'>To overview</a> | <a href='{{ carrot.pageLinks.detail }}'>To job</a>
+<div class="frontend-links">
+{{ carrot.frontEndLinks|raw }}
 </div>
 
 
@@ -28,16 +39,16 @@
     {{ form_row(carrot.form.city) }}
     {{ form_row(carrot.form.email) }}    
 
-    <h3>Work</h3>
+    <h3>Work Experience</h3>
     <ul class="work" data-prototype="{{ form_widget(carrot.form.work.vars.prototype)|e }}">
         {% for work in carrot.form.work %}
             <li>
-              {{ form_row(work.employer) }}<br />
-              {{ form_row(work.location) }}<br />
-              {{ form_row(work.position) }}<br />
-              {{ form_row(work.description) }}<br />
-              {{ form_row(work.startdate) }}<br />
-              {{ form_row(work.enddate) }}<br />                                                                      
+              <div class="item-work item-employer">{{ form_row(work.employer) }}</div>
+              <div class="item-work item-location">{{ form_row(work.location) }}</div>
+              <div class="item-work item-position">{{ form_row(work.position) }}</div>
+              <div class="item-work item-description">{{ form_row(work.description) }}</div>
+              <div class="item-work item-startdate">{{ form_row(work.startdate) }}</div>
+              <div class="item-work item-enddate">{{ form_row(work.enddate) }}</div>
             </li>
         {% endfor %}
     </ul>
@@ -46,9 +57,9 @@
     <ul class="education" data-prototype="{{ form_widget(carrot.form.education.vars.prototype)|e }}">
         {% for education in carrot.form.education %}
             <li>
-              {{ form_row(education.school) }}<br />
-              {{ form_row(education.year) }}<br />
-              {{ form_row(education.type) }}<br />
+              <div class="item-education item-school">{{ form_row(education.school) }}</div>
+              <div class="item-education item-year">{{ form_row(education.year) }}</div>
+              <div class="item-education item-type">{{ form_row(education.type) }}</div>
             </li>
         {% endfor %}
     </ul>

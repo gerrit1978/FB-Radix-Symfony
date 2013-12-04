@@ -13,6 +13,10 @@ a:hover {
   border-bottom: 1px solid #000;
 }
 
+h1 {
+  margin: 5px 0;
+}
+
 /* Admin link */
 .admin-link {
   background: #fafafa;
@@ -122,4 +126,91 @@ body.job-detail .job-detail h2.subtitle {
 .job-detail .call-to-action a.connect {
   color: #999;
   border-bottom: 1px solid #999;
+}
+
+/* Flash messages */
+.flash-notice {
+  background: #fafafa;
+  padding: 20px;
+  border: 1px solid #d8dfea;
+  color: #3b5998;
+  font-weight: bolder;
+  margin: 20px 0;
+}
+
+/* Frontend links */
+/* Backend page links */
+.frontend-links {
+  margin: 20px 0;
+}
+
+.frontend-links a {
+  display: inline-block;
+  border: 1px solid #d8dfea;
+  background: #3b5998;
+  padding: 6px 10px;
+  color: white;
+}
+
+
+/* Forms */
+.form-item {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+input[type=text],
+input[type=email],
+textarea {
+  width: 100%;
+  border: 1px solid #999;
+  height: 25px;
+  line-height: 25px;
+}
+
+textarea {
+  height: 200px;
+}
+
+/* Work items apply form */
+ul.work {
+  margin: 0;
+  padding: 0;
+}
+
+ul.work li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  clear: both;
+}
+
+ul.work li .item-work {
+  width: 12%;
+  float: left;
+  margin-right: 10px;
+}
+
+/* Education items apply form */
+ul.education {
+  margin: 0;
+  padding: 0;
+}
+
+ul.education li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  clear: both;
+}
+
+ul.education li .item-education {
+  width: 22%;
+  float: left;
+  margin-right: 10px;
 }

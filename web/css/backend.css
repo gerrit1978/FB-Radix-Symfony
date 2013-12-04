@@ -94,3 +94,18 @@ button[type=submit] {
   margin-bottom: 10px;
   cursor: pointer;  
 }
+
+/* Add a job link */
+.add-job a {
+  background: #3b5998;
+  padding: 8px 14px;
+  color: white;
+  display: inline-block;
+  font-size: 1.384em;
+  text-align: center;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border: none;
+  margin-bottom: 10px;
+}

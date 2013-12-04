@@ -2,6 +2,13 @@
 
 {% block title %}Backend{% endblock %}
 
+{% block headerscripts %}
+<script>
+$(document).ready(function() {
+  CKEDITOR.replace("form_description");
+});
+</script>
+{% endblock %}
 
 {% form_theme form _self %}
 

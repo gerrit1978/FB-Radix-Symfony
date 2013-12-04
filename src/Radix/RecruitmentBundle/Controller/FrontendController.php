@@ -304,12 +304,21 @@ class FrontendController extends Controller
 	        }
         }
         
-        exit('het formulier is opgeslagen');
+        // add flash message
+        $this->get('session')->getFlashBag()->add('notice', 'Je sollicitatie werd goed ontvangen.');
+        
+        return $this->redirect($this->generateUrl('radix_frontend', array('accountid' => $accountid)));
 
       }
 
-      $carrot['pageLinks']['overview'] = $this->generateUrl('radix_frontend', array('accountid' => $accountid));
-      $carrot['pageLinks']['detail'] = $this->generateUrl('radix_frontend_job_detail', array('accountid' => $accountid, 'id' => $id));
+      $frontend_links = array(
+        'overview' => "<a class='tab' href='" . $this->generateUrl('radix_frontend', array('accountid' => $accountid)) . "'>To job overview</a>",
+        'detail' => "<a class='tab' href='" . $this->generateUrl('radix_frontend_job_detail', array('accountid' => $accountid, 'id' => $id)) . "'>To job detail</a>",
+      );
+      
+      $frontend_links_output = implode(' &bull; ', $frontend_links);
+
+      $carrot['frontEndLinks'] = $frontend_links_output;
       $carrot['form'] = $form->createView();
       $carrot['job'] = $job_output;
 

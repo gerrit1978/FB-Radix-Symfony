@@ -2,6 +2,17 @@
 
 {% block title %}Backend{% endblock %}
 
+{% form_theme form _self %}
+
+{% block form_row %}
+    <div class="form-item clearfix">
+      <div class="label">{{ form_label(form) }}</div>
+      <div class="errors">{{ form_errors(form) }}</div>
+      <div class="widget">{{ form_widget(form) }}</div>
+    </div>
+{% endblock form_row %}
+
+
 {% block body %}
 
 <div class='frontend-link'>
@@ -14,7 +25,9 @@
 
 <h1>Configuratie instellingen</h1>
 
-{{ form(form) }}
-
+<div id="form">
+{{ form_start(form) }}
+{{ form_end(form) }}
+</div>
 
 {% endblock %}

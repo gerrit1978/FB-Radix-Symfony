@@ -38,6 +38,9 @@
 {% endfor %}
 
 </table>
-<a href="{{ carrot.pageLinks.addJob }}" >Job toevoegen</a>
+
+<div class="add-job">
+{{ carrot.pageLinks.addJob|raw }}
+</div>
 
 {% endblock %}
