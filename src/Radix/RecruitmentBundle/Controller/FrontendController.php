@@ -58,9 +58,13 @@ class FrontendController extends Controller
       }
 
       /* We get the jobs */
-      $jobs = $this->getDoctrine()
-        ->getRepository('RadixRecruitmentBundle:Job')
-        ->findBy(array('accountid' => $accountid));
+      $repository = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job');
+      $jobs = $repository->createQueryBuilder('j')
+        ->where('j.accountid = :accountid')
+        ->setParameter('accountid', $accountid)
+        ->orderBy('j.created', 'DESC')
+        ->getQuery()
+        ->getResult();
 
       $jobs_output = array();
       foreach ($jobs as $job) {

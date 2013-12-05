@@ -51,7 +51,12 @@ class BackendController extends Controller
     
       // make a list of all jobs
       $repository = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job');
-      $jobs = $repository->findAll();
+      $jobs = $repository->createQueryBuilder('j')
+        ->where('j.accountid = :accountid')
+        ->setParameter('accountid', $accountid)
+        ->orderBy('j.created', 'DESC')
+        ->getQuery()
+        ->getResult();
       
       $jobs_output = array();
       
