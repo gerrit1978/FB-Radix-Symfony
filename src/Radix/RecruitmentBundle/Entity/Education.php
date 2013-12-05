@@ -53,14 +53,14 @@ class Education
     /**
      * @var string
      *
-     * @ORM\Column(name="year", type="string", length=255)
+     * @ORM\Column(name="year", type="string", length=255, nullable=true)
      */
     private $year;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="type", type="string", length=255)
+     * @ORM\Column(name="type", type="string", length=255, nullable=true)
      */
     private $type;
 

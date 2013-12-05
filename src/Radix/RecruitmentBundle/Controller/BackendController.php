@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Radix\RecruitmentBundle\Entity\Job;
 use Radix\RecruitmentBundle\Entity\Config;
+use Radix\RecruitmentBundle\Entity\Media;
 
 class BackendController extends Controller
 {
@@ -527,5 +528,59 @@ class BackendController extends Controller
       return $this->render('RadixRecruitmentBundle:Backend:jobEdit.html.twig', array('form' => $form->createView(), 'carrot' => $carrot));
       
     }
+
+ /**********************************************************************************************************/
+
+    /**
+     * Controller action for adding a media file
+     **/
+    public function mediaAddAction(Request $request, $accountid) {
+
+      /**** SERVICES START ****/
+
+      // CARROT service: bootstrap
+      $carrot_helper = $this->get('radix.helper.carrot');
+      $carrot = $carrot_helper->bootstrap($accountid, 'backend');
+
+      /**** SERVICES END ****/      
+    
+      $time = time();
+     
+      $media = new Media();
+      $media->setCreated($time);
+      
+      $form = $this->createFormBuilder($media)
+        ->add('filename', 'text')
+        ->add('filepath', 'file')
+        ->add('Save', 'submit')
+        ->getForm();
+    
+/*
+      $form->handleRequest($request);
+    
+      if ($form->isValid()) {
+      
+        // persist object to database
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($job);
+        $em->flush();
+
+        // add flash message
+        $this->get('session')->getFlashBag()->add('notice', 'The job was added.');
+        
+        // post to fb wall
+        // $helper = $this->get('radix.helper.facebook');
+        // $params = array('title' => $job->getTitle());
+        // $helper->post($params);
+
+        return $this->redirect($this->generateUrl('radix_backend', array('accountid' => $accountid)));
+      }
+*/
+    
+      return $this->render('RadixRecruitmentBundle:Backend:mediaAdd.html.twig', array('form' => $form->createView(), 'carrot' => $carrot));
+    }
+
+
     
 }
+

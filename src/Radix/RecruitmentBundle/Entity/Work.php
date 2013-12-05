@@ -52,35 +52,35 @@ class Work
     /**
      * @var string
      *
-     * @ORM\Column(name="location", type="string", length=255)
+     * @ORM\Column(name="location", type="string", length=255, nullable=true)
      */
     private $location;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="position", type="string", length=255)
+     * @ORM\Column(name="position", type="string", length=255, nullable=true)
      */
     private $position;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=512)
+     * @ORM\Column(name="description", type="string", length=512, nullable=true)
      */
     private $description;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="startdate", type="string", length=255)
+     * @ORM\Column(name="startdate", type="string", length=255, nullable=true)
      */
     private $startdate;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="enddate", type="string", length=255)
+     * @ORM\Column(name="enddate", type="string", length=255, nullable=true)
      */
     private $enddate;
 
