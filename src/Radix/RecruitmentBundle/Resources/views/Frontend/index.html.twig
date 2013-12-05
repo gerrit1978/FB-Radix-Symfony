@@ -19,7 +19,12 @@
 </div>
 {% endfor %}
 
-<h1 class="index-page">Jobs</h1>
+{% if carrot.banner %}
+<div class="banner">
+{{ carrot.banner|raw}}
+</div>
+{% endif %}
+
 <ul class="jobs">
 {% for job in carrot.jobs %}
 <li class="job">

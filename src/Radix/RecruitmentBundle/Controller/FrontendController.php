@@ -10,6 +10,7 @@ use Radix\RecruitmentBundle\Entity\Job;
 use Radix\RecruitmentBundle\Entity\Application;
 use Radix\RecruitmentBundle\Entity\Work;
 use Radix\RecruitmentBundle\Entity\Education;
+use Radix\RecruitmentBundle\Entity\Document;
 
 use Radix\RecruitmentBundle\Form\Type\ApplicationType;
 
@@ -43,6 +44,18 @@ class FrontendController extends Controller
 
       /**** SERVICES END ****/
 
+      /* Is there a banner to be shown? */
+      $document = $this->getDoctrine()
+        ->getRepository('RadixRecruitmentBundle:Document')
+        ->findOneBy(array('accountid' => $accountid, 'type' => 'bannerfront'));
+      
+      if ($document) {
+        $path = $document->getWebPath();
+        $image = "<img src='/" . $path . "' style='width: 800px; margin-top: 20px;' />";
+        $carrot['banner'] = $image;
+      } else {
+        $carrot['banner'] = "";
+      }
 
       /* We get the jobs */
       $jobs = $this->getDoctrine()
@@ -91,11 +104,21 @@ class FrontendController extends Controller
       if ($redirect_url = $helper->doRedirect()) {
         return $this->redirect($redirect_url);
       } 
-      
-      // FACEBOOK service: page admin?
-      $isPageAdmin = $helper->isPageAdmin();
 
       /**** SERVICES END ****/
+
+      /* Is there a banner to be shown? */
+      $document = $this->getDoctrine()
+        ->getRepository('RadixRecruitmentBundle:Document')
+        ->findOneBy(array('accountid' => $accountid, 'type' => 'bannerjob'));
+      
+      if ($document) {
+        $path = $document->getWebPath();
+        $image = "<img src='/" . $path . "' style='width: 800px; margin-top: 20px; margin-bottom: 20px;' />";
+        $carrot['banner'] = $image;
+      } else {
+        $carrot['banner'] = "";
+      }
       
       // get the job details
       $job = $this->getDoctrine()

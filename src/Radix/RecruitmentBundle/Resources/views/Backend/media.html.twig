@@ -1,0 +1,46 @@
+{% extends "RadixRecruitmentBundle:Backend:base.html.twig" %}
+
+{% block title %}Backend{% endblock %}
+
+{% block body %}
+
+<div class='frontend-link'>
+{{ carrot.pageLinks.frontendLink|raw }}
+</div>
+
+<div class='backend-pagelinks'>
+{{ carrot.pageLinks.backendLinks|raw }}
+</div>
+
+{% for flashMessage in app.session.flashbag.get('notice') %}
+<div class="flash-notice">
+{{ flashMessage }}
+</div>
+{% endfor %}
+
+<h1>Media overzicht</h1>
+
+<table class="media">
+<tr>
+<th class="type">Type</th>
+<th class="path">Pad</th>
+<th class="edit">Bewerken</th>
+<th class="delete">Verwijderen</th>
+</tr>
+
+{% for media in carrot.media %}
+<tr class="{{ media.class }}">
+<td class="type">{{ media.type }}</td>
+<td class="path">{{ media.path|raw }}</td>
+<td class="edit">{{ media.editLink|raw }}</td>
+<td class="delete">{{ media.deleteLink|raw }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+<div class="add-document">
+{{ carrot.pageLinks.addMedia|raw }}
+</div>
+
+{% endblock %}

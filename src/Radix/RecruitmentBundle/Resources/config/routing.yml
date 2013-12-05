@@ -64,6 +64,13 @@ radix_backend_media_add:
   pattern: /{accountid}/backend/media/add
   defaults: { _controller: RadixRecruitmentBundle:Backend:mediaAdd }
 
+radix_backend_media_edit:
+  pattern: /{accountid}/backend/media/{mediaid}/edit
+  defaults: { _controller: RadixRecruitmentBundle:Backend:mediaEdit }
+
+radix_backend_media_delete:
+  pattern: /{accountid}/backend/media/{mediaid}/delete
+  defaults: { _controller: RadixRecruitmentBundle:Backend:mediaDelete }
 
 
 radix_import:

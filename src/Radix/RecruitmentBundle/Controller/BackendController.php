@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Radix\RecruitmentBundle\Entity\Job;
 use Radix\RecruitmentBundle\Entity\Config;
-use Radix\RecruitmentBundle\Entity\Media;
+use Radix\RecruitmentBundle\Entity\Document;
 
 class BackendController extends Controller
 {
@@ -532,6 +532,54 @@ class BackendController extends Controller
  /**********************************************************************************************************/
 
     /**
+     * Controller action for overview of files
+     **/
+    public function mediaAction(Request $request, $accountid) {
+
+      /**** SERVICES START ****/
+
+      // CARROT service: bootstrap
+      $carrot_helper = $this->get('radix.helper.carrot');
+      $carrot = $carrot_helper->bootstrap($accountid, 'backend');
+
+      /**** SERVICES END ****/      
+
+      // get all documents for this account
+      $documents = $this->getDoctrine()
+        ->getRepository('RadixRecruitmentBundle:Document')
+        ->findBy(array('accountid' => $accountid));
+
+      $document_output = array();      
+      if (is_array($documents) && count($documents)) {
+        
+        $i = 0;
+        $class = "odd";
+        foreach ($documents as $document) {
+          if (($i % 2) == 0) {
+            $class = "even";
+          } else {
+            $class = "odd";
+          }
+          $document_output[] = array(
+            'path' => "<a target='_blank' href='/" . $document->getWebPath() . "'>" . $document->path . "</a>",
+            'type' => $document->getType(),
+            'class' => $class,
+            'editLink' => "<a href='" . $this->generateUrl('radix_backend_media_edit', array('accountid' => $accountid, 'mediaid' => $document->id)) . "'>bewerken</a>",
+            'deleteLink' => "<a href='" . $this->generateUrl('radix_backend_media_delete', array('accountid' => $accountid, 'mediaid' => $document->id)) . "'>verwijderen</a>",
+          );
+        }
+      }
+
+      $carrot['media'] = $document_output;
+      $carrot['pageLinks']['addMedia'] = "<a href='" . $this->generateUrl('radix_backend_media_add', array('accountid' => $accountid)) . "' class='add-media'>Add a file</a>";      
+    
+      return $this->render('RadixRecruitmentBundle:Backend:media.html.twig', array('carrot' => $carrot));
+    }
+
+
+ /**********************************************************************************************************/
+
+    /**
      * Controller action for adding a media file
      **/
     public function mediaAddAction(Request $request, $accountid) {
@@ -544,43 +592,118 @@ class BackendController extends Controller
 
       /**** SERVICES END ****/      
     
-      $time = time();
-     
-      $media = new Media();
-      $media->setCreated($time);
-      
-      $form = $this->createFormBuilder($media)
-        ->add('filename', 'text')
-        ->add('filepath', 'file')
-        ->add('Save', 'submit')
-        ->getForm();
-    
-/*
-      $form->handleRequest($request);
-    
-      if ($form->isValid()) {
-      
-        // persist object to database
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($job);
-        $em->flush();
+	    $document = new Document();
+	    
+	    $document->setAccountid($accountid);
+	
+	    $form = $this->createFormBuilder($document)
+	        ->add('file')
+	        ->add('type', 'choice', array('choices' => array(
+	          'bannerfront' => 'Banner frontpage', 'bannerjob' => 'Banner jobdetail page'
+	        )))
+	        ->add('save', 'submit')
+	        ->getForm();
 
-        // add flash message
-        $this->get('session')->getFlashBag()->add('notice', 'The job was added.');
-        
-        // post to fb wall
-        // $helper = $this->get('radix.helper.facebook');
-        // $params = array('title' => $job->getTitle());
-        // $helper->post($params);
+	    $form->handleRequest($request);
+	
+	    if ($form->isValid()) {
+	        $em = $this->getDoctrine()->getManager();
+	
+	        $em->persist($document);
+	        $em->flush();
 
-        return $this->redirect($this->generateUrl('radix_backend', array('accountid' => $accountid)));
-      }
-*/
-    
+	        $this->get('session')->getFlashBag()->add(
+	            'notice',
+	            'The document was uploaded!'
+	        );
+	        
+	        return $this->redirect($this->generateUrl('radix_backend_media', array('accountid' => $accountid)));
+	
+	    }
+
       return $this->render('RadixRecruitmentBundle:Backend:mediaAdd.html.twig', array('form' => $form->createView(), 'carrot' => $carrot));
     }
 
+ /**********************************************************************************************************/
+
+    /**
+     * Controller action for editing a media file
+     **/
+    public function mediaEditAction(Request $request, $accountid, $mediaid) {
+
+      /**** SERVICES START ****/
+
+      // CARROT service: bootstrap
+      $carrot_helper = $this->get('radix.helper.carrot');
+      $carrot = $carrot_helper->bootstrap($accountid, 'backend');
+
+      /**** SERVICES END ****/      
+
+      $document = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Document')->find($mediaid);
+
+	    $form = $this->createFormBuilder($document)
+	        ->add('file')
+	        ->add('type', 'choice', array('choices' => array(
+	          'bannerfront' => 'Banner frontpage', 'bannerjob' => 'Banner jobdetail page'
+	        )))
+	        ->add('save', 'submit')
+	        ->getForm();
+
+	    $form->handleRequest($request);
+	
+	    if ($form->isValid()) {
+	        $em = $this->getDoctrine()->getManager();
+	
+	        $em->persist($document);
+	        $em->flush();
+
+	        $this->get('session')->getFlashBag()->add(
+	            'notice',
+	            'The document was edited!'
+	        );
+	        
+	        return $this->redirect($this->generateUrl('radix_backend_media', array('accountid' => $accountid)));
+	
+	    }
+
+      return $this->render('RadixRecruitmentBundle:Backend:mediaEdit.html.twig', array('form' => $form->createView(), 'carrot' => $carrot));
+
+
+    }
+
+ /**********************************************************************************************************/
+
+    /**
+     * Controller action for deleting a media file
+     **/
+    public function mediaDeleteAction(Request $request, $accountid, $mediaid) {
+
+      /**** SERVICES START ****/
+
+      // CARROT service: bootstrap
+      $carrot_helper = $this->get('radix.helper.carrot');
+      $carrot = $carrot_helper->bootstrap($accountid, 'backend');
+
+      /**** SERVICES END ****/      
 
     
-}
+      $em = $this->getDoctrine()->getEntityManager();
+      $document = $em->getRepository('RadixRecruitmentBundle:Document')->find($mediaid);
+      
+      if (!$document) {
+        throw $this->createNotFoundException('No media file found to delete.');
+      }
+    
+      $em->remove($document);
+      $em->flush();
+    
+       // add flash message
+      $this->get('session')->getFlashBag()->add('notice', 'Media file has been deleted.');
+   
+      return $this->redirect($this->generateUrl('radix_backend_media', array('accountid' => $accountid)));
+ 
+    }
 
+
+
+}

@@ -13,6 +13,12 @@
 {% endif %}
 <div class="job-detail">
 
+{% if carrot.banner %}
+<div class="banner">
+{{ carrot.banner|raw}}
+</div>
+{% endif %}
+
 <div class="call-to-action">
 {{ carrot.callToAction.applyLink|raw }}
 {{ carrot.callToAction.fbConnect|raw }}
