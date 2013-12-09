@@ -172,6 +172,7 @@ class BackendController extends Controller
         ->add('xmlroot')
         ->add('pageid')
         ->add('pagetitle')
+        ->add('employerid')
         ->add('Save', 'submit')
         ->getForm();
       
@@ -711,4 +712,13 @@ class BackendController extends Controller
 
 
 
+ /**********************************************************************************************************/
+   /**
+    * Test action
+    */
+    public function testAction(Request $request, $accountid) {
+      $fb_helper = $this->get('radix.helper.facebook');
+      
+      $fb_helper->testFql();
+    }
 }

@@ -45,6 +45,9 @@ class CarrotHelper {
 	      } else {
 	        $carrot['pageLinks']['adminLink'] = "";
 	      }
+	      
+	      // Render the other links: get introduced by a friend
+	      $carrot['introduced'] = "<a class='introduced' href='" . $router->generate('radix_frontend_introduced', array('accountid' => $accountid)) . "'>Word geïntroduceerd door een vriend.</a>";
       }
       
       if ($type == 'backend') {

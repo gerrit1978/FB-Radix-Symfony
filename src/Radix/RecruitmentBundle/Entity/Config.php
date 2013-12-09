@@ -70,6 +70,12 @@ class Config
      */
     private $pagetitle;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="employerid", type="string", length=255)
+     */
+    private $employerid;
 
     /**
      * Get id
@@ -240,6 +246,27 @@ class Config
     public function getPagetitle()
     {
         return $this->pagetitle;
+    }
+
+    /**
+     * Set employerid
+     *
+     * @param string $employerid
+     * @return Config
+     */
+    public function setEmployerid($employerid) {
+      $this->employerid = $employerid;
+      
+      return $this;
+    }
+    
+    /**
+     * Get employerid
+     *
+     * @return string
+     */
+    public function getEmployerid() {
+      return $this->employerid;
     }
     
 }

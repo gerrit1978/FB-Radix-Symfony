@@ -357,6 +357,33 @@ class FrontendController extends Controller
     /**
      * Controller Action for application page (facebook)
      **/
+    public function introducedAction(Request $request, $accountid) {
+
+      /**** SERVICES START ****/
+
+      // CARROT service: bootstrap
+      $carrot_helper = $this->get('radix.helper.carrot');
+      $carrot = $carrot_helper->bootstrap($accountid);
+
+      // FACEBOOK service: redirect
+      $helper = $this->get('radix.helper.facebook');
+      if ($redirect_url = $helper->doRedirect()) {
+        return $this->redirect($redirect_url);
+      } 
+
+      /**** SERVICES END ****/
+      $helper->getFriendsWork($accountid);
+
+
+    }
+
+
+
+/**********************************************************************************************************/    
+    
+    /**
+     * Controller Action for application page (facebook)
+     **/
     public function jobApplyFacebookAction(Request $request, $accountid, $id) {
 
       /**** SERVICES START ****/
