@@ -43,17 +43,19 @@ class FacebookHelper {
 
     $signed_request = $facebook->getSignedRequest();
 
+    $pageid = isset($signed_request['page']['id']) ? $signed_request['page']['id'] : 0;
+
     $boot = array(
-      'pageid' => $signed_request['page']['id'],
+      'pageid' => $pageid,
     );
     
+    // add the redirect
     if (isset($signed_request['app_data'])) {
       $boot['redirect'] = $signed_request['app_data'];
     }
+
     
     return $boot;
-
-    // hier nog checken of - in geval er een app_data parameter in de request zit - het accountid daarbij wel past bij het pageid uit het request //
 
   }
   

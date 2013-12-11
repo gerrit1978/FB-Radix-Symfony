@@ -33,7 +33,21 @@ class DefaultController extends Controller
 
       $accountid = $project->getAccountid();
 
+
       if (isset($boot['redirect'])) {
+      
+        // check if pageid and accountid match!
+        $app_data = $boot['redirect'];
+        $app_data_split = explode('/', $app_data);
+        if (isset($app_data_split[1]) && is_numeric($app_data_split[1])) {
+          $accountid_redirect = $app_data_split[1];
+          if ($accountid_redirect == $accountid) {
+            $url = $boot['redirect'];
+          } else {
+            throw $this->createNotFoundException('No redirect found. Something went wrong.');
+          }
+        }
+      
         $url = $boot['redirect'];
       } else {
         $url = $this->generateUrl('radix_frontend', array('accountid' => $accountid));
