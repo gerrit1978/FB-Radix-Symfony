@@ -14,6 +14,7 @@ class CarrotHelper {
     $this->container = $container;
   }
   
+  /* Bootstrap function */
   public function bootstrap($accountid, $type = 'frontend') {
 
       $carrot = array();
@@ -36,7 +37,6 @@ class CarrotHelper {
 	      // Call the facebook helper
 	      $fb_helper = $this->container->get("radix.helper.facebook");
 	
-	
 	      // Is the current user page admin?
 	      $isPageAdmin = $fb_helper->isPageAdmin();
 	      
@@ -47,13 +47,11 @@ class CarrotHelper {
 	      }
 	      
 	      // Render the other links: get introduced by a friend
-	      $carrot['introduced'] = "<a class='introduced' href='" . $router->generate('radix_frontend_introduced', array('accountid' => $accountid)) . "'>Word geïntroduceerd door een vriend.</a>";
+	      $carrot['introduced'] = "<a class='introduced' href='" . $router->generate('radix_frontend_introduced', array('accountid' => $accountid)) . "'>Laat je introduceren door een vriend.</a>";
+	      $carrot['socialRecruiter'] = "<a class='social-recruiter' href='" . $router->generate('radix_frontend_social_recruiter', array('accountid' => $accountid)) . "'>Word social recruiter</a>";
       }
       
       if ($type == 'backend') {
-       
-        $carrot['config'] = $config;
-
         // generate the backend links
         $backend_links = array(
           'jobs' => "<a class='tab' href='" . $router->generate('radix_backend_jobs', array('accountid' => $accountid)) . "'>Jobs</a>",
@@ -71,6 +69,7 @@ class CarrotHelper {
       }
       
       /* Other Bootstrap stuff comes here */
+      $carrot['config'] = $config;
       
       return $carrot;
 

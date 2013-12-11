@@ -1,0 +1,42 @@
+{% extends "RadixRecruitmentBundle:Default:base.html.twig" %}
+
+{% block title %}Frontend{% endblock %}
+
+{% block bodyclasses %}index{% endblock %}
+
+{% block body %}
+{{ parent() }}
+
+{% if carrot.pageLinks.adminLink %}
+<div class='admin-link'>
+{{ carrot.pageLinks.adminLink|raw }}
+</div>
+{% endif %}
+
+{% for flashMessage in app.session.flashbag.get('notice') %}
+<div class="flash-notice">
+{{ flashMessage }}
+</div>
+{% endfor %}
+
+{% if carrot.banner %}
+<div class="banner">
+{{ carrot.banner|raw}}
+</div>
+{% endif %}
+
+<div class="columns clearfix">
+<div class="column-main">
+
+Hier de tekst!
+
+{{ scripts|raw }}
+
+</div>
+<div class="column-right">
+Kolom rechts - hier ook?
+</div>
+</div>
+
+
+{% endblock %}

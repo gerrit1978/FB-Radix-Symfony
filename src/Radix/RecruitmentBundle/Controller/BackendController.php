@@ -104,7 +104,12 @@ class BackendController extends Controller
     
       // make a list of all applications
       $repository = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Application');
-      $applications = $repository->findAll();
+      $applications = $repository->createQueryBuilder('a')
+        ->where('a.accountid = :accountid')
+        ->setParameter('accountid', $accountid)
+        ->orderBy('a.created', 'DESC')
+        ->getQuery()
+        ->getResult();
       
       $applications_output = array();
       
@@ -405,9 +410,9 @@ class BackendController extends Controller
         $this->get('session')->getFlashBag()->add('notice', 'The job was added.');
         
         // post to fb wall
-        // $helper = $this->get('radix.helper.facebook');
-        // $params = array('title' => $job->getTitle());
-        // $helper->post($params);
+        $helper = $this->get('radix.helper.facebook');
+        $params = array('title' => $job->getTitle());
+        $helper->post($accountid, $params);
 
         return $this->redirect($this->generateUrl('radix_backend', array('accountid' => $accountid)));
       }

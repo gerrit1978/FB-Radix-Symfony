@@ -154,7 +154,7 @@ class FrontendController extends Controller
 
       $carrot['callToAction'] = array(
 				'applyLink' => "<a class='apply' href='" . $this->generateUrl('radix_frontend_job_apply_manual', array('accountid' => $accountid, 'id' => $id)) . "'>Apply</a>",
-				'fbConnect' => "<a class='connect' href='" . $this->generateUrl('radix_frontend_job_apply_facebook', array('accountid' => $accountid, 'id' => $id)) . "'>Connect with Facebook</a>",
+				'fbConnect' => "<a class='connect' href='" . $this->generateUrl('radix_frontend_facebook_connect', array('accountid' => $accountid, 'id' => $id)) . "'>Connect with Facebook</a>",
       );
       
       return $this->render('RadixRecruitmentBundle:Frontend:detail.html.twig', array('carrot' => $carrot));
@@ -211,26 +211,25 @@ class FrontendController extends Controller
       if ($user_profile = $helper->getProfileData()) {
       
         // get basic stuff
-        if (isset($user_profile['name'])) {
-          $application->setName($user_profile['name']);
+        if (isset($user_profile->name)) {
+          $application->setName($user_profile->name);
         }
         
-        if (isset($user_profile['email'])) {
-          $application->setEmail($user_profile['email']);
+        if (isset($user_profile->email)) {
+          $application->setEmail($user_profile->email);
         }
       
         // get work stuff
-        if (isset($user_profile['work'])) {
-          $fb_work = $user_profile['work'];
+        if (isset($user_profile->work)) {
+          $fb_work = $user_profile->work;
           if (is_array($fb_work) && count($fb_work)) {
             foreach ($fb_work as $item) {
-            
-              $employer = isset($item['employer']['name']) ? $item['employer']['name'] : '';
-              $location = isset($item['location']['name']) ? $item['location']['name'] : '';
-              $position = isset($item['position']['name']) ? $item['position']['name'] : '';
-              $description = isset($item['description']) ? $item['description'] : '';
-              $startdate = isset($item['start_date']) ? $item['start_date'] : '';
-              $enddate = isset($item['end_date']) ? $item['end_date'] : '';
+              $employer = isset($item->employer->name) ? $item->employer->name : '';
+              $location = isset($item->location->name) ? $item->location->name : '';
+              $position = isset($item->position->name) ? $item->position->name : '';
+              $description = isset($item->description) ? $item->description : '';
+              $startdate = isset($item->start_date) ? $item->start_date : '';
+              $enddate = isset($item->end_date) ? $item->end_date : '';
                             
               $work = new Work();
               $work->setEmployer($employer);
@@ -253,14 +252,14 @@ class FrontendController extends Controller
         }
         
         // get education stuff
-        if (isset($user_profile['education'])) {
-          $fb_education = $user_profile['education'];
+        if (isset($user_profile->education)) {
+          $fb_education = $user_profile->education;
           if (is_array($fb_education) && count($fb_education)) {
             foreach ($fb_education as $item) {
               
-              $school = isset($item['school']['name']) ? $item['school']['name'] : '';
-              $year = isset($item['year']['name']) ? $item['year']['name'] : '';
-              $type = isset($item['type']) ? $item['type'] : '';
+              $school = isset($item->schoolname) ? $item->school->name : '';
+              $year = isset($item->year->name) ? $item->year->name : '';
+              $type = isset($item->type) ? $item->type : '';
               
               $education = new Education();
               $education->setSchool($school);
@@ -352,10 +351,11 @@ class FrontendController extends Controller
       return $this->render('RadixRecruitmentBundle:Frontend:apply.html.twig', array('carrot' => $carrot));
     }
 
+
 /**********************************************************************************************************/    
     
     /**
-     * Controller Action for application page (facebook)
+     * Controller Action for "get introduced by a friend" page (facebook)
      **/
     public function introducedAction(Request $request, $accountid) {
 
@@ -365,15 +365,53 @@ class FrontendController extends Controller
       $carrot_helper = $this->get('radix.helper.carrot');
       $carrot = $carrot_helper->bootstrap($accountid);
 
+      $carrot['banner'] = '';
+
       // FACEBOOK service: redirect
       $helper = $this->get('radix.helper.facebook');
       if ($redirect_url = $helper->doRedirect()) {
         return $this->redirect($redirect_url);
       } 
-
+      
       /**** SERVICES END ****/
-      $helper->getFriendsWork($accountid);
+      $connections = $helper->getFriendsWorkHistory($accountid, $carrot['config']);
 
+      if (count($connections)) {
+        $carrot['connections'] = $connections;      
+        return $this->render('RadixRecruitmentBundle:Frontend:introduce.html.twig', array('carrot' => $carrot));
+      } else {
+        return $this->render('RadixRecruitmentBundle:Frontend:introduceEmpty.html.twig', array('carrot' => $carrot));
+      }     
+
+    }
+
+/**********************************************************************************************************/    
+    
+    /**
+     * Controller Action for "get social recruiter" page (facebook)
+     **/
+    public function socialRecruiterAction(Request $request, $accountid) {
+      /**** SERVICES START ****/
+
+      // CARROT service: bootstrap
+      $carrot_helper = $this->get('radix.helper.carrot');
+      $carrot = $carrot_helper->bootstrap($accountid);
+
+      $carrot['banner'] = '';
+
+      // FACEBOOK service: redirect
+      $helper = $this->get('radix.helper.facebook');
+      if ($redirect_url = $helper->doRedirect()) {
+        return $this->redirect($redirect_url);
+      } 
+      
+      /**** SERVICES END ****/
+      $helper->socialRecruiter($accountid, $carrot['config']);
+
+      exit('socialRecruiterAction is nog niet verder uitgebouwd');
+/*      
+      return $this->render('RadixRecruitmentBundle:Frontend:socialRecruiter.html.twig', array('scripts' => $scripts, 'carrot' => $carrot));
+*/
 
     }
 
@@ -382,7 +420,7 @@ class FrontendController extends Controller
 /**********************************************************************************************************/    
     
     /**
-     * Controller Action for application page (facebook)
+     * Controller Action for application page (facebook) - THIS WILL BECOME DEPRECATED
      **/
     public function jobApplyFacebookAction(Request $request, $accountid, $id) {
 
@@ -421,4 +459,33 @@ class FrontendController extends Controller
     
         return $this->redirect($this->generateUrl('radix_frontend', array('accountid' => $accountid)));
     }
+
+
+/**********************************************************************************************************/    
+    
+    /**
+     * Controller Action for connecting with Facebook
+     **/
+    public function facebookConnectAction(Request $request, $accountid, $id) {
+
+      /**** SERVICES START ****/
+
+      // CARROT service: bootstrap
+      $carrot_helper = $this->get('radix.helper.carrot');
+      $carrot = $carrot_helper->bootstrap($accountid);
+
+      // FACEBOOK service: connect details
+      $facebook_helper = $this->get('radix.helper.facebook');
+      
+      $facebook_helper->connect($accountid, $id, $carrot['config']);
+      
+      /**** SERVICES END ****/
+      
+      return $this->redirect($this->generateUrl('radix_frontend_job_detail', array('accountid' => $accountid, 'id' => $id)));
+
+
+    }
+
+
+
 }

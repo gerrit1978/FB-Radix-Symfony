@@ -9,6 +9,11 @@ class FacebookHelper {
   private $appid;
   private $secret;
 
+  /**
+   * Constructor
+   * @param string application id
+   * @param string application secret
+   */
   public function __construct($appid, $secret) {
     
     $this->config = array(
@@ -19,48 +24,108 @@ class FacebookHelper {
 
   }
   
+  /**
+   * Returns the configuration parameters
+   * 
+   * @return array
+   */
   public function getConfig() {
     return $this->config;
   }
   
+  /**
+   * Boots the application on the landing page
+   *
+   * @return array
+   */
+  public function boot() {
+    $facebook = new \Facebook($this->config);
+
+    $signed_request = $facebook->getSignedRequest();
+
+    $boot = array(
+      'pageid' => $signed_request['page']['id'],
+    );
+    
+    if (isset($signed_request['app_data'])) {
+      $boot['redirect'] = $signed_request['app_data'];
+    }
+    
+    return $boot;
+
+    // hier nog checken of - in geval er een app_data parameter in de request zit - het accountid daarbij wel past bij het pageid uit het request //
+
+  }
+  
+  /**
+   * Returns the page id for this page
+   *
+   * @return string
+   */
+  public function getPageId() {
+    $facebook = new \Facebook($this->config);
+    
+    $signed_request = $facebook->getSignedRequest();
+    
+    $page_id = $signed_request['page']['id'];
+    
+    return $page_id;
+  }
+  
+  /**
+   * Checks if user is page administrator
+   *
+   * @return boolean
+   */
   public function isPageAdmin() {
   
     $facebook = new \Facebook($this->config);
   
+    $session = new Session();
+  
     $signed_request = $facebook->getSignedRequest();
     
-    if (isset($signed_request['page']['admin']) && $signed_request['page']['admin'] == 1) {
-      $_SESSION['signed_request'] = $signed_request;
-      return TRUE;
+    if ($signed_request) {
+      if (isset($signed_request['page']['admin']) && $signed_request['page']['admin'] == 1) {
+        $session->set('page_admin', 1);
+        return TRUE;
+      } else {
+        $session->set('page_admin', 0);
+        return FALSE;
+      }
     } else {
-      if (isset($_SESSION['signed_request'])) {
-        $signed_request = $_SESSION['signed_request'];
-				if (isset($signed_request['page']['admin']) && $signed_request['page']['admin'] == 1) {
-				  return TRUE;
-				}
-			}
+      $page_admin = $session->get('page_admin');
+      return $page_admin;
     }
     return FALSE;
   }
   
-  
+  /**
+   * Returns user profile data
+   *
+   * @return array
+   */
   public function getProfileData() {
-    $facebook = new \Facebook($this->config);
-    $user = $facebook->getUser();
-    if ($user) {
-      try {
-        $user_profile = $facebook->api('/me');
-        return $user_profile;	      
-      } catch (FacebookApiException $e) {
-        error_log($e);
-        $user = NULL;
-        return $user;
-      }
+
+    $session = new Session();
+    
+    $access_token = $session->get('access_token');
+
+    if ($access_token) {
+      $graph_url = "https://graph.facebook.com/me?access_token=" . $access_token;
+	    $response = $this->curl_get_file_contents($graph_url);
+	    $decoded_response = json_decode($response);
+	    return $decoded_response;
     } else {
       return NULL;
     }
   }
   
+  /**
+   * Checks for redirect data if app_data is in query string
+   *
+   * @return string
+   */
   public function doRedirect() {
 
     $facebook = new \Facebook($this->config);
@@ -72,6 +137,11 @@ class FacebookHelper {
     }
   }
   
+  /**
+   * Checks if user has authorized application
+   *
+   * @return array
+   */
   public function hasAuthorized() {
     $facebook = new \Facebook($this->config);
 
@@ -110,7 +180,28 @@ class FacebookHelper {
     
   }
   
-  public function post($params = array()) {
+  public function post($accountid, $params = array()) {
+
+    $redirect_uri = "http://apps.facebook.com/radix-symfony/" . $accountid . "/fb-redirect/radix_backend";
+    $scope = "manage_pages";
+
+    $access_token = $this->checkAccessToken($scope, $redirect_uri);
+    
+    $graph_url = 'https://graph.facebook.com/196863790499859/feed?access_token=' . $access_token;
+    
+    $ch = curl_init();
+    
+    $fields = array('message' => urlencode($params['title']));
+    
+    curl_setopt($ch, CURLOPT_URL, $graph_url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+    $result = curl_exec($ch);
+    
+    exit('Post is gebeurd');
+    
+    
+  
   }
   
   
@@ -123,47 +214,81 @@ class FacebookHelper {
     }
   }
  
+  public function checkAccessToken($scope, $redirect_uri) {
+
+    // split scope
+    $scope_split = explode(',', $scope);
+
+    $session = new Session();
+    
+    $access_token = $session->get('access_token');
+
+    if ($access_token) {
+      $graph_url = "https://graph.facebook.com/me/permissions?access_token=" . $access_token;
+	    $response = $this->curl_get_file_contents($graph_url);
+	    $decoded_response = json_decode($response);
+	    
+	    // Stap 2a.1: check of access token is nog geldig om de permissies op te halen. Indien neen -> haal nieuw access_token op
+			if (isset($decoded_response->error)) {
+			
+			  // check to see if this is an oAuth error:
+			  if ($decoded_response->error->type== "OAuthException") {
+			    // Retrieving a valid access token. 
+			    $dialog_url= "https://www.facebook.com/dialog/oauth?client_id=" . $this->config['appId'] . "&scope=" . $scope 
+			      . "&redirect_uri=" . urlencode($redirect_uri);
+			    echo("<script>top.location.href='" . $dialog_url . "'</script>");
+			    exit();
+			  }
+	  		else {
+			    echo "other error has happened";
+			  }
+			} 
+	  	else {
+			  // access token is geldig om permissies op te halen. Check of de scopes permissie er allemaal tussen zitten
+			  $data = isset($decoded_response->data) ? $decoded_response->data : array();
+			  $permissions = isset($data[0]) ? $data[0] : '';
+
+			  $valid = TRUE;
+        foreach ($scope_split as $item) {
+          if (!isset($permissions->$item) || $permissions->$item != 1) {
+            $valid = FALSE;
+          }
+        }
+        
+        if ($valid) {
+			    return $access_token;        
+        } else {
+			    // Retrieving a valid access token. 
+			    $dialog_url= "https://www.facebook.com/dialog/oauth?client_id=" . $this->config['appId'] . "&scope=" . $scope 
+			      . "&redirect_uri=" . urlencode($redirect_uri);
+			    echo("<script>top.location.href='" . $dialog_url . "'</script>");
+			    exit();
+        }
+			}    
+    } else {
+			  // check to see if this is an oAuth error:
+		    $dialog_url= "https://www.facebook.com/dialog/oauth?client_id=" . $this->config['appId'] . "&scope=" . $scope
+			      . "&redirect_uri=" . urlencode($redirect_uri);
+		    echo("<script>top.location.href='" . $dialog_url . "'</script>");
+        exit();
+    }
+    
+  }
  
-   public function getFriendsWork($accountid) {
-     $facebook = new \Facebook($this->config);
-     
-     $session = new Session();
-     
-     $access_token = $session->get('access_token');
-     
-     if (!$access_token) {
-     
-	     $code = isset($_REQUEST["code"]) ? $_REQUEST['code'] : '';
-	     
-	     $url = "http://apps.facebook.com/radix-symfony/" . $accountid . "/frontend/introduced";
-	     
-		  // auth user
-		  if (empty($code)){
-		    $dialog_url = 'https://www.facebook.com/dialog/oauth?client_id=' . $this->config['appId'] . '&scope=friends_work_history&redirect_uri=' . urlencode($url);
-		    echo("<script>parent.location.href='" . $dialog_url . "'</script>");
-		  }
-		  
-		    // get user access_token
-	      $token_url = 'https://graph.facebook.com/oauth/access_token?client_id=' . $this->config['appId'] . '&redirect_uri=' . urlencode($url)
-	        . '&client_secret=' . $this->config['secret'] . '&code=' . $code;
-	      // response is of the format "access_token=AAAC..."
-	      $access_token = substr(file_get_contents($token_url), 13);
-        $session->set('access_token', $access_token);
-     }     
-		// run fql query
-		$fql_query_url = 'https://graph.facebook.com/' . 'fql?q=select+uid,+work+FROM+user+WHERE+uid+in+(SELECT+uid2+FROM+friend+WHERE+uid1=me())'
+  public function getFriendsWorkHistory($accountid, $config) {
+    $redirect_uri = "http://apps.facebook.com/radix-symfony/" . $accountid . "/fb-redirect/radix_frontend_introduced/0";
+    $scope = "friends_work_history";
+
+    $config_employerid = $config->getEmployerid();
+
+    $access_token = $this->checkAccessToken($scope, $redirect_uri);
+
+		$fql_query_url = 'https://graph.facebook.com/' . 'fql?q=select+uid,+work,+name,+pic_small+FROM+user+WHERE+uid+in+(SELECT+uid2+FROM+friend+WHERE+uid1=me())'
 		     . '&access_token=' . $access_token;
 	  $fql_query_result = file_get_contents($fql_query_url);
 	  $fql_query_obj = json_decode($fql_query_result, true);
-	     
-	
+
 	  $data = $fql_query_obj['data'];
-/*
-	  print "<pre>";
-	  print_r($data);
-	  print "</pre>";
-	  exit();
-*/
 	  
 	  $connections = array();
 	  foreach ($data as $friend) {
@@ -172,19 +297,88 @@ class FacebookHelper {
 	      foreach ($friend['work'] as $work) {
 	        if (isset($work['employer']['id'])) {
 	          $employer_id = $work['employer']['id'];
-	          
-	          if ($employer_id == '106225456082315') {
+
+	          if ($employer_id == $config_employerid) {
+/* 	          if ($employer_id == '106225456082315') { KULEUVEN */
 	            $msg_link = "https://www.facebook.com/dialog/send?app_id=" . $this->config['appId'] . "&display=popup&link=http://www.nytimes.com/2011/06/15/arts/people-argue-just-to-win-scholars-assert.html"
 	              . "&redirect_uri=https://apps.facebook.com/radix-symfony&to=" . $uid;
-	            $connections[] = "<a href='" . $msg_link . "'>Message " . $uid . "</a>";
+	            $connections[] = array(
+	              'name' => $friend['name'],
+	              'pic_small' => $friend['pic_small'],
+	              'link' => "<a class='send-msg' href='" . $msg_link . "' id='" . $uid . "'>Send " . $friend['name'] . " a message</a>",
+	            );
 	          }
 	        }
 	      }
 	    }
 	  }
-	  print_r($connections);
-	  exit();
-
+	  
+	  return $connections;
   }
+  
+  public function socialRecruiter($accountid, $config) {
+  
+    $redirect_uri = "http://apps.facebook.com/radix-symfony/" . $accountid . "/fb-redirect/radix_frontend_social_recruiter/0";
+    $scope = "publish_stream";
+    
+    $access_token = $this->checkAccessToken($scope, $redirect_uri);
+
+    $graph_url = 'https://graph.facebook.com/me/feed?message=blablabla&access_token=' . $access_token;
+    
+    $ch = curl_init();
+    
+    $fields = array('message' => "Nog even een nieuwe test.");
+    
+    curl_setopt($ch, CURLOPT_URL, $graph_url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+    
+    exit('hier zal een post gebeuren');
+    
+    $result = curl_exec($ch);
+    
+  }
+  
+  public function connect($accountid, $id, $config) {
+    $redirect_uri = "http://apps.facebook.com/radix-symfony/" . $accountid . "/fb-redirect/radix_frontend_job_detail/" . $id;
+    $scope = "user_work_history,email,user_education_history";
+    
+    $access_token = $this->checkAccessToken($scope, $redirect_uri);
+    
+    return "hier se";
+  }
+  
+ 
+  
+  /** 
+   * Helper function for getting access token URL
+   *
+   * @return string
+   */
+  public function getAccessTokenUrl($accountid, $nextpage, $code, $id) {
+  
+    $url = "http://apps.facebook.com/radix-symfony/" . $accountid . "/fb-redirect/" . $nextpage . '/' . $id;
+
+    $token_url = 'https://graph.facebook.com/oauth/access_token?client_id=' . $this->config['appId'] . '&redirect_uri=' . urlencode($url)
+      . '&client_secret=' . $this->config['secret'] . '&code=' . $code;
+
+    return $token_url;
+  }
+ 
+	/**
+	 * Helper function for curling
+	 *
+	 * @return misc
+	 */
+	function curl_get_file_contents($URL) {
+	  $c = curl_init();
+	  curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+	  curl_setopt($c, CURLOPT_URL, $URL);
+	  $contents = curl_exec($c);
+	  $err  = curl_getinfo($c,CURLINFO_HTTP_CODE);
+	  curl_close($c);
+	  if ($contents) return $contents;
+	  else return FALSE;
+	} 
   
 }
