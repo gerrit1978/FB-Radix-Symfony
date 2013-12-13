@@ -77,8 +77,8 @@ class FrontendController extends Controller
       $subscriber = new Subscriber();
       $subscriber->setAccountid($accountid);
       $subscriber_form = $this->createFormBuilder($subscriber)
-        ->add('email', 'email')
-        ->add('Save', 'submit')
+        ->add('email', 'email', array('label' => FALSE, 'attr' => array('placeholder' => 'je e-mailadres')))
+        ->add('Opslaan', 'submit')
         ->getForm();
       
       $carrot['subscriberForm'] = $subscriber_form->createView();
@@ -149,8 +149,8 @@ class FrontendController extends Controller
       $subscriber = new Subscriber();
       $subscriber->setAccountid($accountid);
       $subscriber_form = $this->createFormBuilder($subscriber)
-        ->add('email', 'email')
-        ->add('Save', 'submit')
+        ->add('email', 'email', array('label' => FALSE, 'attr' => array('placeholder' => 'je e-mailadres')))
+        ->add('Opslaan', 'submit')
         ->getForm();
 
       $carrot['subscriberForm'] = $subscriber_form->createView();
@@ -374,8 +374,8 @@ class FrontendController extends Controller
       $subscriber = new Subscriber();
       $subscriber->setAccountid($accountid);
       $subscriber_form = $this->createFormBuilder($subscriber)
-        ->add('email', 'email')
-        ->add('Save', 'submit')
+        ->add('email', 'email', array('label' => FALSE, 'attr' => array('placeholder' => 'je e-mailadres')))
+        ->add('Opslaan', 'submit')
         ->getForm();
 
       $carrot['subscriberForm'] = $subscriber_form->createView();

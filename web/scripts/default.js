@@ -4,6 +4,11 @@ $(document).ready(function() {
     var url = $(this).data('job-url');
     self.location.href = url;
   });
+  
+  $('span.button').click(function() {
+    var url = $(this).data('url');
+    self.location.href = url;
+  });
 
 /*
     FB.Canvas.setAutoGrow(); //from 5 July

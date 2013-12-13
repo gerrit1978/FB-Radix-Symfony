@@ -52,7 +52,7 @@ class CarrotHelper {
 	        );
 	      } 
 	      
-	      $carrot['pageLinks']['homeLink'] = "<div class='home-link'><a href='" . $router->generate('radix_frontend', array('accountid' => $accountid)) . "' class='home-link'>Naar de startpagina</a></div>";
+	      $carrot['pageLinks']['homeLink'] = "<div class='home-link'><span class='button' data-url='" . $router->generate('radix_frontend', array('accountid' => $accountid)) . "'>Naar de startpagina</a></div>";
 	      
 	      // Render the Introduced link
 	      $carrot['introduced'] = "<a class='introduced' href='" . $router->generate('radix_frontend_introduced', array('accountid' => $accountid)) . "'>Laat je introduceren door een vriend.</a>";
