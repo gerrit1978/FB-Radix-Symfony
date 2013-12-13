@@ -30,22 +30,22 @@ class FacebookController extends Controller
       /**** SERVICES END ****/      
 
       // define the concrete next page for the app_data parameter
-      $app_data = "";
+      $app_data = "/";
       switch ($nextpage) {
         case 'radix_frontend_introduced':
-          $app_data = $accountid .'/frontend/introduced';
+          $app_data .= $accountid .'/frontend/introduced';
           break;
         case 'radix_frontend_social_recruiter':
-          $app_data = $accountid .'/frontend/social-recruiter';
+          $app_data .= $accountid .'/frontend/social-recruiter';
           break;
         case 'radix_backend':
-          $app_data = $accountid .'/backend';
+          $app_data .= $accountid .'/backend';
           break;
         case 'radix_frontend':
-          $app_data = $accountid . '/frontend';
+          $app_data .= $accountid . '/frontend';
           break;
         case 'radix_frontend_job_detail':
-          $app_data = $accountid . '/frontend/job/' . $id;
+          $app_data .= $accountid . '/frontend/job/' . $id;
           break;
         
       }

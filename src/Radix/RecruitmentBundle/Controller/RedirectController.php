@@ -12,14 +12,15 @@ class RedirectController extends Controller
     public function jobRedirectAction(Request $request, $accountid, $id)
     {
     
-      /* We get the config parameters (XML URL/USER/PASS...) */
-      $config = $this->getDoctrine()
-        ->getRepository('RadixRecruitmentBundle:Config')
-        ->findBy(array('accountid' => $accountid));
- 
-      if (!$config) {
-        throw $this->createNotFoundException('No config found for this accountid.');
-      }
+
+      /**** SERVICES START ****/
+
+      // CARROT service: bootstrap
+      $carrot_helper = $this->get('radix.helper.carrot');
+      $carrot = $carrot_helper->bootstrap($accountid);
+
+      /**** SERVICES END ****/
+
       
       // we make the new URL
       $protocol = "http://";
@@ -27,11 +28,23 @@ class RedirectController extends Controller
         $protocol = "https://";
       }
       
-      $url = $protocol . "www.facebook.com/pages/" . $config[0]->getPagetitle() . "/" . $config[0]->getPageid() . "?id=" . $config[0]->getPageid() . "&sk=app_600850943303218"
-        . "&app_data=/" . $accountid . "/frontend/job/" . $id;
+      $carrot['job'] = array();
+      
+      // generate the redirect URL
+      $pageurl = $carrot['config']->getPageurl();
+      $redirecturl = $pageurl . "?id=" . $carrot['config']->getPageid() . "&sk=app_600850943303218&app_data=/" . $accountid . "/frontend/job/" . $id;
+      
+      // get the job details
+      $job = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job')->find($id);
+      $title = $job->getTitle();
+      
+      $carrot['job'] = array(
+        'title' => $title,
+        'link' => $redirecturl,
+        'description' => substr(strip_tags($job->getDescription()), 0, 100) . "…",
+      );
 
-      return $this->redirect($url);
-
+      return $this->render('RadixRecruitmentBundle:Frontend:redirect.html.twig', array('carrot' => $carrot));
     }
     
 }

@@ -11,6 +11,7 @@ use Radix\RecruitmentBundle\Entity\Application;
 use Radix\RecruitmentBundle\Entity\Work;
 use Radix\RecruitmentBundle\Entity\Education;
 use Radix\RecruitmentBundle\Entity\Document;
+use Radix\RecruitmentBundle\Entity\Subscriber;
 
 use Radix\RecruitmentBundle\Form\Type\ApplicationType;
 
@@ -39,23 +40,7 @@ class FrontendController extends Controller
         return $this->redirect($redirect_url);
       } 
       
-      // FACEBOOK service: page admin?
-      $isPageAdmin = $helper->isPageAdmin();
-
       /**** SERVICES END ****/
-
-      /* Is there a banner to be shown? */
-      $document = $this->getDoctrine()
-        ->getRepository('RadixRecruitmentBundle:Document')
-        ->findOneBy(array('accountid' => $accountid, 'type' => 'bannerfront'));
-      
-      if ($document) {
-        $path = $document->getWebPath();
-        $image = "<img src='/" . $path . "' style='width: 800px; margin-top: 20px;' />";
-        $carrot['banner'] = $image;
-      } else {
-        $carrot['banner'] = "";
-      }
 
       /* We get the jobs */
       $repository = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job');
@@ -82,10 +67,21 @@ class FrontendController extends Controller
           'subtitle' => implode(' &bull; ', $subtitle),
           'pagelink' => $this->generateUrl('radix_frontend_job_detail', array('accountid' => $accountid, 'id' => $job->getId())),
           'applink' => 'http://fb.projects.radix-recruitment.be/job-redirect/' . $accountid . '/' . $job->getId(),
+          'javascriptlink' => '/' . $accountid . '/frontend/job/' . $job->getId(),
           'onlineSince' => date('d.m.Y', $job->getCreated()),
         );
       }
       $carrot['jobs'] = $jobs_output;
+      
+      // get the form "Subscribe" TODO - MOVE THIS TO CARROT HELPER
+      $subscriber = new Subscriber();
+      $subscriber->setAccountid($accountid);
+      $subscriber_form = $this->createFormBuilder($subscriber)
+        ->add('email', 'email')
+        ->add('Save', 'submit')
+        ->getForm();
+      
+      $carrot['subscriberForm'] = $subscriber_form->createView();
       
       return $this->render('RadixRecruitmentBundle:Frontend:index.html.twig', array('carrot' => $carrot));
     }
@@ -147,15 +143,18 @@ class FrontendController extends Controller
       $job_output = array('title' => $job->getTitle(), 'subtitle' => $subtitle_output, 'description' => $job->getDescription());
       $carrot['job'] = $job_output;
 
-      $job_links = array(
-        "<a href='" . $this->generateUrl('radix_frontend', array('accountid' => $accountid)) . "'>To jobs overview</a>",
-      );
-      $carrot['jobLinks'] = implode(' &bull; ', $job_links);
+      $carrot['callToAction']['applyLink'] = "<a class='apply' href='" . $this->generateUrl('radix_frontend_job_apply_manual', array('accountid' => $accountid, 'id' => $id)) . "'>Solliciteer</a>";
 
-      $carrot['callToAction'] = array(
-				'applyLink' => "<a class='apply' href='" . $this->generateUrl('radix_frontend_job_apply_manual', array('accountid' => $accountid, 'id' => $id)) . "'>Apply</a>",
-				'fbConnect' => "<a class='connect' href='" . $this->generateUrl('radix_frontend_facebook_connect', array('accountid' => $accountid, 'id' => $id)) . "'>Connect with Facebook</a>",
-      );
+      // get the form "Subscribe"
+      $subscriber = new Subscriber();
+      $subscriber->setAccountid($accountid);
+      $subscriber_form = $this->createFormBuilder($subscriber)
+        ->add('email', 'email')
+        ->add('Save', 'submit')
+        ->getForm();
+
+      $carrot['subscriberForm'] = $subscriber_form->createView();
+
       
       return $this->render('RadixRecruitmentBundle:Frontend:detail.html.twig', array('carrot' => $carrot));
     }
@@ -193,6 +192,7 @@ class FrontendController extends Controller
       if (!$job) {
         throw $this->createNotFoundException('No job found for this id.');
       } else {
+        $job_output['applyTitle'] = "Solliciteren voor <a href='" . $this->generateUrl('radix_frontend_job_detail', array('accountid' => $accountid, 'id' => $id)) . "'>" . $job->getTitle() . "</a>";
         $job_output['title'] = $job->getTitle();
       }
 
@@ -257,7 +257,7 @@ class FrontendController extends Controller
           if (is_array($fb_education) && count($fb_education)) {
             foreach ($fb_education as $item) {
               
-              $school = isset($item->schoolname) ? $item->school->name : '';
+              $school = isset($item->school->name) ? $item->school->name : '';
               $year = isset($item->year->name) ? $item->year->name : '';
               $type = isset($item->type) ? $item->type : '';
               
@@ -337,14 +337,6 @@ class FrontendController extends Controller
 
       }
 
-      $frontend_links = array(
-        'overview' => "<a class='tab' href='" . $this->generateUrl('radix_frontend', array('accountid' => $accountid)) . "'>To job overview</a>",
-        'detail' => "<a class='tab' href='" . $this->generateUrl('radix_frontend_job_detail', array('accountid' => $accountid, 'id' => $id)) . "'>To job detail</a>",
-      );
-      
-      $frontend_links_output = implode(' &bull; ', $frontend_links);
-
-      $carrot['frontEndLinks'] = $frontend_links_output;
       $carrot['form'] = $form->createView();
       $carrot['job'] = $job_output;
 
@@ -365,7 +357,7 @@ class FrontendController extends Controller
       $carrot_helper = $this->get('radix.helper.carrot');
       $carrot = $carrot_helper->bootstrap($accountid);
 
-      $carrot['banner'] = '';
+      $carrot['pageUrl'] = $carrot['config']->getPageurl();
 
       // FACEBOOK service: redirect
       $helper = $this->get('radix.helper.facebook');
@@ -375,13 +367,20 @@ class FrontendController extends Controller
       
       /**** SERVICES END ****/
       $connections = $helper->getFriendsWorkHistory($accountid, $carrot['config']);
+      
+      $carrot['connections'] = $connections;
 
-      if (count($connections)) {
-        $carrot['connections'] = $connections;      
-        return $this->render('RadixRecruitmentBundle:Frontend:introduce.html.twig', array('carrot' => $carrot));
-      } else {
-        return $this->render('RadixRecruitmentBundle:Frontend:introduceEmpty.html.twig', array('carrot' => $carrot));
-      }     
+      // get the form "Subscribe"
+      $subscriber = new Subscriber();
+      $subscriber->setAccountid($accountid);
+      $subscriber_form = $this->createFormBuilder($subscriber)
+        ->add('email', 'email')
+        ->add('Save', 'submit')
+        ->getForm();
+
+      $carrot['subscriberForm'] = $subscriber_form->createView();
+
+      return $this->render('RadixRecruitmentBundle:Frontend:introduce.html.twig', array('carrot' => $carrot, 'numberOfConnections' => count($connections)));
 
     }
 
@@ -417,48 +416,6 @@ class FrontendController extends Controller
 
 
 
-/**********************************************************************************************************/    
-    
-    /**
-     * Controller Action for application page (facebook) - THIS WILL BECOME DEPRECATED
-     **/
-    public function jobApplyFacebookAction(Request $request, $accountid, $id) {
-
-      /**** SERVICES START ****/
-
-      // CARROT service: bootstrap
-      $carrot = $this->get('radix.helper.carrot');
-      $carrot->bootstrap($accountid);
-
-      // FACEBOOK service: has authorized application
-      $helper = $this->get('radix.helper.facebook');
-      $ret = $helper->hasAuthorized();
-      if (isset($ret['status'])) {
-        switch ($ret['status']) {
-          case 'authorized':
-            // check if we need to do a redirect to the facebook page itself
-            if (!$in_canvas = $helper->inCanvas()) {
-              $url = "http://www.facebook.com/pages/Radix-Recruitment-Demo/196863790499859?id=196863790499859&sk=app_600850943303218&app_data=/".$accountid."/frontend/job/".$id."/apply/facebook";
-              return $this->redirect($url);
-            } else {
-              return $this->redirect($this->generateUrl('radix_frontend_job_apply_manual', array('accountid' => $accountid, 'id' => $id)));
-            }
-            break;
-          case 'not_authorized':
-            $message = $ret['message'];
-            return $this->render('RadixRecruitmentBundle:Frontend:applyFacebook.html.twig', array('message' => $message));            
-            break;
-        }
-      }
-
-      $isPageAdmin = $helper->isPageAdmin();
-    
-    }
-    
-    public function fbOkAction(Request $request, $accountid) {
-    
-        return $this->redirect($this->generateUrl('radix_frontend', array('accountid' => $accountid)));
-    }
 
 
 /**********************************************************************************************************/    
@@ -466,7 +423,7 @@ class FrontendController extends Controller
     /**
      * Controller Action for connecting with Facebook
      **/
-    public function facebookConnectAction(Request $request, $accountid, $id) {
+    public function facebookConnectAction(Request $request, $accountid) {
 
       /**** SERVICES START ****/
 
@@ -477,11 +434,11 @@ class FrontendController extends Controller
       // FACEBOOK service: connect details
       $facebook_helper = $this->get('radix.helper.facebook');
       
-      $facebook_helper->connect($accountid, $id, $carrot['config']);
+      $facebook_helper->connect($accountid, $carrot['config']);
       
       /**** SERVICES END ****/
       
-      return $this->redirect($this->generateUrl('radix_frontend_job_detail', array('accountid' => $accountid, 'id' => $id)));
+      return $this->redirect($this->generateUrl('radix_frontend', array('accountid' => $accountid)));
 
 
     }

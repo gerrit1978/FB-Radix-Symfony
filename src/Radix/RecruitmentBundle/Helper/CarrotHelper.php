@@ -19,7 +19,6 @@ class CarrotHelper {
 
       $carrot = array();
       $carrot['pageLinks'] = array();
-
       // We get the config parameters
       $config = $this->container->get("doctrine")
         ->getRepository('RadixRecruitmentBundle:Config')
@@ -41,14 +40,35 @@ class CarrotHelper {
 	      $isPageAdmin = $fb_helper->isPageAdmin();
 	      
 	      if ($isPageAdmin) {
-	        $carrot['pageLinks']['adminLink'] = "<a href='" . $router->generate('radix_backend', array('accountid' => $accountid)) . "' class='admin_panel'>Admin Panel</a>";
-	      } else {
-	        $carrot['pageLinks']['adminLink'] = "";
+	        $carrot['pageLinks']['adminLink'] = "<a href='" . $router->generate('radix_backend', array('accountid' => $accountid)) . "' class='admin-panel'>Admin Panel</a>";
 	      }
 	      
-	      // Render the other links: get introduced by a friend
+	      // Did the current user already connect with FB?
+	      $hasConnected = $fb_helper->hasConnected();
+	      
+	      if (!$hasConnected) {
+	        $carrot['callToAction'] = array(
+            'fbConnect' => "<a class='connect' href='" . $router->generate('radix_frontend_facebook_connect', array('accountid' => $accountid)) . "'>Connect with Facebook</a>",
+	        );
+	      } 
+	      
+	      $carrot['pageLinks']['homeLink'] = "<div class='home-link'><a href='" . $router->generate('radix_frontend', array('accountid' => $accountid)) . "' class='home-link'>Naar de startpagina</a></div>";
+	      
+	      // Render the Introduced link
 	      $carrot['introduced'] = "<a class='introduced' href='" . $router->generate('radix_frontend_introduced', array('accountid' => $accountid)) . "'>Laat je introduceren door een vriend.</a>";
-	      $carrot['socialRecruiter'] = "<a class='social-recruiter' href='" . $router->generate('radix_frontend_social_recruiter', array('accountid' => $accountid)) . "'>Word social recruiter</a>";
+
+	      // Render the social recruiter link -- TODO
+	      // $carrot['socialRecruiter'] = "<a class='social-recruiter' href='" . $router->generate('radix_frontend_social_recruiter', array('accountid' => $accountid)) . "'>Word social recruiter</a>";
+	      
+	      // Get the banners
+	      $banners = $this->container->get("doctrine")
+	        ->getRepository('RadixRecruitmentBundle:Document')
+	        ->findBy(array('accountid' => $accountid));
+	      
+	      foreach ($banners as $banner) {
+	        $carrot['banners'][$banner->getType()] = "<img class='banner " . $banner->getType() . "' src='/" . $banner->getWebPath() . "' />";
+	      }
+
       }
       
       if ($type == 'backend') {

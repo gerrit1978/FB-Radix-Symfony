@@ -39,6 +39,7 @@ class FacebookHelper {
    * @return array
    */
   public function boot() {
+
     $facebook = new \Facebook($this->config);
 
     $signed_request = $facebook->getSignedRequest();
@@ -103,6 +104,22 @@ class FacebookHelper {
   }
   
   /**
+   * Checks if user has already connected
+   *
+   * @return boolean
+   */
+  public function hasConnected() {
+  
+    $profile_data = $this->getProfileData();
+    
+    if (isset($profile_data->error)) {
+      return FALSE;
+    } else {
+      return TRUE;
+    }
+  }
+  
+  /**
    * Returns user profile data
    *
    * @return array
@@ -144,6 +161,7 @@ class FacebookHelper {
    *
    * @return array
    */
+/*
   public function hasAuthorized() {
     $facebook = new \Facebook($this->config);
 
@@ -181,29 +199,41 @@ class FacebookHelper {
    
     
   }
+*/
   
-  public function post($accountid, $params = array()) {
+  public function post($accountid, $facebookid, $params = array()) {
 
-    $redirect_uri = "http://apps.facebook.com/radix-symfony/" . $accountid . "/fb-redirect/radix_backend";
+    $redirect_uri = "http://apps.facebook.com/radix-symfony/" . $accountid . "/fb-redirect/radix_backend/0";
     $scope = "manage_pages";
 
     $access_token = $this->checkAccessToken($scope, $redirect_uri);
+
+    // effe klungelen met access token
+    if (strpos($access_token, "&expires")) {
+      $pos = strpos($access_token, "&expires");
+      $access_token = substr($access_token, 0, $pos);
+    }
+ 
+    $message = "New job online! ";
+    if (isset($params['title'])) {
+      $message .= $params['title'];
+    }
+
+		$attachment =  array(
+	    'access_token'  => $access_token,
+	    'message'       => $message,
+    );
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL,'https://graph.facebook.com/' . $facebookid . '/feed');
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $attachment);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$result = curl_exec($ch);
+		curl_close ($ch); 
     
-    $graph_url = 'https://graph.facebook.com/196863790499859/feed?access_token=' . $access_token;
-    
-    $ch = curl_init();
-    
-    $fields = array('message' => urlencode($params['title']));
-    
-    curl_setopt($ch, CURLOPT_URL, $graph_url);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-    $result = curl_exec($ch);
-    
-    exit('Post is gebeurd');
-    
-    
-  
   }
   
   
@@ -285,7 +315,7 @@ class FacebookHelper {
 
     $access_token = $this->checkAccessToken($scope, $redirect_uri);
 
-		$fql_query_url = 'https://graph.facebook.com/' . 'fql?q=select+uid,+work,+name,+pic_small+FROM+user+WHERE+uid+in+(SELECT+uid2+FROM+friend+WHERE+uid1=me())'
+		$fql_query_url = 'https://graph.facebook.com/' . 'fql?q=select+uid,+work,+name,+pic_square+FROM+user+WHERE+uid+in+(SELECT+uid2+FROM+friend+WHERE+uid1=me())'
 		     . '&access_token=' . $access_token;
 	  $fql_query_result = file_get_contents($fql_query_url);
 	  $fql_query_obj = json_decode($fql_query_result, true);
@@ -302,12 +332,10 @@ class FacebookHelper {
 
 	          if ($employer_id == $config_employerid) {
 /* 	          if ($employer_id == '106225456082315') { KULEUVEN */
-	            $msg_link = "https://www.facebook.com/dialog/send?app_id=" . $this->config['appId'] . "&display=popup&link=http://www.nytimes.com/2011/06/15/arts/people-argue-just-to-win-scholars-assert.html"
-	              . "&redirect_uri=https://apps.facebook.com/radix-symfony&to=" . $uid;
 	            $connections[] = array(
 	              'name' => $friend['name'],
-	              'pic_small' => $friend['pic_small'],
-	              'link' => "<a class='send-msg' href='" . $msg_link . "' id='" . $uid . "'>Send " . $friend['name'] . " a message</a>",
+	              'pic_square' => $friend['pic_square'],
+	              'link' => "<span class='send-msg-btn'><a class='send-msg' href='#' id='" . $uid . "'>Send " . $friend['name'] . " a message</a></span>",
 	            );
 	          }
 	        }
@@ -341,8 +369,8 @@ class FacebookHelper {
     
   }
   
-  public function connect($accountid, $id, $config) {
-    $redirect_uri = "http://apps.facebook.com/radix-symfony/" . $accountid . "/fb-redirect/radix_frontend_job_detail/" . $id;
+  public function connect($accountid, $config) {
+    $redirect_uri = "http://apps.facebook.com/radix-symfony/" . $accountid . "/fb-redirect/radix_frontend/0";
     $scope = "user_work_history,email,user_education_history";
     
     $access_token = $this->checkAccessToken($scope, $redirect_uri);

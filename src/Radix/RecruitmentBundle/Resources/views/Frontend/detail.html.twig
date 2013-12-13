@@ -1,34 +1,62 @@
 {% extends "RadixRecruitmentBundle:Default:base.html.twig" %}
 
-{% block title %}{{ carrot.job.title }}{% endblock %}
+{# START PARENT VARIABLES #}
 
+{# admin link #}
+{% if carrot.pageLinks.adminLink is defined %}
+  {% set base_admin = carrot.pageLinks.adminLink %}
+{% endif %}
+
+{# home link #}
+{% if carrot.pageLinks.homeLink is defined %}
+  {% set base_home = carrot.pageLinks.homeLink %}
+{% endif %}
+
+{# top banner #}
+{% if carrot.banners.topfront is defined %}
+  {% set base_banner_top = carrot.banners.topfront %}
+{% endif %}
+
+{# right banner #}
+{% if carrot.banners.right is defined %}
+  {% set base_banner_right = carrot.banners.right %}
+{% endif %}
+
+{# bottom banner #}
+{% if carrot.banners.bottom is defined %}
+  {% set base_banner_bottom = carrot.banners.bottom %}
+{% endif %}
+
+{# subscriber form #}
+{% if carrot.subscriberForm is defined %}
+  {% set base_subscribe = form(carrot.subscriberForm) %}
+{% endif %}
+
+{# get introduced link #}
+{% if carrot.introduced is defined %}
+  {% set base_introduced = carrot.introduced %}
+{% endif %}
+
+{# connect link #}
+{% if carrot.callToAction.fbConnect is defined %}
+  {% set base_fb_connect = carrot.callToAction.fbConnect %}
+{% endif %}
+
+
+{# END PARENT VARIABLES #}
+
+{# START BLOCKS #}
+
+{# TITLE BLOCK #}
+{% block title %}Frontend{% endblock %}
+
+{# BODY CLASSES BLOCK #}
 {% block bodyclasses %}job-detail{% endblock %}
 
-{% block body %}
+{# MAIN COLUMN BLOCK #}
+{% block main %}
 
-{% if carrot.pageLinks.adminLink %}
-<div class='admin-link'>
-{{ carrot.pageLinks.adminLink|raw }}
-</div>
-{% endif %}
-<div class="job-detail">
-
-{% if carrot.banner %}
-<div class="banner">
-{{ carrot.banner|raw}}
-</div>
-{% endif %}
-
-<div class="call-to-action">
-{{ carrot.callToAction.applyLink|raw }}
-{{ carrot.callToAction.fbConnect|raw }}
-</div>
-
-<div class="job-links">
-{{ carrot.jobLinks|raw }}
-</div>
-
-
+<div class='job-detail'>
 <h1>{{ carrot.job.title }}</h1>
 {% if carrot.job.subtitle %}
 <h2 class="subtitle">{{ carrot.job.subtitle|raw }}</h2>
@@ -41,3 +69,14 @@
 </div>
 
 {% endblock %}
+
+{# RIGHT COLUMN BLOCK #}
+{% block rightTop %}
+{% if carrot.callToAction.applyLink is defined %}
+<div class='call-to-action'>
+  {{ carrot.callToAction.applyLink|raw }}
+</div>
+{% endif %}
+{{ parent() }}
+{% endblock %}
+{# END BLOCKS #}

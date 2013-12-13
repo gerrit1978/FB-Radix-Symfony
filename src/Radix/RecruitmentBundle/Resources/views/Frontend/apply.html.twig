@@ -1,10 +1,66 @@
-{% extends "RadixRecruitmentBundle:Default:base.html.twig" %}
+{% extends "RadixRecruitmentBundle:Default:baseWide.html.twig" %}
 
+{# START PARENT VARIABLES #}
+
+{# admin link #}
+{% if carrot.pageLinks.adminLink is defined %}
+  {% set base_admin = carrot.pageLinks.adminLink %}
+{% endif %}
+
+{# home link #}
+{% if carrot.pageLinks.homeLink is defined %}
+  {% set base_home = carrot.pageLinks.homeLink %}
+{% endif %}
+
+{# top banner #}
+{% if carrot.banners.topfront is defined %}
+  {% set base_banner_top = carrot.banners.topfront %}
+{% endif %}
+
+{# right banner #}
+{% if carrot.banners.right is defined %}
+  {% set base_banner_right = carrot.banners.right %}
+{% endif %}
+
+{# bottom banner #}
+{% if carrot.banners.bottom is defined %}
+  {% set base_banner_bottom = carrot.banners.bottom %}
+{% endif %}
+
+{# subscriber form #}
+{% if carrot.subscriberForm is defined %}
+  {% set base_subscribe = form(carrot.subscriberForm) %}
+{% endif %}
+
+{# get introduced link #}
+{% if carrot.introduced is defined %}
+  {% set base_introduced = carrot.introduced %}
+{% endif %}
+
+{# connect link #}
+{% if carrot.callToAction.fbConnect is defined %}
+  {% set base_fb_connect = carrot.callToAction.fbConnect %}
+{% endif %}
+
+{# END PARENT VARIABLES #}
+
+{# START BLOCKS #}
+
+{# TITLE BLOCK #}
+{% block title %}Solliciteren voor {{ carrot.job.title }}{% endblock %}
+
+{# BODY CLASSES BLOCK #}
+{% block bodyclasses %}apply{% endblock %}
+
+{# MAIN COLUMN BLOCK #}
+
+{# HEADERSCRIPTS BLOCK #}
 {% block headerscripts %}
 <script type="text/javascript" src="{{ asset('/scripts/apply.js') }}"></script>
 {% endblock %}
 
-{% block title %}{{ carrot.job.title }}{% endblock %}
+
+
 
 {% form_theme carrot.form _self %}
 
@@ -17,21 +73,9 @@
 {% endblock form_row %}
 
 
-{% block body %}
+{% block main %}
 
-{% if carrot.pageLinks.adminLink %}
-<div class='admin-link'>
-{{ carrot.pageLinks.adminLink|raw }}
-</div>
-{% endif %}
-
-
-<h1>Solliciteren voor {{ carrot.job.title }}</h1>
-
-<div class="frontend-links">
-{{ carrot.frontEndLinks|raw }}
-</div>
-
+<h1>{{ carrot.job.applyTitle|raw }}</h1>
 
 <form method="POST" {{ form_enctype(carrot.form) }}>
     {# render the task's only field: description #}

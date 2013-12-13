@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Config
  *
  * @ORM\Table("config")
- * @ORM\Entity(repositoryClass="Radix\RecruitmentBundle\Entity\ConfigRepository")
+ * @ORM\Entity
  */
 class Config
 {
@@ -69,6 +69,13 @@ class Config
      * @ORM\Column(name="pagetitle", type="string", length=255)
      */
     private $pagetitle;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="pageurl", type="string", length=255)
+     */
+    private $pageurl;
 
     /**
      * @var string
@@ -246,6 +253,29 @@ class Config
     public function getPagetitle()
     {
         return $this->pagetitle;
+    }
+
+    /**
+     * Set pageurl
+     *
+     * @param string $pageurl
+     * @return Config
+     */
+    public function setPageurl($pageurl)
+    {
+        $this->pageurl = $pageurl;
+    
+        return $this;
+    }
+
+    /**
+     * Get pageurl
+     *
+     * @return string 
+     */
+    public function getPageurl()
+    {
+        return $this->pageurl;
     }
 
     /**

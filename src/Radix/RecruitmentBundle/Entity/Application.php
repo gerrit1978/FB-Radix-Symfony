@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Application
  *
  * @ORM\Table("application")
- * @ORM\Entity(repositoryClass="Radix\RecruitmentBundle\Entity\ApplicationRepository")
+ * @ORM\Entity
  */
 class Application
 {

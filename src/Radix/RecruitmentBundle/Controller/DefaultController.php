@@ -35,9 +35,14 @@ class DefaultController extends Controller
 
 
       if (isset($boot['redirect'])) {
-      
         // check if pageid and accountid match!
         $app_data = $boot['redirect'];
+        
+        // add the slash in front of the redirect parameter if not present
+        if (substr($app_data, 0, 1) != '/') {
+          $app_data = '/' . $app_data;
+        }
+        
         $app_data_split = explode('/', $app_data);
         if (isset($app_data_split[1]) && is_numeric($app_data_split[1])) {
           $accountid_redirect = $app_data_split[1];
@@ -46,6 +51,8 @@ class DefaultController extends Controller
           } else {
             throw $this->createNotFoundException('No redirect found. Something went wrong.');
           }
+        } else {
+          throw $this->createNotFoundException('No redirect found. Something went wrong.');        
         }
       
         $url = $boot['redirect'];

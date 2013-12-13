@@ -4,15 +4,15 @@
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
 				{% block stylesheets %}
-					<link rel="stylesheet" type="text/css" href="{{ asset('/css/main.css?17') }}" />
+					<link rel="stylesheet" type="text/css" href="{{ asset('/css/main.css?24') }}" />
 				{% endblock %}
 
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="{{ asset('/scripts/default.js') }}" type="text/javascript"></script>
         {% block headerscripts %}{% endblock %}
     </head>
     <body class="{% block bodyclasses %}{% endblock %}">
-        {% block body %}
 	        <div id="fb-root"></div>
 					<script>(function(d, s, id) {
 					  var js, fjs = d.getElementsByTagName(s)[0];
@@ -21,7 +21,82 @@
 					  js.src = "//connect.facebook.net/nl_NL/all.js#xfbml=1&appId=600850943303218";
 					  fjs.parentNode.insertBefore(js, fjs);
 					}(document, 'script', 'facebook-jssdk'));</script>
+				
+				{# Admin link #}	
+        {% if base_admin is defined %}
+          <div class='admin-link'>
+           {{ base_admin|raw }}
+          </div>
+        {% endif %}
+        
+        {# Messages #}
+				{% for flashMessage in app.session.flashbag.get('notice') %}
+					<div class="flash-notice">
+					{{ flashMessage }}
+					</div>
+				{% endfor %}
+        
+        {# Banner top #}
+        {% if base_banner_top is defined %}
+        <div class="banner banner-top">
+          {{ base_banner_top|raw }}
+        </div>
+        {% endif %}
+				
+				<div id="columns">
+				
+				  <div class="column column-main">
+				    {% block mainTop %}				    
+				      {% if base_home is defined %}
+				        {{ base_home|raw }}
+				      {% endif %}
+            {% endblock %}
+				  
+				    {% block main %}{% endblock %}
+				    
+				    {% block mainBottom %}
+				      {% if base_banner_bottom is defined %}
+				        {{ base_banner_bottom|raw }}
+				      {% endif %}
+				    {% endblock %}
+				  </div> <!-- column-main -->
+				  
+				  <div class="column column-right">
+				    {% block rightTop %}
+				      {% if base_fb_connect is defined %}
+				        {{ base_fb_connect|raw }}
+				      {% endif %}
+				    {% endblock %}
+				    
+				    {% block right %}
+				      {% if base_subscribe is defined %}
+				        <div class='subscriber-form'>
+				          <h3>Blijf op de hoogte</h3>
+				          {{ base_subscribe|raw }}				        
+				        </div>
+				      {% endif %}
+				      
+				      {% if base_introduced is defined %}
+				        <div class='get-introduced'>
+				          {{ base_introduced|raw }}
+				        </div>
+				      {% endif %}
+
+				    {% endblock %}
+				    {% block rightBottom %}
+              {% if base_banner_right is defined %}
+				        {{ base_banner_right|raw }}
+				      {% endif %}
+				    {% endblock %}
+				  </div>
+				
+				
+				</div> <!-- columns -->
+        
+					
+        {% block body %}
         {% endblock %}
+
         {% block javascripts %}{% endblock %}
 
     </body>

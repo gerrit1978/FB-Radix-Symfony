@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Job
  *
  * @ORM\Table("job")
- * @ORM\Entity(repositoryClass="Radix\RecruitmentBundle\Entity\JobRepository")
+ * @ORM\Entity 
  */
 class Job
 {

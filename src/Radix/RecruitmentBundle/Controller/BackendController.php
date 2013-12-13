@@ -177,6 +177,7 @@ class BackendController extends Controller
         ->add('xmlroot')
         ->add('pageid')
         ->add('pagetitle')
+        ->add('pageurl')
         ->add('employerid')
         ->add('Save', 'submit')
         ->getForm();
@@ -412,7 +413,8 @@ class BackendController extends Controller
         // post to fb wall
         $helper = $this->get('radix.helper.facebook');
         $params = array('title' => $job->getTitle());
-        $helper->post($accountid, $params);
+        
+        $helper->post($accountid, $carrot['config']->getPageid(), $params);
 
         return $this->redirect($this->generateUrl('radix_backend', array('accountid' => $accountid)));
       }
@@ -610,7 +612,7 @@ class BackendController extends Controller
 	    $form = $this->createFormBuilder($document)
 	        ->add('file')
 	        ->add('type', 'choice', array('choices' => array(
-	          'bannerfront' => 'Banner frontpage', 'bannerjob' => 'Banner jobdetail page'
+	          'topfront' => 'Top frontpage', 'topdetail' => 'Top jobdetail page', 'bottom' => 'Bottom', 'right' => 'Right'
 	        )))
 	        ->add('save', 'submit')
 	        ->getForm();

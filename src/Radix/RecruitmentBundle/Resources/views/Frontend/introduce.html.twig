@@ -1,9 +1,61 @@
 {% extends "RadixRecruitmentBundle:Default:base.html.twig" %}
 
+{# START PARENT VARIABLES #}
+
+{# admin link #}
+{% if carrot.pageLinks.adminLink is defined %}
+  {% set base_admin = carrot.pageLinks.adminLink %}
+{% endif %}
+
+{# home link #}
+{% if carrot.pageLinks.homeLink is defined %}
+  {% set base_home = carrot.pageLinks.homeLink %}
+{% endif %}
+
+{# top banner #}
+{% if carrot.banners.topfront is defined %}
+  {% set base_banner_top = carrot.banners.topfront %}
+{% endif %}
+
+{# right banner #}
+{% if carrot.banners.right is defined %}
+  {% set base_banner_right = carrot.banners.right %}
+{% endif %}
+
+{# bottom banner #}
+{% if carrot.banners.bottom is defined %}
+  {% set base_banner_bottom = carrot.banners.bottom %}
+{% endif %}
+
+{# subscriber form #}
+{% if carrot.subscriberForm is defined %}
+  {% set base_subscribe = form(carrot.subscriberForm) %}
+{% endif %}
+
+{# get introduced link #}
+{% if carrot.introduced is defined %}
+  {% set base_introduced = carrot.introduced %}
+{% endif %}
+
+{# connect link #}
+{% if carrot.callToAction.fbConnect is defined %}
+  {% set base_fb_connect = carrot.callToAction.fbConnect %}
+{% endif %}
+
+
+
+
+{# END PARENT VARIABLES #}
+
+{# START BLOCKS #}
+
+{# TITLE BLOCK #}
 {% block title %}Frontend{% endblock %}
 
+{# BODY CLASSES BLOCK #}
 {% block bodyclasses %}index{% endblock %}
 
+{# HEADERSCRIPTS BLOCK #}
 {% block headerscripts %}
 <script type="text/javascript">
 $(document).ready(function() {
@@ -13,52 +65,35 @@ $(document).ready(function() {
 		FB.ui({
 		  method: 'send',
       to: uid,
-      link: 'http://www.deredactie.be'
+      link: '{{ carrot.pageUrl|raw }}'
 		});
   });
 });
 </script>
+
 {% endblock %}
 
-{% block body %}
-{{ parent() }}
+{# MAIN COLUMN BLOCK #}
+{% block main %}
 
-{% if carrot.pageLinks.adminLink %}
-<div class='admin-link'>
-{{ carrot.pageLinks.adminLink|raw }}
-</div>
-{% endif %}
-
-{% for flashMessage in app.session.flashbag.get('notice') %}
-<div class="flash-notice">
-{{ flashMessage }}
-</div>
-{% endfor %}
-
-{% if carrot.banner %}
-<div class="banner">
-{{ carrot.banner|raw}}
-</div>
-{% endif %}
-
-<div class="columns clearfix">
-<div class="column-main">
+<h2>
+{% transchoice numberOfConnections %}
+{0} Unfortunately, no connections are found. |{1} There is one connection|]1,Inf] There are %numberOfConnections% connections found
+{% endtranschoice %}
+</h2>
 
 <div class="connections">
 {% for connection in carrot.connections %}
 <div class="connection">
-<div class="image"><img src="{{ connection.pic_small }}" /></div>
+<div class="image"><img src="{{ connection.pic_square }}" /></div>
 <div class="name">{{ connection.name }}</div>
 <div class="message-link">{{ connection.link|raw }}</div>
 </div>
 {% endfor %}
 </div> <!-- connections -->
 
-</div>
-<div class="column-right">
-Kolom rechts - hier ook?
-</div>
-</div>
-
-
 {% endblock %}
+
+{# RIGHT COLUMN BLOCK #}
+
+{# END BLOCKS #}
