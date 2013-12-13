@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
 				{% block stylesheets %}
-					<link rel="stylesheet" type="text/css" href="{{ asset('/css/main.css?32') }}" />
+					<link rel="stylesheet" type="text/css" href="{{ asset('/css/main.css?34') }}" />
 				{% endblock %}
 
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
@@ -18,9 +18,9 @@
 					  var js, fjs = d.getElementsByTagName(s)[0];
 					  if (d.getElementById(id)) return;
 					  js = d.createElement(s); js.id = id;
-					  js.src = "//connect.facebook.net/nl_NL/all.js#xfbml=1&appId=600850943303218";
+					  js.src = "//connect.facebook.net/nl_NL/all.js";
 					  fjs.parentNode.insertBefore(js, fjs);
-					}(document, 'script', 'facebook-jssdk'));</script>
+}(document, 'script', 'facebook-jssdk'));</script>
 				
 				{# Admin link #}	
         {% if base_admin is defined %}
