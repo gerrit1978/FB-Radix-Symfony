@@ -79,4 +79,13 @@
 {% endif %}
 {{ parent() }}
 {% endblock %}
+
+{% block right %}
+{{ parent() }}
+<div class="detail-share">
+<div class="fb-like fb_edge_widget_with_comment fb_iframe_widget" data-href="{{ carrot.job.applink }}" data-send="true" data-layout="button_count" data-width="300" data-show-faces="false" data-font="lucida grande" ref="list_like" fb-xfbml-state="rendered"><span style="height: 20px; width: 169px;"></div>
+<a href="https://twitter.com/share" class="twitter-share-button" data-url="{{ carrot.job.applink }}" data-text="{{ carrot.job.title }}" data-count="none">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+</div>
+{% endblock %}
 {# END BLOCKS #}

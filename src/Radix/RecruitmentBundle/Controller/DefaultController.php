@@ -22,7 +22,7 @@ class DefaultController extends Controller
       $facebook_helper->isPageAdmin();
 
       $pageid = $boot['pageid'];
-      
+
       // haal account id op uit database
       $repository = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Config');
       $project = $repository->createQueryBuilder('c')
@@ -49,7 +49,7 @@ class DefaultController extends Controller
           if ($accountid_redirect == $accountid) {
             $url = $boot['redirect'];
           } else {
-            throw $this->createNotFoundException('No redirect found. Something went wrong.');
+            throw $this->createNotFoundException('No valid redirect found. Something went wrong.');
           }
         } else {
           throw $this->createNotFoundException('No redirect found. Something went wrong.');        

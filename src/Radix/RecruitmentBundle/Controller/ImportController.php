@@ -24,6 +24,7 @@ class ImportController extends Controller
       $xmluser = $config[0]->getXmluser();
       $xmlpass = $config[0]->getXmlpass();
       $xmlroot = $config[0]->getXmlroot();
+      $applymail = $config[0]->getApplymail();
    
 	    $context = stream_context_create(
 	      array(
@@ -130,6 +131,7 @@ class ImportController extends Controller
        $job->setSource($job_xml['source']);
        $job->setCreated(time());
        $job->setAccountid($accountid);
+       $job->setApplymail($applymail);
        
        $em = $this->getDoctrine()->getManager();
        $em->persist($job);

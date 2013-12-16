@@ -81,6 +81,22 @@ class FrontendController extends Controller
         ->add('Opslaan', 'submit')
         ->getForm();
       
+      $subscriber_form->handleRequest($request);
+      
+      if ($subscriber_form->isValid()) {
+        
+        $subscriber->setCreated(time());
+        
+        // save the config object to the database
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($subscriber);
+        $em->flush();
+
+        // add flash message
+        $this->get('session')->getFlashBag()->add('notice', 'Je werd goed opgenomen in de lijst.');
+
+      }
+      
       $carrot['subscriberForm'] = $subscriber_form->createView();
       
       return $this->render('RadixRecruitmentBundle:Frontend:index.html.twig', array('carrot' => $carrot));
@@ -140,7 +156,12 @@ class FrontendController extends Controller
 
       $subtitle_output = implode(' &bull; ', $subtitle);
       
-      $job_output = array('title' => $job->getTitle(), 'subtitle' => $subtitle_output, 'description' => $job->getDescription());
+      $job_output = array(
+        'title' => $job->getTitle(), 
+        'subtitle' => $subtitle_output, 
+        'description' => $job->getDescription(),
+        'applink' => 'http://fb.projects.radix-recruitment.be/job-redirect/' . $accountid . '/' . $job->getId(),
+      );
       $carrot['job'] = $job_output;
 
       $carrot['callToAction']['applyLink'] = "<a class='apply' href='" . $this->generateUrl('radix_frontend_job_apply_manual', array('accountid' => $accountid, 'id' => $id)) . "'>Solliciteer</a>";
@@ -217,6 +238,10 @@ class FrontendController extends Controller
         
         if (isset($user_profile->email)) {
           $application->setEmail($user_profile->email);
+        }
+        
+        if (isset($user_profile->location) && isset($user_profile->location->name)) {
+          $application->setCity($user_profile->location->name);
         }
       
         // get work stuff
@@ -329,6 +354,33 @@ class FrontendController extends Controller
 	          $em->flush();
 	        }
         }
+        
+        // get the job details - this is needed for sending an email
+        $job = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job')->find($id);
+        
+        $job_title = $job->getTitle();
+        $job_applymail = $job->getApplymail();
+        
+        if (!$job_applymail) {
+          $job_applymail = $carrot['config']->getApplymail();
+        }
+        
+        $app_url = $carrot['config']->getPageurl() . '?id=' . $carrot['config']->getPageid() . '&sk=app_600850943303218&app_data=/' . $accountid . '/backend/application/' . $application->getId();
+
+        $page_name = $carrot['config']->getPagetitle();
+        
+        // send an email - TODO: move this to service
+		    $message = \Swift_Message::newInstance()
+		        ->setSubject('Nieuwe sollicitatie op ' . $page_name)
+		        ->setFrom('fb@radix-recruitment.be')
+		        ->setTo($job_applymail)
+		        ->setBody($this->renderView('RadixRecruitmentBundle:Frontend:email.txt.twig', array(
+		          'url' => $app_url,
+		          'jobtitle' => $job_title,
+		          'pagename' => $page_name,
+		        )));
+        $this->get('mailer')->send($message);        
+        
         
         // add flash message
         $this->get('session')->getFlashBag()->add('notice', 'Je sollicitatie werd goed ontvangen.');

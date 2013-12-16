@@ -16,7 +16,6 @@ class CarrotHelper {
   
   /* Bootstrap function */
   public function bootstrap($accountid, $type = 'frontend') {
-
       $carrot = array();
       $carrot['pageLinks'] = array();
       // We get the config parameters
@@ -29,15 +28,19 @@ class CarrotHelper {
         throw new NotFoundHttpException('No config found for this accountid.');
       }
 
+      // Define the router
       $router = $this->container->get("router");
+
+      // Get the normal page id from the config file
+      $page_id_from_config = $config->getPageid();
+      
+      // Call the facebook helper
+      $fb_helper = $this->container->get("radix.helper.facebook");
+
+      // Is the current user page admin?
+      $isPageAdmin = $fb_helper->isPageAdmin();
       
       if ($type == 'frontend') {
-      
-	      // Call the facebook helper
-	      $fb_helper = $this->container->get("radix.helper.facebook");
-	
-	      // Is the current user page admin?
-	      $isPageAdmin = $fb_helper->isPageAdmin();
 	      
 	      if ($isPageAdmin) {
 	        $carrot['pageLinks']['adminLink'] = "<a href='" . $router->generate('radix_backend', array('accountid' => $accountid)) . "' class='admin-panel'>Admin Panel</a>";
@@ -55,7 +58,7 @@ class CarrotHelper {
 	      $carrot['pageLinks']['homeLink'] = "<div class='home-link'><span class='button' data-url='" . $router->generate('radix_frontend', array('accountid' => $accountid)) . "'>Naar de startpagina</a></div>";
 	      
 	      // Render the Introduced link
-	      $carrot['introduced'] = "<a class='introduced' href='" . $router->generate('radix_frontend_introduced', array('accountid' => $accountid)) . "'>Laat je introduceren door een vriend.</a>";
+	      $carrot['introduced'] = "<span class='button introduced' data-url='" . $router->generate('radix_frontend_introduced', array('accountid' => $accountid)) . "'>Laat je introduceren door een vriend.</span>";
 
 	      // Render the social recruiter link -- TODO
 	      // $carrot['socialRecruiter'] = "<a class='social-recruiter' href='" . $router->generate('radix_frontend_social_recruiter', array('accountid' => $accountid)) . "'>Word social recruiter</a>";
@@ -72,6 +75,21 @@ class CarrotHelper {
       }
       
       if ($type == 'backend') {
+      
+        // TEMPORARY SECURITY
+        if (!$isPageAdmin) {
+          exit('No access for this part of the application.');
+        }
+
+        $session = new Session();
+
+        $admin = $session->get('page_admin');        
+        $page_id_from_session = $admin['pageid'];
+        
+        if ($page_id_from_session !== $page_id_from_config) {
+          exit('No access for this part of the application.');
+        }
+        
         // generate the backend links
         $backend_links = array(
           'jobs' => "<a class='tab' href='" . $router->generate('radix_backend_jobs', array('accountid' => $accountid)) . "'>Jobs</a>",

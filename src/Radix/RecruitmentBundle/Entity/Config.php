@@ -85,6 +85,13 @@ class Config
     private $employerid;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="applymail", type="string", length=255)
+     */
+    private $applymail;
+
+    /**
      * Get id
      *
      * @return integer 
@@ -298,5 +305,27 @@ class Config
     public function getEmployerid() {
       return $this->employerid;
     }
+
+    /**
+     * Set applymail
+     *
+     * @param string $applymail
+     * @return Config
+     */
+    public function setApplymail($applymail) {
+      $this->applymail = $applymail;
+      
+      return $this;
+    }
+    
+    /**
+     * Get applymail
+     *
+     * @return string
+     */
+    public function getApplymail() {
+      return $this->applymail;
+    }
+
     
 }

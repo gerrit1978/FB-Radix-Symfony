@@ -50,6 +50,14 @@ class FacebookHelper {
       'pageid' => $pageid,
     );
     
+    // put the page id in the session
+    $session = new Session();
+    $current_session_pageid = $session->get('pageid');
+    
+    if (!$current_session_pageid || ($current_session_pageid != $pageid)) {
+      $session->set('pageid', $pageid);
+    }
+   
     // add the redirect
     if (isset($signed_request['app_data'])) {
       $boot['redirect'] = $signed_request['app_data'];
@@ -69,7 +77,6 @@ class FacebookHelper {
     $facebook = new \Facebook($this->config);
     
     $signed_request = $facebook->getSignedRequest();
-    
     $page_id = $signed_request['page']['id'];
     
     return $page_id;
@@ -81,24 +88,34 @@ class FacebookHelper {
    * @return boolean
    */
   public function isPageAdmin() {
-  
+ 
     $facebook = new \Facebook($this->config);
   
     $session = new Session();
   
     $signed_request = $facebook->getSignedRequest();
     
+    $admin = array();
+    
     if ($signed_request) {
       if (isset($signed_request['page']['admin']) && $signed_request['page']['admin'] == 1) {
-        $session->set('page_admin', 1);
+        $admin = array(
+          'pageid' => $signed_request['page']['id'],
+          'page_admin' => 1,
+        );
+        $session->set('page_admin', $admin);
         return TRUE;
       } else {
-        $session->set('page_admin', 0);
+        $session->set('page_admin', $admin);
         return FALSE;
       }
     } else {
       $page_admin = $session->get('page_admin');
-      return $page_admin;
+      if (isset($page_admin['page_admin'])) {
+        return $page_admin['page_admin'];
+      } else {
+        return FALSE;
+      }
     }
     return FALSE;
   }
@@ -109,10 +126,10 @@ class FacebookHelper {
    * @return boolean
    */
   public function hasConnected() {
-  
+
     $profile_data = $this->getProfileData();
     
-    if (isset($profile_data->error)) {
+    if ($profile_data == NULL || isset($profile_data->error)) {
       return FALSE;
     } else {
       return TRUE;
@@ -204,7 +221,7 @@ class FacebookHelper {
   public function post($accountid, $facebookid, $params = array()) {
 
     $redirect_uri = "http://apps.facebook.com/radix-symfony/" . $accountid . "/fb-redirect/radix_backend/0";
-    $scope = "manage_pages";
+    $scope = "manage_pages,publish_stream";
 
     $access_token = $this->checkAccessToken($scope, $redirect_uri);
 
@@ -213,15 +230,16 @@ class FacebookHelper {
       $pos = strpos($access_token, "&expires");
       $access_token = substr($access_token, 0, $pos);
     }
- 
-    $message = "New job online! ";
-    if (isset($params['title'])) {
-      $message .= $params['title'];
-    }
 
+    $message = isset($params['message']) ? $params['message'] : 'New job online';
+    $link = $params['link'];
+    $actions = $params['actions'];
+ 
 		$attachment =  array(
 	    'access_token'  => $access_token,
 	    'message'       => $message,
+	    'link'          => $link,
+	    'actions'       => $actions,
     );
 		
 		$ch = curl_init();
@@ -371,7 +389,7 @@ class FacebookHelper {
   
   public function connect($accountid, $config) {
     $redirect_uri = "http://apps.facebook.com/radix-symfony/" . $accountid . "/fb-redirect/radix_frontend/0";
-    $scope = "user_work_history,email,user_education_history";
+    $scope = "user_work_history,email,user_education_history,user_location";
     
     $access_token = $this->checkAccessToken($scope, $redirect_uri);
     

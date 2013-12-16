@@ -52,6 +52,13 @@ class Job
     /**
      * @var string
      *
+     * @ORM\Column(name="applymail", type="string", length=512)
+     */
+    private $applymail;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="description", type="text")
      */
     private $description;
@@ -178,6 +185,29 @@ class Job
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * Set applymail
+     *
+     * @param string $applymail
+     * @return Job
+     */
+    public function setApplymail($applymail)
+    {
+        $this->applymail = $applymail;
+    
+        return $this;
+    }
+
+    /**
+     * Get applymail
+     *
+     * @return string 
+     */
+    public function getApplymail()
+    {
+        return $this->applymail;
     }
 
     /**

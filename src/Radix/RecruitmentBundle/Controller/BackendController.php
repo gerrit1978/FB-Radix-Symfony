@@ -143,8 +143,8 @@ class BackendController extends Controller
         );
         
         $delta++;
+
       }
-      
       $carrot['applications'] = $applications_output;
     
       return $this->render('RadixRecruitmentBundle:Backend:applications.html.twig', array('carrot' => $carrot));
@@ -179,6 +179,7 @@ class BackendController extends Controller
         ->add('pagetitle')
         ->add('pageurl')
         ->add('employerid')
+        ->add('applymail')
         ->add('Save', 'submit')
         ->getForm();
       
@@ -395,6 +396,7 @@ class BackendController extends Controller
         ->add('description', 'textarea')
         ->add('industry', 'text')
         ->add('location', 'text')
+        ->add('applymail', 'text', array('data' => $carrot['config']->getApplymail()))
         ->add('Save', 'submit')
         ->getForm();
     
@@ -412,7 +414,14 @@ class BackendController extends Controller
         
         // post to fb wall
         $helper = $this->get('radix.helper.facebook');
-        $params = array('title' => $job->getTitle());
+        
+        $action_link = $carrot['config']->getPageurl() . '?id=' . $carrot['config']->getPageid() . '&sk=app_600850943303218';
+        
+        $params = array(
+          'message' => $job->getTitle() . ' #Jobs',
+          'link' => 'http://fb.projects.radix-recruitment.be/job-redirect/' . $accountid . '/' . $job->getId(),
+          'actions' => "{ 'name': 'view all jobs', 'link': '" . $action_link . "' }",
+        );
         
         $helper->post($accountid, $carrot['config']->getPageid(), $params);
 
@@ -517,6 +526,7 @@ class BackendController extends Controller
         ->add('description', 'textarea')
         ->add('industry', 'text')
         ->add('location', 'text')
+        ->add('applymail', 'text')
         ->add('Save', 'submit')
         ->getForm();
       
