@@ -80,7 +80,7 @@ class BackendController extends Controller
       }
       
       $carrot['jobs'] = $jobs_output;
-      $carrot['pageLinks']['addJob'] = "<a href='" . $this->generateUrl('radix_backend_job_add', array('accountid' => $accountid)) . "' class='add-job'>Add a job</a>";
+      $carrot['pageLinks']['addJob'] = "<a href='" . $this->generateUrl('radix_backend_job_add', array('accountid' => $accountid)) . "' class='add-job'>Job toevoegen</a>";
 
       return $this->render('RadixRecruitmentBundle:Backend:jobs.html.twig', array('carrot' => $carrot));
     }
@@ -321,6 +321,14 @@ class BackendController extends Controller
         'email' => $email,
         'city' => $city,
       );
+      
+      if ($application->coverpath) {
+        $application_output['cover'] = $this->generateUrl('radix_backend_application_attachment', array('accountid' => $accountid, 'applicationid' => $applicationid, 'type' => 'cover'));
+      }
+      
+      if ($application->resumepath) {
+        $application_output['resume'] = $this->generateUrl('radix_backend_application_attachment', array('accountid' => $accountid, 'applicationid' => $applicationid, 'type' => 'resume'));
+      }
 
       $carrot['application'] = $application_output;
       
@@ -367,6 +375,41 @@ class BackendController extends Controller
 
 
     }
+
+ /**********************************************************************************************************/
+
+    /**
+     * Controller action for application attachment
+     **/
+    public function applicationAttachmentAction(Request $request, $accountid, $applicationid, $type) {
+
+      /**** SERVICES START ****/
+
+      // CARROT service: bootstrap
+      $carrot_helper = $this->get('radix.helper.carrot');
+      $carrot = $carrot_helper->bootstrap($accountid, 'backend');
+
+      /**** SERVICES END ****/      
+    
+      // load the application
+      $application = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Application')->find($applicationid);
+      
+      if (!$application) {
+        throw $this->createNotFoundException('No application found for this id.');
+      }
+
+      $path = $application->getPrivatePath($type);
+      if (file_exists($path)) {
+				header('Content-Type: ' . mime_content_type($path));
+				header('Content-Length: ' . filesize($path));
+				
+				readfile($path);
+				exit();
+		  } else {
+        exit('This file does not exist.');
+      }
+    }
+
     
  /**********************************************************************************************************/
 
@@ -594,7 +637,7 @@ class BackendController extends Controller
       }
 
       $carrot['media'] = $document_output;
-      $carrot['pageLinks']['addMedia'] = "<a href='" . $this->generateUrl('radix_backend_media_add', array('accountid' => $accountid)) . "' class='add-media'>Add a file</a>";      
+      $carrot['pageLinks']['addMedia'] = "<a href='" . $this->generateUrl('radix_backend_media_add', array('accountid' => $accountid)) . "' class='add-media'>Bestand toevoegen</a>";      
     
       return $this->render('RadixRecruitmentBundle:Backend:media.html.twig', array('carrot' => $carrot));
     }

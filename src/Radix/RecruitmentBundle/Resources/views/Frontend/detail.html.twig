@@ -64,6 +64,12 @@
 
 <div class="description">
 {{ carrot.job.description|raw }}
+{% if carrot.callToAction.applyLink is defined %}
+<div class='call-to-action'>
+  {{ carrot.callToAction.applyLink|raw }}
+</div>
+{% endif %}
+
 </div>
 
 </div>

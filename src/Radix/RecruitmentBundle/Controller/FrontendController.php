@@ -304,8 +304,10 @@ class FrontendController extends Controller
         }
       }
 
-      $form = $this->createForm(new ApplicationType(), $application);
-      $form->add('Save', 'submit');
+      $form = $this->createForm(new ApplicationType(), $application)
+        ->add('resumefile', 'file', array('label' => 'Je CV', 'required' => FALSE))
+        ->add('coverfile', 'file', array('label' => 'Je sollicitatiebrief', 'required' => FALSE))
+        ->add('Solliciteren', 'submit');
       
       $form->handleRequest($request);
       

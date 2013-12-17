@@ -25,7 +25,7 @@
 <th class="title">Titel</th>
 <th class="edit">Bewerken</th>
 <th class="delete">Verwijderen</th>
-<th class="applications">Applications</th>
+<th class="applications">Sollicitaties</th>
 </tr>
 
 {% for job in carrot.jobs %}
@@ -33,7 +33,7 @@
 <td class="title">{{ job.title|raw }}</td>
 <td class="edit"><a href="{{ job.editLink }}">bewerk</a></td>
 <td class="delete"><a href="{{ job.deleteLink }}">verwijder</a></td>
-<td class="applications"><a href="{{ job.applicationsLink }}">applications</a></td>
+<td class="applications"><a href="{{ job.applicationsLink }}">sollicitaties</a></td>
 </tr>
 {% endfor %}
 

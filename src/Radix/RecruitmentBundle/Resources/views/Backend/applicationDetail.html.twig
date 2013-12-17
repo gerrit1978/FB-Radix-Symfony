@@ -27,4 +27,14 @@ City : {{ carrot.application.city }}<br />
 {{ education.school }} - {{ education.type }} - {{ education.year }}<br />
 <br />
 {% endfor %}
+
+{% if carrot.application.resume is defined %}
+<h2>CV</h2>
+<a href='{{ carrot.application.resume|raw }}' target='_blank'>Download CV</a>
+{% endif %}
+
+{% if carrot.application.cover is defined %}
+<h2>Sollicitatiebrief</h2>
+<a href='{{ carrot.application.cover|raw }}' target='_blank'>Download sollicitatiebrief</a>
+{% endif %}
 {% endblock %}

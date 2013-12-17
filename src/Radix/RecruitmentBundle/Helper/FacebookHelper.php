@@ -353,7 +353,7 @@ class FacebookHelper {
 	            $connections[] = array(
 	              'name' => $friend['name'],
 	              'pic_square' => $friend['pic_square'],
-	              'link' => "<span class='send-msg-btn'><a class='send-msg' href='#' id='" . $uid . "'>Send " . $friend['name'] . " a message</a></span>",
+	              'link' => "<span class='send-msg-btn'><a class='send-msg' href='#' id='" . $uid . "'>Stuur " . $friend['name'] . " een bericht</a></span>",
 	            );
 	          }
 	        }

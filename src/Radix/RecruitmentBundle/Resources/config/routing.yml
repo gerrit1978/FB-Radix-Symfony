@@ -83,7 +83,11 @@ radix_backend_job_applications:
 radix_backend_application_detail:
   pattern: /{accountid}/backend/application/{applicationid}
   defaults: { _controller: RadixRecruitmentBundle:Backend:applicationDetail }
-  
+
+radix_backend_application_attachment:
+  pattern: /{accountid}/backend/application/{applicationid}/{type}
+  defaults: { _controller: RadixRecruitmentBundle:Backend:applicationAttachment }
+
 radix_backend_media:
   pattern: /{accountid}/backend/media
   defaults: { _controller: RadixRecruitmentBundle:Backend:media }

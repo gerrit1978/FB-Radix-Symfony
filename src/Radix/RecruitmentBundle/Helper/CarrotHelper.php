@@ -93,14 +93,14 @@ class CarrotHelper {
         // generate the backend links
         $backend_links = array(
           'jobs' => "<a class='tab' href='" . $router->generate('radix_backend_jobs', array('accountid' => $accountid)) . "'>Jobs</a>",
-          'applications' => "<a class='tab' href='" . $router->generate('radix_backend_applications', array('accountid' => $accountid)) . "'>Applications</a>",
-          'config' => "<a class='tab' href='" . $router->generate('radix_backend_config', array('accountid' => $accountid)) . "'>Configuration</a>",
+          'applications' => "<a class='tab' href='" . $router->generate('radix_backend_applications', array('accountid' => $accountid)) . "'>Sollicitaties</a>",
+          'config' => "<a class='tab' href='" . $router->generate('radix_backend_config', array('accountid' => $accountid)) . "'>Configuratie</a>",
           'media' => "<a class='tab' href='" . $router->generate('radix_backend_media', array('accountid' => $accountid)) . "'>Media</a>",
         );
         
         $backend_links_output = implode(' &bull; ', $backend_links);
         
-        $carrot['pageLinks']['frontendLink'] = "<a href='" . $router->generate('radix_frontend', array('accountid' => $accountid)) . "' class='frontend'>Go to frontend</a>";
+        $carrot['pageLinks']['frontendLink'] = "<a href='" . $router->generate('radix_frontend', array('accountid' => $accountid)) . "' class='frontend'>Naar de homepage</a>";
         
         $carrot['pageLinks']['backendLinks'] = "<div class='backend-links'>" . $backend_links_output . "</div>";
       
