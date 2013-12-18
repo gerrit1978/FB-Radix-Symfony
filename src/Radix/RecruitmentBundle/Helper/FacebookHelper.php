@@ -62,7 +62,6 @@ class FacebookHelper {
     if (isset($signed_request['app_data'])) {
       $boot['redirect'] = $signed_request['app_data'];
     }
-
     
     return $boot;
 

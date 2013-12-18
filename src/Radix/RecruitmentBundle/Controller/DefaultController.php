@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class DefaultController extends Controller
 {
     public function indexAction() {
-    
+
       /**** SERVICES START ****/
 
       // CARROT service: bootstrap
@@ -25,11 +25,17 @@ class DefaultController extends Controller
 
       // haal account id op uit database
       $repository = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Config');
-      $project = $repository->createQueryBuilder('c')
-        ->where('c.pageid = :pageid')
-        ->setParameter('pageid', $pageid)
-        ->getQuery()
-        ->getSingleResult();
+
+      try {
+	      $project = $repository->createQueryBuilder('c')
+	        ->where('c.pageid = :pageid')
+	        ->setParameter('pageid', $pageid)
+	        ->getQuery()
+	        ->getSingleResult();
+	    }
+	    catch (\Doctrine\ORM\NoResultException $e) {
+        return $this->render('RadixRecruitmentBundle:Default:redirect.html.twig');
+	    }
 
       $accountid = $project->getAccountid();
 

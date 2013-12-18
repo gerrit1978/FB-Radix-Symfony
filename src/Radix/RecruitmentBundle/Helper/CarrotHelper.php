@@ -16,6 +16,7 @@ class CarrotHelper {
   
   /* Bootstrap function */
   public function bootstrap($accountid, $type = 'frontend') {
+
       $carrot = array();
       $carrot['pageLinks'] = array();
       // We get the config parameters
