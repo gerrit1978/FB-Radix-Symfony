@@ -165,6 +165,8 @@ class FrontendController extends Controller
       $carrot['job'] = $job_output;
 
       $carrot['callToAction']['applyLink'] = "<a class='apply' href='" . $this->generateUrl('radix_frontend_job_apply_manual', array('accountid' => $accountid, 'id' => $id)) . "'>Solliciteer</a>";
+      
+      $carrot['callToAction']['applyLinkedin'] = '<script src="//platform.linkedin.com/in.js" type="text/javascript">api_key: 77strrnbusgnes</script><script type="IN/Apply" data-companyid="1960436" data-jobtitle="Owner" data-email="gevo27@gmail.com"></script>';
 
       // get the form "Subscribe"
       $subscriber = new Subscriber();
@@ -206,16 +208,22 @@ class FrontendController extends Controller
 
       /**** SERVICES END ****/
       
-      $job = $this->getDoctrine()
-        ->getRepository('RadixRecruitmentBundle:Job')
-        ->findOneBy(array('id' => $id));
-      $job_output = array();
-      if (!$job) {
-        throw $this->createNotFoundException('No job found for this id.');
+      /* Check if jobid ($id) belongs to a job, or if it's just spontaan solliciteren */
+      if ($id === '-1') {
+        $job_output['applyTitle'] = "Spontaan solliciteren";
+        $job_output['title'] = "Spontaan solliciteren";
       } else {
-        $job_output['applyTitle'] = "Solliciteren voor <a href='" . $this->generateUrl('radix_frontend_job_detail', array('accountid' => $accountid, 'id' => $id)) . "'>" . $job->getTitle() . "</a>";
-        $job_output['title'] = $job->getTitle();
-      }
+	      $job = $this->getDoctrine()
+	        ->getRepository('RadixRecruitmentBundle:Job')
+	        ->findOneBy(array('id' => $id));
+	      $job_output = array();
+	      if (!$job) {
+	        throw $this->createNotFoundException('No job found for this id.');
+	      } else {
+	        $job_output['applyTitle'] = "Solliciteren voor <a href='" . $this->generateUrl('radix_frontend_job_detail', array('accountid' => $accountid, 'id' => $id)) . "'>" . $job->getTitle() . "</a>";
+	        $job_output['title'] = $job->getTitle();
+	      }
+	    }
 
       $time = time();
 
@@ -253,8 +261,8 @@ class FrontendController extends Controller
               $location = isset($item->location->name) ? $item->location->name : '';
               $position = isset($item->position->name) ? $item->position->name : '';
               $description = isset($item->description) ? $item->description : '';
-              $startdate = isset($item->start_date) ? $item->start_date : '';
-              $enddate = isset($item->end_date) ? $item->end_date : '';
+              $startdate = (isset($item->start_date) && ($item->start_date != '0000-00')) ? $item->start_date : '';
+              $enddate = (isset($item->end_date) && ($item->end_date != '0000-00')) ? $item->end_date : '';
                             
               $work = new Work();
               $work->setEmployer($employer);
@@ -357,15 +365,20 @@ class FrontendController extends Controller
 	        }
         }
         
-        // get the job details - this is needed for sending an email
-        $job = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job')->find($id);
-        
-        $job_title = $job->getTitle();
-        $job_applymail = $job->getApplymail();
-        
-        if (!$job_applymail) {
-          $job_applymail = $carrot['config']->getApplymail();
-        }
+        // get the job details - this is needed for sending an email - TODO
+        if ($id != '-1') {
+	        $job = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job')->find($id);
+	        
+	        $job_title = $job->getTitle();
+	        $job_applymail = $job->getApplymail();
+	        
+	        if (!$job_applymail) {
+	          $job_applymail = $carrot['config']->getApplymail();
+	        }
+	      } else {
+	        $job_title = "Spontaan solliciteren";
+	        $job_applymail = $carrot['config']->getApplymail();
+	      }
         
         $app_url = $carrot['config']->getPageurl() . '?id=' . $carrot['config']->getPageid() . '&sk=app_600850943303218&app_data=/' . $accountid . '/backend/application/' . $application->getId();
 

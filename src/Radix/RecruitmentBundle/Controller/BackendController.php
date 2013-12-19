@@ -128,7 +128,17 @@ class BackendController extends Controller
       
         // get job title for this application
         $application_jobid = $application->getJobid();
-        $job = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job')->find($application_jobid);
+        
+        if ($application_jobid == '-1') {
+          $job_link = "Spontaan solliciteren";
+        } else {
+          $job = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job')->find($application_jobid);        
+          if (!$job) {
+            throw $this->createNotFoundException('Er ging iets mis.');
+          }
+          $job_title = $job->getTitle();
+          $job_link = "<a href='" . $this->generateUrl('radix_frontend_job_detail', array('accountid' => $accountid, 'id' => $application_jobid)) . "'>" . $job_title . "</a>";
+        }
       
         // define detail link
         $application_detail_link = $this->generateUrl('radix_backend_application_detail', array('accountid' => $accountid, 'applicationid' => $applicationid));
@@ -137,7 +147,7 @@ class BackendController extends Controller
           'name' => $application->getName(),
           'email' => $application->getEmail(),
           'city' => $application->getCity(),
-          'jobLink' => "<a href='" . $this->generateUrl('radix_frontend_job_detail', array('accountid' => $accountid, 'id' => $job->getId())) . "'>" . $job->getTitle() . "</a>",
+          'jobLink' => $job_link,
           'detailLink' => $application_detail_link,
           'class' => $class,
         );
@@ -333,10 +343,20 @@ class BackendController extends Controller
       $carrot['application'] = $application_output;
       
       // parse the job data
-      $job = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job')->find($application->getJobid());
+      $application_jobid = $application->getJobid();
+      
+      if ($application_jobid == '-1') {
+        $job_title = "Spontaan solliciteren";
+      } else {
+        $job = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job')->find($application->getJobid());
+        if (!$job) {
+          throw $this->createNotFoundException('Er ging iets mis.');
+        }
+        $job_title = $job->getTitle();
+      }
       
       $carrot['job'] = array(
-        'title' => $job->getTitle(),
+        'title' => $job_title,
       );
       
       // parse the work data

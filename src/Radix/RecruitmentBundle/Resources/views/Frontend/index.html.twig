@@ -37,6 +37,11 @@
   {% set base_fb_connect = carrot.callToAction.fbConnect %}
 {% endif %}
 
+{# apply spontaneously #}
+{% if carrot.callToAction.applySpont is defined %}
+  {% set base_apply_spont = carrot.callToAction.applySpont %}
+{% endif %}
+
 {# END PARENT VARIABLES #}
 
 {# START BLOCKS #}

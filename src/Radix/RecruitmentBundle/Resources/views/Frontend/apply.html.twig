@@ -83,7 +83,7 @@
     {{ form_row(carrot.form.city) }}
     {{ form_row(carrot.form.email) }}    
 
-    <h3>Work Experience</h3>
+    <h3>Werkervaring</h3>
     <ul class="work" data-prototype="{{ form_widget(carrot.form.work.vars.prototype)|e }}">
         {% for work in carrot.form.work %}
             <li>
@@ -97,7 +97,7 @@
         {% endfor %}
     </ul>
 
-    <h3>Education</h3>
+    <h3>Opleiding</h3>
     <ul class="education" data-prototype="{{ form_widget(carrot.form.education.vars.prototype)|e }}">
         {% for education in carrot.form.education %}
             <li>

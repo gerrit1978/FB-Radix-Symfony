@@ -325,6 +325,20 @@ ul.work li .item-work {
   margin-right: 10px;
 }
 
+.work-overview {
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.work-overview .employer {
+  font-weight: bolder;
+}
+
+.work-overview .position, 
+.work-overview .dates {
+  color: #999;
+}
+
 /* Education items apply form */
 ul.education {
   margin: 0;

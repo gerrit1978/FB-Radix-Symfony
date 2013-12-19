@@ -54,7 +54,10 @@ class CarrotHelper {
 	        $carrot['callToAction'] = array(
             'fbConnect' => "<a class='connect' href='" . $router->generate('radix_frontend_facebook_connect', array('accountid' => $accountid)) . "'>Connect with Facebook</a>",
 	        );
-	      } 
+	      }
+	      
+	      // Apply spontaneously
+	      $carrot['callToAction']['applySpont'] = "<a class='apply-spont' href='" . $router->generate('radix_frontend_job_apply_manual', array('accountid' => $accountid, 'id' => '-1')) . "'>Spontaan solliciteren</a>";
 	      
 	      $carrot['pageLinks']['homeLink'] = "<div class='home-link'><span class='button' data-url='" . $router->generate('radix_frontend', array('accountid' => $accountid)) . "'>Naar de startpagina</a></div>";
 	      
