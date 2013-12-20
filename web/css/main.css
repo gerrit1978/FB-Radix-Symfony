@@ -358,6 +358,21 @@ ul.education li .item-education {
   margin-right: 10px;
 }
 
+.education-overview {
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.education-overview .school {
+  font-weight: bolder;
+}
+
+.education-overview .year, 
+.education-overview .type {
+  color: #999;
+}
+
+
 /* Banners */
 div.banner {
   margin: 20px 0;

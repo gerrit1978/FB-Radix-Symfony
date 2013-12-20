@@ -190,6 +190,7 @@ class BackendController extends Controller
         ->add('pageurl')
         ->add('employerid')
         ->add('applymail')
+        ->add('linkedinid')
         ->add('Save', 'submit')
         ->getForm();
       
@@ -365,10 +366,27 @@ class BackendController extends Controller
       $work_output = array();
       if (is_array($work_items) && count($work_items)) {
         foreach ($work_items as $work) {
+        
+          $startdate = $work->getStartdate();
+          $enddate = $work->getEnddate();
+          $period = "";
+          
+          if ($startdate && !$enddate) {
+            $period = $startdate;
+          }
+          if ($startdate && $enddate) {
+            $period = $startdate . " tot " . $enddate;
+          }
+          if (!$startdate && $enddate) {
+            $period = "tot " . $enddate;
+          }
+        
           $work_output[] = array(
             'employer' => $work->getEmployer(),
             'location' => $work->getLocation(),
             'position' => $work->getPosition(),
+            'description' => $work->getDescription(),
+            'period' => $period,
           );
         }
       }

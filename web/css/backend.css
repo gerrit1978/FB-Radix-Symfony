@@ -109,3 +109,58 @@ button[type=submit] {
   border: none;
   margin-bottom: 10px;
 }
+
+/* Application detail */
+.application-detail h1 {
+  margin-top: 15px;
+}
+
+.application-detail h2 {
+  margin: 10px 0;
+}
+
+.application-detail .email,
+.application-detail .city {
+  margin-bottom: 5px;
+}
+
+.application-detail .email a {
+}
+
+.application-detail .work-item {
+  margin-bottom: 20px;
+}
+
+.application-detail .work-item div {
+  margin-bottom: 5px;
+}
+
+.application-detail .work-item .employer {
+  font-weight: bold;
+}
+
+.application-detail .work-item .location,
+.application-detail .work-item .position,
+.application-detail .work-item .period,
+.application-detail .work-item .description {
+  color: #999;
+  font-size: 12px;
+}
+
+.application-detail .work-item .description {
+  font-size: 11px;
+}
+
+.application-detail .education-item {
+  margin-bottom: 20px;
+}
+
+.application-detail .education-item .school {
+  font-weight: bold;
+}
+
+.application-detail .education-item .year,
+.application-detail .education-item .type {
+  color: #999;
+  font-size: 12px;
+}

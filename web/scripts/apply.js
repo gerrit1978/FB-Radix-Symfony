@@ -17,7 +17,7 @@ $(document).ready(function() {
 
   
 
-  /*** TODO: optimaliseer dit ***/
+  /*** WORK ITEMS ***/
   
   // hide the default form items
   $('ul.work li').css('display', 'none');
@@ -67,7 +67,47 @@ $(document).ready(function() {
 
   // show the static overview instead of the default form items
   $('ul.work').append(output);
-  /*** END TODO ***/
+
+  /*** END WORK ITEMS ***/
+
+  /*** EDUCATION ITEMS ***/
+  
+  // hide the default form items
+  $('ul.education li').css('display', 'none');
+  
+  var output = "";
+  
+  $('ul.education li').each(function(i) {
+  
+    var school = $(this).find('.item-school').find('input').val();
+    var year = $(this).find('.item-year').find('input').val();
+    var type = $(this).find('.item-type').find('input').val();
+
+    output += "<div class='education-overview' id='edu-overview" + i + "'>";
+    output += "<div class='school'>" + school + "</div>";
+    
+    if (year != "null" && year != null && year != "") {
+      output += "<div class='year'>" + year + "</div>";
+    }  else {
+      output += "<div class='year'></div>";
+    }
+
+    if (type != "null" && type != null && type != "") {
+      output += "<div class='type'>" + type + "</div>";
+    }  else {
+      output += "<div class='type'></div>";
+    }
+
+    output += "<a href='#' class='edit_education_link' id='edit-edu" + i + "'>bewerken</a>";
+    output += "</div>";
+
+  });
+
+  // show the static overview instead of the default form items
+  $('ul.education').append(output);
+
+  /*** END EDUCATION ITEMS ***/
+
  
 
   // add "Delete" links 
@@ -119,9 +159,35 @@ function enableFancybox($) {
           autoSize: false,
           fitToView: false,
 	        content: content,
-          beforeClose: copyValues 
+          beforeClose: copyWorkValues 
 	  });
 	});
+
+  $("a.edit_education_link").each(function() {
+    var id = $(this).attr('id');
+    var index = id.replace('edit-edu', '');
+	  var indexCorrected = parseInt(index) + 1;
+	  var selector = "ul.education li:nth-child(" + indexCorrected + ")";
+	  var content = $(selector).html();
+	  var content = $(selector).html();
+	  content += "<input type='hidden' value='" + index + "' name='delta' class='delta' />";
+	  content += "<a href='#' onClick='closeFancybox($);'>Overnemen</a>";
+	  $(this).fancybox({
+	        transitionIn: 'elastic',
+	        transitionOut: 'elastic',
+	        speedIn: 600,
+	        speedOut: 200,
+	        width: 500,
+          height: "auto",
+          autoSize: false,
+          fitToView: false,
+	        content: content,
+          beforeClose: copyEducationValues 
+	  });
+
+  });
+
+
 }
 
 function closeFancybox($) {
@@ -129,7 +195,7 @@ function closeFancybox($) {
   return false;
 }
 
-function copyValues() {
+function copyWorkValues() {
   var employer = $('.fancybox-outer .item-employer input').val();
   var location = $('.fancybox-outer .item-location input').val();
   var position = $('.fancybox-outer .item-position input').val();
@@ -182,6 +248,38 @@ function copyValues() {
   // refresh the fancybox content
   enableFancybox($);
 }
+
+function copyEducationValues() {
+  var school = $('.fancybox-outer .item-school input').val();
+  var year = $('.fancybox-outer .item-year input').val();
+  var type = $('.fancybox-outer .item-type input').val();
+
+  var delta = $('.fancybox-outer .delta').val();  
+  // copy the values to the overview (static) part
+
+  var selector = "#edu-overview" + delta;
+  var selectorSchool = selector + " div.school";
+  var selectorYear = selector + " div.year";
+  var selectorType = selector + " div.type";
+  
+  $(selectorSchool).html(school);
+  $(selectorYear).html(year);  
+  $(selectorType).html(type);  
+  
+  // copy the values to the internal Symfony form
+  var selector = "#application_education_";
+  var sSelectorSchool = selector + delta + "_school";
+  var sSelectorYear = selector + delta + "_year";
+  var sSelectorType = selector + delta + "_type";
+  
+  $(sSelectorSchool).attr('value', school);
+  $(sSelectorYear).attr('value', year);
+  $(sSelectorType).attr('value', type);
+
+  // refresh the fancybox content
+  enableFancybox($);
+}
+
 
 
 function addWorkForm(workCollectionHolder, $newLinkLi) {

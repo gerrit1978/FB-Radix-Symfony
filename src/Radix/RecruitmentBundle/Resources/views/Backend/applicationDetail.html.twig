@@ -2,6 +2,8 @@
 
 {% block title %}Backend{% endblock %}
 
+{% block bodyclasses %}application-detail{% endblock %}
+
 {% block body %}
 
 <div class='frontend-link'>
@@ -12,29 +14,47 @@
 {{ carrot.pageLinks.backendLinks|raw }}
 </div>
 
-<h1>Application for {{ carrot.job.title }}</h1>
-Name : {{ carrot.application.name }}<br />
-Email : {{ carrot.application.email }}<br />
-City : {{ carrot.application.city }}<br />
-<h2>Work experience</h2>
+<h1>Sollicitatie voor {{ carrot.job.title }}</h1>
+<h2>{{ carrot.application.name }}</h2>
+<div class="email"><a href="mailto:{{ carrot.application.email }}" target="_blank">{{ carrot.application.email }}</a></div>
+<div class="city">{{ carrot.application.city }}</div>
+<h3>Werkervaring</h3>
 {% for work in carrot.work %}
-{{ work.employer}} - {{ work.location }} - {{ work.position }}<br />
-<br />
+  <div class="work-item">
+    <div class="employer">{{ work.employer }}</div>
+    {% if work.position %}
+      <div class="position">{{ work.position }}</div>
+    {% endif %}
+    {% if work.location %}
+      <div class="location">{{ work.location }}</div>
+    {% endif %}
+    {% if work.period %}
+      <div class="period">{{ work.period }}</div>
+    {% endif %}
+    {% if work.description %}
+      <div class="description">{{ work.description }}</div>
+    {% endif %}
+  </div>
 {% endfor %}
 
-<h2>Education</h2>
+<h3>Opleiding</h3>
 {% for education in carrot.education %}
-{{ education.school }} - {{ education.type }} - {{ education.year }}<br />
-<br />
+  <div class="education-item">
+	  <div class="school">{{ education.school }}</div>
+		{% if education.year %}
+		  <div class="year">{{ education.year }}</div>
+		{% endif %}
+		{% if education.type %}
+		  <div class="type">{{ education.type }}</div>
+		{% endif %}
+  </div>
 {% endfor %}
 
 {% if carrot.application.resume is defined %}
-<h2>CV</h2>
-<a href='{{ carrot.application.resume|raw }}' target='_blank'>Download CV</a>
+<div class="cv"><a href='{{ carrot.application.resume|raw }}' target='_blank'>Download CV</a></div>
 {% endif %}
 
 {% if carrot.application.cover is defined %}
-<h2>Sollicitatiebrief</h2>
-<a href='{{ carrot.application.cover|raw }}' target='_blank'>Download sollicitatiebrief</a>
+<div class="cover"><a href='{{ carrot.application.cover|raw }}' target='_blank'>Download sollicitatiebrief</a></div>
 {% endif %}
 {% endblock %}

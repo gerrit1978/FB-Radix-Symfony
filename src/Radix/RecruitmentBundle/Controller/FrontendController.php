@@ -166,7 +166,7 @@ class FrontendController extends Controller
 
       $carrot['callToAction']['applyLink'] = "<a class='apply' href='" . $this->generateUrl('radix_frontend_job_apply_manual', array('accountid' => $accountid, 'id' => $id)) . "'>Solliciteer</a>";
       
-      $carrot['callToAction']['applyLinkedin'] = '<script src="//platform.linkedin.com/in.js" type="text/javascript">api_key: 77strrnbusgnes</script><script type="IN/Apply" data-companyid="1960436" data-jobtitle="Owner" data-email="gevo27@gmail.com"></script>';
+      $carrot['callToAction']['applyLinkedin'] = '<script src="//platform.linkedin.com/in.js" type="text/javascript">api_key: 77strrnbusgnes</script><script type="IN/Apply" data-companyid="' . $carrot['config']->getLinkedinid() . '" data-jobtitle="' . $job->getTitle() . '" data-email="' . $carrot['config']->getApplymail() . '"></script>';
 
       // get the form "Subscribe"
       $subscriber = new Subscriber();

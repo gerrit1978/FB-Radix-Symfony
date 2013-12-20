@@ -92,6 +92,14 @@ class Config
     private $applymail;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="linkedinid", type="string", length=255)
+     */
+    private $linkedinid;
+
+
+    /**
      * Get id
      *
      * @return integer 
@@ -325,6 +333,27 @@ class Config
      */
     public function getApplymail() {
       return $this->applymail;
+    }
+
+    /**
+     * Set linkedinid
+     *
+     * @param string $linkedinid
+     * @return Config
+     */
+    public function setLinkedinid($linkedinid) {
+      $this->linkedinid = $linkedinid;
+      
+      return $this;
+    }
+    
+    /**
+     * Get linkedinid
+     *
+     * @return string
+     */
+    public function getLinkedinid() {
+      return $this->linkedinid;
     }
 
     
