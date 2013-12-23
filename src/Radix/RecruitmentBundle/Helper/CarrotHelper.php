@@ -59,7 +59,7 @@ class CarrotHelper {
 	      // Apply spontaneously
 	      $carrot['callToAction']['applySpont'] = "<a class='apply-spont' href='" . $router->generate('radix_frontend_job_apply_manual', array('accountid' => $accountid, 'id' => '-1')) . "'>Spontaan solliciteren</a>";
 	      
-	      $carrot['pageLinks']['homeLink'] = "<div class='home-link'><span class='button' data-url='" . $router->generate('radix_frontend', array('accountid' => $accountid)) . "'>Naar de startpagina</a></div>";
+	      $carrot['pageLinks']['homeLink'] = "<div class='home-link'><span class='button' data-url='" . $router->generate('radix_frontend', array('accountid' => $accountid)) . "'>Naar de startpagina</span></div>";
 	      
 	      // Render the Introduced link
 	      $carrot['introduced'] = "<span class='button introduced' data-url='" . $router->generate('radix_frontend_introduced', array('accountid' => $accountid)) . "'>Laat je introduceren door een vriend.</span>";

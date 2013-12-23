@@ -22,11 +22,11 @@
 {% for work in carrot.work %}
   <div class="work-item">
     <div class="employer">{{ work.employer }}</div>
-    {% if work.position %}
-      <div class="position">{{ work.position }}</div>
-    {% endif %}
     {% if work.location %}
       <div class="location">{{ work.location }}</div>
+    {% endif %}
+    {% if work.position %}
+      <div class="position">{{ work.position }}</div>
     {% endif %}
     {% if work.period %}
       <div class="period">{{ work.period }}</div>

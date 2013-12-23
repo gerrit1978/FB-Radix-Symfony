@@ -9,12 +9,12 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class WorkType extends AbstractType {
 
   public function buildForm(FormBuilderInterface $builder, array $options) {
-    $builder->add('employer')
-      ->add('location', 'text', array('required' => FALSE))
-      ->add('position', 'text', array('required' => FALSE))
-      ->add('description', 'text', array('required' => FALSE))
-      ->add('startdate', 'text', array('required' => FALSE))
-      ->add('enddate', 'text', array('required' => FALSE));
+    $builder->add('employer', 'text', array('label' => 'Werkgever', 'required' => FALSE))
+      ->add('location', 'text', array('label' => 'Locatie', 'required' => FALSE))
+      ->add('position', 'text', array('label' => 'Functie', 'required' => FALSE))
+      ->add('description', 'text', array('label' => 'Beschrijving', 'required' => FALSE))
+      ->add('startdate', 'text', array('label' => 'Startdatum', 'required' => FALSE))
+      ->add('enddate', 'text', array('label' => 'Einddatum', 'required' => FALSE));
   }
   
   public function setDefaultOptions(OptionsResolverInterface $resolver) {

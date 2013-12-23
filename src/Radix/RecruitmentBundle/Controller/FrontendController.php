@@ -261,8 +261,16 @@ class FrontendController extends Controller
               $location = isset($item->location->name) ? $item->location->name : '';
               $position = isset($item->position->name) ? $item->position->name : '';
               $description = isset($item->description) ? $item->description : '';
-              $startdate = (isset($item->start_date) && ($item->start_date != '0000-00')) ? $item->start_date : '';
-              $enddate = (isset($item->end_date) && ($item->end_date != '0000-00')) ? $item->end_date : '';
+              if (isset($item->start_date) && ($item->start_date != '0000-00')) {
+                $startdate = date('d.m.Y', strtotime($item->start_date));
+              } else {
+                $startdate = "";
+              }
+              if (isset($item->end_date) && ($item->end_date != '0000-00')) {
+                $enddate = date('d.m.Y', strtotime($item->end_date));
+              } else {
+                $enddate = "";
+              }
                             
               $work = new Work();
               $work->setEmployer($employer);

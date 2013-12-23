@@ -56,7 +56,7 @@
 
 {# HEADERSCRIPTS BLOCK #}
 {% block headerscripts %}
-<script type="text/javascript" src="{{ asset('/scripts/apply.js') }}"></script>
+<script type="text/javascript" src="{{ asset('/scripts/apply.js?23') }}"></script>
 {% endblock %}
 
 
@@ -84,9 +84,10 @@
     {{ form_row(carrot.form.email) }}    
 
     <h3>Werkervaring</h3>
+    <div class="work-items">
     <ul class="work" data-prototype="{{ form_widget(carrot.form.work.vars.prototype)|e }}">
         {% for work in carrot.form.work %}
-            <li>
+            <li id="form-item-{{ loop.index0 }}">
               <div class="item-work item-employer">{{ form_row(work.employer) }}</div>
               <div class="item-work item-location">{{ form_row(work.location) }}</div>
               <div class="item-work item-position">{{ form_row(work.position) }}</div>
@@ -96,18 +97,20 @@
             </li>
         {% endfor %}
     </ul>
+    </div>
 
     <h3>Opleiding</h3>
+    <div class="education-items">    
     <ul class="education" data-prototype="{{ form_widget(carrot.form.education.vars.prototype)|e }}">
         {% for education in carrot.form.education %}
-            <li>
+            <li id="form-item-edu-{{ loop.index0 }}">
               <div class="item-education item-school">{{ form_row(education.school) }}</div>
               <div class="item-education item-year">{{ form_row(education.year) }}</div>
               <div class="item-education item-type">{{ form_row(education.type) }}</div>
             </li>
         {% endfor %}
     </ul>
-
+    </div>
 
     {{ form_rest(carrot.form) }}
 </form>

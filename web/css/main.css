@@ -307,6 +307,10 @@ textarea {
 }
 
 /* Work items apply form */
+.apply .form-item {
+  margin-top: 20px;
+}
+
 ul.work {
   margin: 0;
   padding: 0;
