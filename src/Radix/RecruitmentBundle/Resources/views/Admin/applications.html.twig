@@ -1,0 +1,23 @@
+{% extends "RadixRecruitmentBundle:Backend:base.html.twig" %}
+
+{% block body %}
+
+<h1>Applications/Configs</h1>
+
+<table>
+<tr>
+<th>Accountid</th>
+<th>Page title</th>
+<th>Actions</th>
+</tr>
+
+{% for config in configs %}
+<tr>
+<td>{{ config.accountid }}</td>
+<td>{{ config.pagetitle }}</td>
+<td><a href="{{ config.link|raw }}">Bewerken</a></td>
+</tr>
+{% endfor %}
+<a href="/admin/application/new">New application</a>
+
+{% endblock %}

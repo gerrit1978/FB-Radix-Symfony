@@ -52,7 +52,7 @@ class CarrotHelper {
 	      
 	      if (!$hasConnected) {
 	        $carrot['callToAction'] = array(
-            'fbConnect' => "<a class='connect' href='" . $router->generate('radix_frontend_facebook_connect', array('accountid' => $accountid)) . "'>Connect with Facebook</a>",
+            'fbConnect' => "<div class='connect-form'>Wil je graag je Facebook-gegevens gebruiken om te solliciteren? <a class='connect' href='" . $router->generate('radix_frontend_facebook_connect', array('accountid' => $accountid)) . "'>Connecteer dan met Facebook</a></div>",
 	        );
 	      }
 	      
@@ -75,6 +75,17 @@ class CarrotHelper {
 	      foreach ($banners as $banner) {
 	        $carrot['banners'][$banner->getType()] = "<img class='banner " . $banner->getType() . "' src='/" . $banner->getWebPath() . "' />";
 	      }
+	      
+	      // Get the thumbnail
+	      $thumbnail = $this->container->get("doctrine")
+	        ->getRepository('RadixRecruitmentBundle:Document')
+	        ->findOneBy(array('accountid' => $accountid, 'type' => 'thumbnail'));
+	      
+	      if ($thumbnail) {
+	        $carrot['og']['thumbnail'] = "http://fb.projects.radix-recruitment.be/" . $thumbnail->getWebPath();
+  	    } else {
+  	      $carrot['og']['thumbnail'] = "";
+  	    }
 
       }
       
@@ -98,8 +109,8 @@ class CarrotHelper {
         $backend_links = array(
           'jobs' => "<a class='tab' href='" . $router->generate('radix_backend_jobs', array('accountid' => $accountid)) . "'>Jobs</a>",
           'applications' => "<a class='tab' href='" . $router->generate('radix_backend_applications', array('accountid' => $accountid)) . "'>Sollicitaties</a>",
-          'config' => "<a class='tab' href='" . $router->generate('radix_backend_config', array('accountid' => $accountid)) . "'>Configuratie</a>",
-          'media' => "<a class='tab' href='" . $router->generate('radix_backend_media', array('accountid' => $accountid)) . "'>Media</a>",
+/*           'config' => "<a class='tab' href='" . $router->generate('radix_backend_config', array('accountid' => $accountid)) . "'>Configuratie</a>", */
+          'media' => "<a class='tab' href='" . $router->generate('radix_backend_media', array('accountid' => $accountid)) . "'>Banners</a>",
         );
         
         $backend_links_output = implode(' &bull; ', $backend_links);

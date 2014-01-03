@@ -2,6 +2,25 @@
 
 {% block title %}Backend{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<link rel="stylesheet" type="text/css" href="{{ asset('/css/slimtable.css') }}" />
+{% endblock %}
+
+
+{% block headerscripts %}
+<script src="{{ asset('/scripts/slimtable.min.js') }}" type="text/javascript"></script>
+<script type="text/javascript">
+$(function() {
+  $("#applications").slimtable({
+		colSettings: [ 
+			{ colNumber: 5, enableSort: false }
+		]
+	});
+});
+</script>
+{% endblock %}
+
 {% block body %}
 
 <div class='frontend-link'>
@@ -13,24 +32,30 @@
 </div>
 
 <h1>Sollicitatie overzicht</h1>
-<table>
+<table id="applications">
+<thead>
 <tr>
 <th>Naam</th>
 <th>E-mail</th>
 <th>Woonplaats</th>
 <th>Job</th>
-<th>Bekijk</th>
+<th>Datum</th>
+<th></th>
+</thead>
 </tr>
 
+<tbody>
 {% for application in carrot.applications %}
 <tr class="{{ application.class }}">
 <td>{{ application.name }}</td>
 <td>{{ application.email }}</td>
 <td>{{ application.city }}</td>
 <td>{{ application.jobLink|raw }}</td>
+<td>{{ application.created }}</td>
 <td><a href="{{ application.detailLink }}">bekijk</a></td>
 </tr>
 {% endfor %}
+</tbody>
 
 </table>
 {% endblock %}

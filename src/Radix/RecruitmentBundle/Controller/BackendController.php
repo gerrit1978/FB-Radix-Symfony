@@ -149,6 +149,7 @@ class BackendController extends Controller
           'city' => $application->getCity(),
           'jobLink' => $job_link,
           'detailLink' => $application_detail_link,
+          'created' => date('d.m.Y H:i', $application->getCreated()),
           'class' => $class,
         );
         
@@ -703,7 +704,7 @@ class BackendController extends Controller
 	    $form = $this->createFormBuilder($document)
 	        ->add('file')
 	        ->add('type', 'choice', array('choices' => array(
-	          'topfront' => 'Top frontpage', 'topdetail' => 'Top jobdetail page', 'bottom' => 'Bottom', 'right' => 'Right'
+	          'topfront' => 'Top frontpage', 'topdetail' => 'Top jobdetail page', 'bottom' => 'Bottom', 'right' => 'Right', 'thumbnail' => 'Thumbnail',
 	        )))
 	        ->add('save', 'submit')
 	        ->getForm();

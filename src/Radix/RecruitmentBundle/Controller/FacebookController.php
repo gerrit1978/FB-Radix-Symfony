@@ -63,8 +63,8 @@ class FacebookController extends Controller
         $config = $carrot['config'];
         $pageid = $config->getPageid();
         $pagetitle = $config->getPagetitle();
-        $appid = 
-        $page_url = "http://www.facebook.com/pages/" . $pagetitle . "/" . $pageid . "?id=" . $pageid . "&sk=app_" . $facebook_config['appId'] . "&app_data=" . $app_data;
+/*         $page_url = "http://www.facebook.com/pages/" . $pagetitle . "/" . $pageid . "?id=" . $pageid . "&sk=app_" . $facebook_config['appId'] . "&app_data=" . $app_data; */
+        $page_url = $config->getPageurl() . "?id=" . $pageid . "&sk=app_" . $facebook_config['appId'] . "&app_data=" . $app_data;
 
         echo("<script>parent.location.href='" . $page_url . "'</script>");
 

@@ -165,7 +165,12 @@ body.job-detail .job-detail h2.subtitle {
   margin-bottom: 20px;
 }
 
-.call-to-action a.apply {
+.call-to-action-linkedin {
+  text-align: center;
+}
+
+.call-to-action a.apply,
+a.apply-spont {
 	border-color: #3b6e22 #3b6e22 #2c5115;
 	background-color: #67ae55;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#67ae55), to(#578843));
@@ -199,12 +204,27 @@ body.job-detail .job-detail h2.subtitle {
 	border-radius: 5px;
 }
 
+.column-main .call-to-action a.apply {
+  width: auto;
+  padding: 2px 30px;
+}
+
+.column-main .call-to-action .IN-widget {
+  position: relative !important;
+  top: 10px !important;
+}
+
+.column-main .call-to-action .IN-widget .li-apply-text {
+  display: none !important;
+}
+
 .job-detail .call-to-action a.connect {
   color: #999;
   border-bottom: 1px solid #999;
 }
 
-.subscriber-form {
+.subscriber-form,
+.connect-form {
   margin: 0 0 20px 0;
 	padding: 15px;
 	background: #f6f7f8;
@@ -215,6 +235,11 @@ body.job-detail .job-detail h2.subtitle {
 	-o-border-radius: 4px;
 	border-radius: 4px;
 }
+
+.subscriber-form {
+  margin-top: 20px;
+}
+
 
 .subscriber-form h3 {
   margin: 10px 0;
@@ -306,11 +331,73 @@ textarea {
   height: 200px;
 }
 
-/* Work items apply form */
+.apply form input[type=text],
+.apply form input[type=email] {
+  width: 800px;
+}
+
+.apply form .button {
+  margin-bottom: 20px;
+}
+
 .apply .form-item {
   margin-top: 20px;
 }
 
+.apply .fancybox-outer .form-item {
+  margin: 10px 0;
+}
+
+.apply a.fancybox-close {
+  border: none;
+}
+
+.apply .fancybox-outer a {
+	display: inline-block;
+	position: relative;
+	padding: 0 10px;
+	cursor: pointer;
+	text-align: center;
+	color: #4e5665;
+	font-size: 12px;
+	font-weight: bold;
+	text-decoration: none !important;
+	white-space: nowrap;
+	line-height: 22px;
+	border: 1px solid;
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	-ms-border-radius: 2px;
+	-o-border-radius: 2px;
+	border-radius: 2px;
+	-webkit-box-shadow: 0px 1px 1px #e5e5e5;
+	-moz-box-shadow: 0px 1px 1px #e5e5e5;
+	-ms-box-shadow: 0px 1px 1px #e5e5e5;
+	-o-box-shadow: 0px 1px 1px #e5e5e5;
+	box-shadow: 0px 1px 1px #e5e5e5;
+	border-color: #c5c6c8;
+	text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+	background-color: #fff;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#f6f7f8));
+	background-image: -webkit-linear-gradient(top, #fff, #f6f7f8);
+	background-image: -moz-linear-gradient(top, #fff, #f6f7f8);
+	background-image: -ms-linear-gradient(top, #fff, #f6f7f8);
+	background-image: -o-linear-gradient(top, #fff, #f6f7f8);
+	background-image: linear-gradient(to bottom, #ffffff,#f6f7f8);
+}
+
+.apply .fancybox-outer input[type=text] {
+  width: 490px;
+}
+
+.apply .fancybox-outer input[type=text].error {
+  border: 1px solid red;
+}
+
+/* Work items apply form */
 ul.work {
   margin: 0;
   padding: 0;

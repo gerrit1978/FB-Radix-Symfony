@@ -9,12 +9,12 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class WorkType extends AbstractType {
 
   public function buildForm(FormBuilderInterface $builder, array $options) {
-    $builder->add('employer', 'text', array('label' => 'Werkgever', 'required' => FALSE))
-      ->add('location', 'text', array('label' => 'Locatie', 'required' => FALSE))
-      ->add('position', 'text', array('label' => 'Functie', 'required' => FALSE))
-      ->add('description', 'text', array('label' => 'Beschrijving', 'required' => FALSE))
-      ->add('startdate', 'text', array('label' => 'Startdatum', 'required' => FALSE))
-      ->add('enddate', 'text', array('label' => 'Einddatum', 'required' => FALSE));
+    $builder->add('employer', 'text', array('label' => 'Werkgever', 'required' => FALSE, 'attr' => array('class' => 'employer')))
+      ->add('location', 'text', array('label' => 'Locatie', 'required' => FALSE, 'attr' => array('class' => 'location')))
+      ->add('position', 'text', array('label' => 'Functie', 'required' => FALSE, 'attr' => array('class' => 'position')))
+      ->add('description', 'text', array('label' => 'Beschrijving', 'required' => FALSE, 'attr' => array('class' => 'description')))
+      ->add('startdate', 'text', array('label' => 'Startdatum', 'required' => FALSE, 'attr' => array('class' => 'startdate')))
+      ->add('enddate', 'text', array('label' => 'Einddatum', 'required' => FALSE, 'attr' => array('class' => 'enddate')));
   }
   
   public function setDefaultOptions(OptionsResolverInterface $resolver) {

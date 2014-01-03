@@ -9,9 +9,9 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class EducationType extends AbstractType {
 
   public function buildForm(FormBuilderInterface $builder, array $options) {
-    $builder->add('school', 'text', array('required' => FALSE))
-      ->add('year', 'text', array('label' => 'Jaar van afstuderen', 'required' => FALSE))
-      ->add('type', 'text', array('required' => FALSE));
+    $builder->add('school', 'text', array('required' => FALSE, 'attr' => array('class' => 'school')))
+      ->add('year', 'text', array('label' => 'Jaar van afstuderen', 'required' => FALSE, 'attr' => array('class' => 'year')))
+      ->add('type', 'text', array('required' => FALSE, 'attr' => array('class' => 'type')));
   }
   
   public function setDefaultOptions(OptionsResolverInterface $resolver) {

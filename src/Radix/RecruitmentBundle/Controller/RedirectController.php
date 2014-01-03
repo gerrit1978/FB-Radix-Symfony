@@ -35,7 +35,12 @@ class RedirectController extends Controller
       $redirecturl = $pageurl . "?id=" . $carrot['config']->getPageid() . "&sk=app_600850943303218&app_data=/" . $accountid . "/frontend/job/" . $id;
       
       // get the job details
-      $job = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job')->find($id);
+      $job = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job')->findOneBy(array('id' => $id, 'accountid' => $accountid));
+      
+      if (!$job) {
+        throw $this->createNotFoundException('No job found for this id.');
+      }
+      
       $title = $job->getTitle();
       
       $carrot['job'] = array(

@@ -64,17 +64,10 @@
 
 <div class="description">
 {{ carrot.job.description|raw }}
-{% if carrot.callToAction.applyLink is defined %}
 <div class='call-to-action'>
   {{ carrot.callToAction.applyLink|raw }}
-</div>
-{% endif %}
-
-{% if carrot.callToAction.applyLinkedin is defined %}
-<div class='call-to-action-linkedin'>
   {{ carrot.callToAction.applyLinkedin|raw }}
 </div>
-{% endif %}
 
 </div>
 

@@ -126,3 +126,20 @@ radix_fb_redirect:
 radix_fb_redirect:
   pattern: /{accountid}/fb-redirect/{nextpage}/{id}
   defaults: { _controller: RadixRecruitmentBundle:Facebook:redirect }
+  
+
+radix_admin_index:
+  pattern: /admin
+  defaults: { _controller: RadixRecruitmentBundle:Admin:index }
+  
+radix_admin_applications:
+  pattern: /admin/applications
+  defaults: { _controller: RadixRecruitmentBundle:Admin:applications }
+
+radix_admin_application_new:
+  pattern: /admin/application/new
+  defaults: { _controller: RadixRecruitmentBundle:Admin:applicationNew }
+  
+radix_admin_application_edit:
+  pattern: /admin/application/{id}/edit
+  defaults: { _controller: RadixRecruitmentBundle:Admin:applicationEdit }
