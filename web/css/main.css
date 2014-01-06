@@ -171,19 +171,19 @@ body.job-detail .job-detail h2.subtitle {
 
 .call-to-action a.apply,
 a.apply-spont {
-	border-color: #3b6e22 #3b6e22 #2c5115;
-	background-color: #67ae55;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#67ae55), to(#578843));
-	background-image: -webkit-linear-gradient(top, #67ae55, #578843);
-	background-image: -moz-linear-gradient(top, #67ae55, #578843);
-	background-image: -ms-linear-gradient(top, #67ae55, #578843);
-	background-image: -o-linear-gradient(top, #67ae55, #578843);
-	background-image: linear-gradient(to bottom, #67ae55,#578843);
-	-webkit-box-shadow: inset 0 1px 1px #a4e388;
-	-moz-box-shadow: inset 0 1px 1px #a4e388;
-	-ms-box-shadow: inset 0 1px 1px #a4e388;
-	-o-box-shadow: inset 0 1px 1px #a4e388;
-	box-shadow: inset 0 1px 1px #a4e388;
+	border-color: #faa51d #faa51d #ffa920;
+	background-color: #ffa920;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#ffa920), to(#ffc466));
+	background-image: -webkit-linear-gradient(top, #ffa920, #ffc466);
+	background-image: -moz-linear-gradient(top, #ffa920, #ffc466);
+	background-image: -ms-linear-gradient(top, #ffa920, #ffc466);
+	background-image: -o-linear-gradient(top, #ffa920, #ffc466);
+	background-image: linear-gradient(to bottom, #ffa920, #ffc466);
+	-webkit-box-shadow: inset 0 1px 1px #78541b;
+	-moz-box-shadow: inset 0 1px 1px #78541b;
+	-ms-box-shadow: inset 0 1px 1px #78541b;
+	-o-box-shadow: inset 0 1px 1px #78541b;
+	box-shadow: inset 0 1px 1px #78541b;
 	display: inline-block;
 	position: relative;
 	width: 100%;

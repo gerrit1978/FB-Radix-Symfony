@@ -308,9 +308,9 @@ function copyWorkValues() {
     }  else {
       output += "<div class='position'></div>";
     }
-
-    output += "<a href='#' class='delete_work_link' id='delete-work-" + delta + "' onclick='deleteWorkItem(" + delta + ");'>verwijderen</a>";    
     output += datesFormatted;
+    output += "<a href='#' class='delete_work_link' id='delete-work-" + delta + "' onclick='deleteWorkItem(" + delta + ");'>verwijderen</a>";    
+
     output += "</div>";
 
     $('div.work-items').append(output);

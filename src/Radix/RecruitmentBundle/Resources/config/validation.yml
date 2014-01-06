@@ -1,0 +1,13 @@
+# src/Radix/RecruitmentBundle/Resources/config/validation.yml
+Radix\RecruitmentBundle\Entity\Application:
+    properties:
+        resumefile:
+            - File:
+                maxSize: 4000k
+                mimeTypes: [application/pdf, application/x-pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document]
+                mimeTypesMessage: Enkel MS Word en PDF bestanden zijn toegelaten.
+        coverfile:
+            - File:
+                maxSize: 4000k
+                mimeTypes: [application/pdf, application/x-pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document]
+                mimeTypesMessage: Enkel MS Word en PDF bestanden zijn toegelaten.
