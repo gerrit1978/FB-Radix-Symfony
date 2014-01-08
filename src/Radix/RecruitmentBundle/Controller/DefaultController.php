@@ -18,7 +18,7 @@ class DefaultController extends Controller
       // boot the application
       $boot = $facebook_helper->boot();
 
-      // check if user is page admin
+      // check if user is page admin - TODO: check if this is OK???!!!!
       $facebook_helper->isPageAdmin();
 
       $pageid = $boot['pageid'];

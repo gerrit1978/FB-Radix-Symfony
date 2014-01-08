@@ -39,7 +39,7 @@ class CarrotHelper {
       $fb_helper = $this->container->get("radix.helper.facebook");
 
       // Is the current user page admin?
-      $isPageAdmin = $fb_helper->isPageAdmin();
+      $isPageAdmin = $fb_helper->isPageAdmin($page_id_from_config);
       
       if ($type == 'frontend') {
 	      
@@ -53,6 +53,10 @@ class CarrotHelper {
 	      if (!$hasConnected) {
 	        $carrot['callToAction'] = array(
             'fbConnect' => "<div class='connect-form'>Wil je graag je Facebook-gegevens gebruiken om te solliciteren? <a class='connect' href='" . $router->generate('radix_frontend_facebook_connect', array('accountid' => $accountid)) . "'>Connecteer dan met Facebook</a></div>",
+	        );
+	      } else {
+	        $carrot['callToAction'] = array(
+            'fbConnect' => "<div class='connect-form'>Je bent geconnecteerd met Facebook. Dit betekent dat je je Facebook gegevens kan gebruiken en zo sneller kan solliciteren.</div>",
 	        );
 	      }
 	      

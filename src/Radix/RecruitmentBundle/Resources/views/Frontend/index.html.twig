@@ -55,6 +55,10 @@
 {# MAIN COLUMN BLOCK #}
 {% block main %}
 
+{% if carrot.numberOfJobs == 0 %}
+Helaas, er werden geen jobs gevonden. Je kan wel steeds spontaan solliciteren.
+{% endif %}
+
 <ul class="jobs">
 {% for job in carrot.jobs %}
 <li class="job" data-job-url="{{ job.javascriptlink }}">

@@ -86,14 +86,14 @@ class FacebookHelper {
    *
    * @return boolean
    */
-  public function isPageAdmin() {
- 
+  public function isPageAdmin($page_id_from_config = "") {
+
     $facebook = new \Facebook($this->config);
-  
+
     $session = new Session();
-  
+
     $signed_request = $facebook->getSignedRequest();
-    
+
     $admin = array();
     
     if ($signed_request) {
@@ -110,7 +110,7 @@ class FacebookHelper {
       }
     } else {
       $page_admin = $session->get('page_admin');
-      if (isset($page_admin['page_admin'])) {
+      if (isset($page_admin['page_admin']) && $page_admin['pageid'] === $page_id_from_config) {
         return $page_admin['page_admin'];
       } else {
         return FALSE;

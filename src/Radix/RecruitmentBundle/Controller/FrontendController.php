@@ -51,6 +51,9 @@ class FrontendController extends Controller
         ->getQuery()
         ->getResult();
 
+      $number_of_jobs = count($jobs);
+      $carrot['numberOfJobs'] = $number_of_jobs;
+
       $jobs_output = array();
       foreach ($jobs as $job) {
         $subtitle = array();
@@ -202,9 +205,6 @@ class FrontendController extends Controller
       if ($redirect_url = $helper->doRedirect()) {
         return $this->redirect($redirect_url);
       } 
-      
-      // FACEBOOK service: page admin?
-      $isPageAdmin = $helper->isPageAdmin();
 
       /**** SERVICES END ****/
       
