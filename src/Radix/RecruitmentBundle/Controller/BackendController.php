@@ -93,7 +93,6 @@ class BackendController extends Controller
      **/
     public function applicationsAction(Request $request, $accountid)
     {
-    
       /**** SERVICES START ****/
 
       // CARROT service: bootstrap
@@ -134,10 +133,12 @@ class BackendController extends Controller
         } else {
           $job = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job')->find($application_jobid);        
           if (!$job) {
-            throw $this->createNotFoundException('Er ging iets mis.');
-          }
-          $job_title = $job->getTitle();
-          $job_link = "<a href='" . $this->generateUrl('radix_frontend_job_detail', array('accountid' => $accountid, 'id' => $application_jobid)) . "'>" . $job_title . "</a>";
+            $job_title = "-- job werd verwijderd --";
+            $job_link = $job_title;
+          } else {
+	          $job_title = $job->getTitle();
+	          $job_link = "<a href='" . $this->generateUrl('radix_frontend_job_detail', array('accountid' => $accountid, 'id' => $application_jobid)) . "'>" . $job_title . "</a>";
+	        }
         }
       
         // define detail link
@@ -352,9 +353,10 @@ class BackendController extends Controller
       } else {
         $job = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job')->find($application->getJobid());
         if (!$job) {
-          throw $this->createNotFoundException('Er ging iets mis.');
+          $job_title = "-- verwijderde job --";
+        } else {
+          $job_title = $job->getTitle();
         }
-        $job_title = $job->getTitle();
       }
       
       $carrot['job'] = array(

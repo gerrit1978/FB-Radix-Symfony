@@ -14,7 +14,7 @@
 $(function() {
   $("#applications").slimtable({
 		colSettings: [ 
-			{ colNumber: 5, enableSort: false }
+			{ colNumber: 4, enableSort: false }
 		]
 	});
 });
@@ -36,7 +36,6 @@ $(function() {
 <thead>
 <tr>
 <th>Naam</th>
-<th>E-mail</th>
 <th>Woonplaats</th>
 <th>Job</th>
 <th>Datum</th>
@@ -48,7 +47,6 @@ $(function() {
 {% for application in carrot.applications %}
 <tr class="{{ application.class }}">
 <td>{{ application.name }}</td>
-<td>{{ application.email }}</td>
 <td>{{ application.city }}</td>
 <td>{{ application.jobLink|raw }}</td>
 <td>{{ application.created }}</td>
