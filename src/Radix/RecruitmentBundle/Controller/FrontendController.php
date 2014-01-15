@@ -142,7 +142,7 @@ class FrontendController extends Controller
       // get the job details
       $job = $this->getDoctrine()
         ->getRepository('RadixRecruitmentBundle:Job')
-        ->findOneBy(array('id' => $id));
+        ->findOneBy(array('id' => $id, 'accountid' => $accountid));
       
       if (!$job) {
         throw $this->createNotFoundException('No job found for this id.');
@@ -215,7 +215,7 @@ class FrontendController extends Controller
       } else {
 	      $job = $this->getDoctrine()
 	        ->getRepository('RadixRecruitmentBundle:Job')
-	        ->findOneBy(array('id' => $id));
+	        ->findOneBy(array('id' => $id, 'accountid' => $accountid));
 	      $job_output = array();
 	      if (!$job) {
 	        throw $this->createNotFoundException('No job found for this id.');
