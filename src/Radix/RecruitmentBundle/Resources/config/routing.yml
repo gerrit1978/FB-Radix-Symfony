@@ -143,3 +143,7 @@ radix_admin_application_new:
 radix_admin_application_edit:
   pattern: /admin/application/{id}/edit
   defaults: { _controller: RadixRecruitmentBundle:Admin:applicationEdit }
+
+radix_admin_watchdog:
+  pattern: /admin/watchdog
+  defaults: { _controller: RadixRecruitmentBundle:Admin:watchdog }

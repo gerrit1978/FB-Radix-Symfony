@@ -105,5 +105,32 @@ class AdminController extends Controller
 
       return $this->render('RadixRecruitmentBundle:Admin:applicationNew.html.twig', array('form' => $form->createView()));
     }
+
+    public function watchdogAction(Request $request) {
+
+      // get watchdog entries
+      $watchdogs = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Watchdog')->findAll();
+      
+      $watchdog_output = array();
+      
+      foreach ($watchdogs as $watchdog) {
+        $id = $watchdog->getId();
+        $accountid = $watchdog->getAccountid();
+        $created = date('d.m.Y H:i', $watchdog->getCreated());
+        $type = $watchdog->getType();
+        $message = $watchdog->getMessage();
+        
+        $watchdog_output[] = array(
+          'id' => $id,
+          'accountid' => $accountid,
+          'created' => $created,
+          'type' => $type,
+          'message' => $message,
+        );
+      }
+      
+      return $this->render('RadixRecruitmentBundle:Admin:watchdogs.html.twig', array('watchdogs' => $watchdog_output));
+    }
+
     
 }

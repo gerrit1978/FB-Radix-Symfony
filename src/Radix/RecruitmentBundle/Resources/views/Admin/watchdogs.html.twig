@@ -1,0 +1,26 @@
+{% extends "RadixRecruitmentBundle:Backend:base.html.twig" %}
+
+{% block body %}
+
+<h1>Watchdog entries</h1>
+
+<table>
+<tr>
+<th>ID</th>
+<th>Accountid</th>
+<th>Created</th>
+<th>Type</th>
+<th>Message</th>
+</tr>
+
+{% for watchdog in watchdogs %}
+<tr>
+<td>{{ watchdog.id }}</td>
+<td>{{ watchdog.accountid }}</td>
+<td>{{ watchdog.created }}</td>
+<td>{{ watchdog.type }}</td>
+<td>{{ watchdog.message }}</td>
+</tr>
+{% endfor %}
+
+{% endblock %}
