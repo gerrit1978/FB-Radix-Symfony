@@ -393,10 +393,11 @@ class FrontendController extends Controller
         $page_name = $carrot['config']->getPagetitle();
         
         // send an email - TODO: move this to service
+        $applyMailArray = explode(';', $job_applymail);
 		    $message = \Swift_Message::newInstance()
 		        ->setSubject('Nieuwe sollicitatie op ' . $page_name)
 		        ->setFrom('fb@radix-recruitment.be')
-		        ->setTo($job_applymail)
+		        ->setTo($applyMailArray)
 		        ->setBody($this->renderView('RadixRecruitmentBundle:Frontend:email.txt.twig', array(
 		          'url' => $app_url,
 		          'jobtitle' => $job_title,
