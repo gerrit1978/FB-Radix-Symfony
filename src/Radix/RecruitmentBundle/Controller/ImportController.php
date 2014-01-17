@@ -5,12 +5,14 @@ namespace Radix\RecruitmentBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Radix\RecruitmentBundle\Entity\Config;
 use Radix\RecruitmentBundle\Entity\Job;
-use Radix\RecruitmentBundle\Entity\Watchdog;
 
 class ImportController extends Controller
 {
     public function importAction($accountid)
     {
+
+      // Define the helper
+      $carrot_helper = $this->get('radix.helper.carrot');
     
       /* We get the config parameters (XML URL/USER/PASS) */
       $config = $this->getDoctrine()
@@ -151,21 +153,18 @@ class ImportController extends Controller
 		 }
 
 
+     // log this
+     $carrot_helper->watchdog($accountid, 'notice', 'Import voor ' . $accountid . ' uitgevoerd. ' . count($jobs_to_add) . ' jobs toegevoegd; ' . count($jobs_to_remove) . ' jobs verwijderd;');
+     
+     
+
    
       $custom = "Aantal jobs toegevoegd: " . count($jobs_to_add). "<br />"
         . "Aantal jobs verwijderd: " . count($jobs_to_remove);
+
+
    
       // Add the watchdog text - currently hardcoded - TODO: move this to a "log" function or so
-      $watchdog = new Watchdog();
-      $watchdog->setAccountid($accountid);
-      $watchdog->setType('notice');
-      $watchdog->setCreated(time());
-      $watchdog->setMessage('Import voor ' . $accountid . ' uitgevoerd. ' . count($jobs_to_add) . ' jobs toegevoegd; ' . count($jobs_to_remove) . ' jobs verwijderd;');
-
-      $em = $this->getDoctrine()->getManager();
-      $em->persist($watchdog);
-      $em->flush();
-
    
       return $this->render('RadixRecruitmentBundle:Import:import.html.twig', array('custom' => $custom));
     }

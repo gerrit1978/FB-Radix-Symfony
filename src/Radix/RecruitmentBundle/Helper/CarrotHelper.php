@@ -6,6 +6,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 
+use Radix\RecruitmentBundle\Entity\Watchdog;
+
 class CarrotHelper {
   
   private $doctrine;
@@ -142,6 +144,17 @@ class CarrotHelper {
     
   }
   
-  
+ 
+  public function watchdog($accountid, $type, $message) {
+	  $watchdog = new Watchdog();
+	  $watchdog->setAccountid($accountid);
+	  $watchdog->setType($type);
+	  $watchdog->setCreated(time());
+	  $watchdog->setMessage($message);
+	
+	  $em = $this->container->get("doctrine")->getManager();
+	  $em->persist($watchdog);
+	  $em->flush();
+  }
   
 }
