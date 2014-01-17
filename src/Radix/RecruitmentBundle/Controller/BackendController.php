@@ -509,6 +509,10 @@ class BackendController extends Controller
         
         $helper->post($accountid, $carrot['config']->getPageid(), $params);
 
+        // watchdog
+        $message = "Job '" . $job->getTitle() . "' toegevoegd.";
+        $carrot_helper->watchdog($accountid, 'notice', $message);
+
         return $this->redirect($this->generateUrl('radix_backend', array('accountid' => $accountid)));
       }
     
@@ -577,6 +581,10 @@ class BackendController extends Controller
         ->getQuery();
       $result = $query->getResult();
       
+      // watchdog
+      $message = "Job '" . $job->getTitle() . "' verwijderd.";
+      $carrot_helper->watchdog($accountid, 'notice', $message);
+      
       
       return $this->redirect($this->generateUrl('radix_backend', array('accountid' => $accountid)));
     }
@@ -621,6 +629,10 @@ class BackendController extends Controller
         // persist object to db
         $em->persist($job);
         $em->flush();
+
+        // watchdog
+        $message = "Job '" . $job->getTitle() . "' aangepast.";
+        $carrot_helper->watchdog($accountid, 'notice', $message);
 
         // add flash message
         $this->get('session')->getFlashBag()->add('notice', 'The job was saved.');
