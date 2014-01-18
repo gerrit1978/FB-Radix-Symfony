@@ -131,6 +131,28 @@ ul.jobs li.job h3.subtitle {
   font-weight: lighter;
 }
 
+/* Search form */
+#search-form {
+  position: relative;
+}
+
+#search-form input[type=text] {
+  height: 25px;
+  line-height: 25px;
+}
+
+#search-form button {
+  position: absolute;
+  top: 3px;
+  right: 0;
+  width: 23px;
+  height: 23px;
+  background: url(../img/submit_search.png);
+  border: none;
+  text-indent: -999em;
+  cursor: pointer;
+}
+
 /* Jobs detail */
 body.job-detail .job-detail h1,
 body.apply h1 {
