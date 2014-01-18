@@ -77,7 +77,7 @@
 
 <h1>{{ carrot.job.applyTitle|raw }}</h1>
 
-<form method="POST" {{ form_enctype(carrot.form) }}>
+<form id="apply-form" method="POST" {{ form_enctype(carrot.form) }}>
     {# render the task's only field: description #}
     {{ form_row(carrot.form.name) }}
     {{ form_row(carrot.form.city) }}

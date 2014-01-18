@@ -298,6 +298,30 @@ a.apply-spont {
 	background-image: linear-gradient(to bottom, #4d68a6,#3d5a9e);
 }
 
+/* Application Form */
+#apply-form button[type=submit] {
+	border-color: #4d68a6 #4d68a6 #4d68a6;
+	background-color: #4d68a6;
+	display: inline-block;
+	position: relative;
+	width: auto;
+	padding: 7px 20px;
+	text-align: center;
+	cursor: pointer;
+	color: #fff;
+	font-family: "Open Sans",sans-serif;
+	font-size: 19px;
+	font-weight: 600;
+	text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+	text-decoration: none !important;
+	border: 1px solid;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+}
+
 /* Flash messages */
 .flash-notice {
   background: #fafafa;
