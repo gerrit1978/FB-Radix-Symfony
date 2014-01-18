@@ -153,6 +153,11 @@ ul.jobs li.job h3.subtitle {
   cursor: pointer;
 }
 
+/* No jobs */
+#no-result {
+  margin: 20px 0;
+}
+
 /* Jobs detail */
 body.job-detail .job-detail h1,
 body.apply h1 {
