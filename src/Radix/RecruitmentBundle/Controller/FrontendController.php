@@ -42,44 +42,72 @@ class FrontendController extends Controller
       
       /**** SERVICES END ****/
 
+      // The subscriber form
+      $subscriber = new Subscriber();
+      $subscriber->setAccountid($accountid);
+      $subscriber_form = $this->createFormBuilder($subscriber)
+        ->add('email', 'email', array('label' => FALSE, 'attr' => array('placeholder' => 'je e-mailadres')))
+        ->add('Opslaan', 'submit')
+        ->getForm();
+
+
       /* The search form and getting the jobs */
       $repository = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job');
+			$query = $repository->createQueryBuilder('j')
+        ->where('j.accountid = :accountid')
+        ->setParameter('accountid', $accountid)
+        ->orderBy('j.created', 'DESC')
+        ->getQuery();
 
       $search_form = $this->createFormBuilder()
         ->add('keyword', 'text', array('required' => FALSE, 'label' => FALSE, 'attr' => array('placeholder' => 'Zoeken op functietitel')))
         ->add('Zoek', 'submit')
         ->getForm();
       
-      $search_form->handleRequest($request);
       
-      if ($search_form->isValid()) {
-        $data = $search_form->getData();
-        $keyword = $data['keyword'];
-        if (strlen($keyword)) {
-        
-	        // the search form is submitted, so use these data for building the query
-	        $qb = $repository->createQueryBuilder('j');
-	        $qb->where('j.accountid = :accountid')
-	          ->andWhere('j.title LIKE :title')
-	          ->setParameter('accountid', $accountid)
-	          ->setParameter('title', '%' . $keyword . '%')
-		        ->orderBy('j.created', 'DESC');
+      
+      if ($request->getMethod() == 'POST') {
+        $data = $request->request->all();
+        if (isset($data['form']['keyword'])) {
+          $search_form->handleRequest($request);        
+	        $data = $search_form->getData();
+	        $keyword = $data['keyword'];
+	        if (strlen($keyword)) {
+	        
+		        // the search form is submitted, so use these data for building the query
+		        $qb = $repository->createQueryBuilder('j');
+		        $qb->where('j.accountid = :accountid')
+		          ->andWhere('j.title LIKE :title')
+		          ->setParameter('accountid', $accountid)
+		          ->setParameter('title', '%' . $keyword . '%')
+			        ->orderBy('j.created', 'DESC');
+			      
+			      $query = $qb->getQuery();
+		      } else {
+						$query = $repository->createQueryBuilder('j')
+			        ->where('j.accountid = :accountid')
+			        ->setParameter('accountid', $accountid)
+			        ->orderBy('j.created', 'DESC')
+			        ->getQuery();
+		      }
+        }
+        else if (isset($data['form']['email'])) {
+		      $subscriber_form->handleRequest($request);
 		      
-		      $query = $qb->getQuery();
-	      } else {
-					$query = $repository->createQueryBuilder('j')
-		        ->where('j.accountid = :accountid')
-		        ->setParameter('accountid', $accountid)
-		        ->orderBy('j.created', 'DESC')
-		        ->getQuery();
-	      }
-      } else {
-        // the search form is not submitted, get all jobs
-				$query = $repository->createQueryBuilder('j')
-	        ->where('j.accountid = :accountid')
-	        ->setParameter('accountid', $accountid)
-	        ->orderBy('j.created', 'DESC')
-	        ->getQuery();
+		      if ($subscriber_form->isValid()) {
+		        
+		        $subscriber->setCreated(time());
+		        
+		        // save the config object to the database
+		        $em = $this->getDoctrine()->getManager();
+		        $em->persist($subscriber);
+		        $em->flush();
+		
+		        // add flash message
+		        $this->get('session')->getFlashBag()->add('notice', 'Je werd goed opgenomen in de lijst.');
+		
+		      }
+        }
       }
 
       $jobs = $query->getResult();
@@ -111,31 +139,6 @@ class FrontendController extends Controller
         );
       }
       $carrot['jobs'] = $jobs_output;
-      
-      // get the form "Subscribe" TODO - MOVE THIS TO CARROT HELPER
-      $subscriber = new Subscriber();
-      $subscriber->setAccountid($accountid);
-      $subscriber_form = $this->createFormBuilder($subscriber)
-        ->add('email', 'email', array('label' => FALSE, 'attr' => array('placeholder' => 'je e-mailadres')))
-        ->add('Opslaan', 'submit')
-        ->getForm();
-      
-      $subscriber_form->handleRequest($request);
-      
-      if ($subscriber_form->isValid()) {
-        
-        $subscriber->setCreated(time());
-        
-        // save the config object to the database
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($subscriber);
-        $em->flush();
-
-        // add flash message
-        $this->get('session')->getFlashBag()->add('notice', 'Je werd goed opgenomen in de lijst.');
-
-      }
-      
       $carrot['subscriberForm'] = $subscriber_form->createView();
       
       return $this->render('RadixRecruitmentBundle:Frontend:index.html.twig', array('carrot' => $carrot));
