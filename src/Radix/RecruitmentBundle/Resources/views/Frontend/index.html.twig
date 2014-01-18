@@ -55,6 +55,8 @@
 {# MAIN COLUMN BLOCK #}
 {% block main %}
 
+{{ form(carrot.searchForm) }}
+
 {% if carrot.numberOfJobs == 0 %}
 Helaas, er werden geen jobs gevonden. Je kan wel steeds spontaan solliciteren.
 {% endif %}

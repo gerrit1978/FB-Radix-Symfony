@@ -42,17 +42,53 @@ class FrontendController extends Controller
       
       /**** SERVICES END ****/
 
-      /* We get the jobs */
+      /* The search form and getting the jobs */
       $repository = $this->getDoctrine()->getRepository('RadixRecruitmentBundle:Job');
-      $jobs = $repository->createQueryBuilder('j')
-        ->where('j.accountid = :accountid')
-        ->setParameter('accountid', $accountid)
-        ->orderBy('j.created', 'DESC')
-        ->getQuery()
-        ->getResult();
+
+      $search_form = $this->createFormBuilder()
+        ->add('keyword', 'text', array('required' => FALSE, 'label' => FALSE, 'attr' => array('placeholder' => 'Zoeken op functietitel')))
+        ->add('Zoek', 'submit')
+        ->getForm();
+      
+      $search_form->handleRequest($request);
+      
+      if ($search_form->isValid()) {
+        $data = $search_form->getData();
+        $keyword = $data['keyword'];
+        if (strlen($keyword)) {
+        
+	        // the search form is submitted, so use these data for building the query
+	        $qb = $repository->createQueryBuilder('j');
+	        $qb->where('j.accountid = :accountid')
+	          ->andWhere('j.title LIKE :title')
+	          ->setParameter('accountid', $accountid)
+	          ->setParameter('title', '%' . $keyword . '%')
+		        ->orderBy('j.created', 'DESC');
+		      
+		      $query = $qb->getQuery();
+	      } else {
+					$query = $repository->createQueryBuilder('j')
+		        ->where('j.accountid = :accountid')
+		        ->setParameter('accountid', $accountid)
+		        ->orderBy('j.created', 'DESC')
+		        ->getQuery();
+	      }
+      } else {
+        // the search form is not submitted, get all jobs
+				$query = $repository->createQueryBuilder('j')
+	        ->where('j.accountid = :accountid')
+	        ->setParameter('accountid', $accountid)
+	        ->orderBy('j.created', 'DESC')
+	        ->getQuery();
+      }
+
+      $jobs = $query->getResult();
 
       $number_of_jobs = count($jobs);
       $carrot['numberOfJobs'] = $number_of_jobs;
+
+      // Add the search form to the template      
+      $carrot['searchForm'] = $search_form->createView();
 
       $jobs_output = array();
       foreach ($jobs as $job) {
