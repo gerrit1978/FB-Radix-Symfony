@@ -1,5 +1,10 @@
 <?php
 
+/*
+ * Copyright 2014 - Gerrit Vos & Arne Vanvlasselaer
+ * Radix Recruitment
+ */
+
 namespace Radix\RecruitmentBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
