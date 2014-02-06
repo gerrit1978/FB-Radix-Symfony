@@ -479,6 +479,7 @@ class BackendController extends Controller
       $job->setGuid($accountid . $time);
       $job->setSource('admin');
       $job->setCreated($time);
+      $job->setAutopost($time);
       
       $form = $this->createFormBuilder($job)
         ->add('title', 'text')
@@ -492,12 +493,13 @@ class BackendController extends Controller
       $form->handleRequest($request);
     
       if ($form->isValid()) {
-      
+
         // persist object to database
         $em = $this->getDoctrine()->getManager();
         $em->persist($job);
         $em->flush();
 
+      
         // add flash message
         $this->get('session')->getFlashBag()->add('notice', 'The job was added.');
         
@@ -513,6 +515,7 @@ class BackendController extends Controller
         );
         
         $helper->post($accountid, $carrot['config']->getPageid(), $params);
+
 
         // watchdog
         $message = "Job '" . $job->getTitle() . "' toegevoegd.";

@@ -55,6 +55,7 @@ class AdminController extends Controller
         ->add('employerid')
         ->add('applymail')
         ->add('linkedinid')
+        ->add('accesstoken')
         ->add('Save', 'submit')
         ->getForm();
       
@@ -91,6 +92,7 @@ class AdminController extends Controller
         ->add('employerid')
         ->add('applymail')
         ->add('linkedinid')
+        ->add('accesstoken')
         ->add('Save', 'submit')
         ->getForm();
    

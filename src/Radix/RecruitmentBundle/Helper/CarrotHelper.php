@@ -97,7 +97,7 @@ class CarrotHelper {
       
       if ($type == 'backend') {
       
-        // TEMPORARY SECURITY
+        // DISALLOW ACCESS IF NECESSARY
         if (!$isPageAdmin) {
           exit('No access for this part of the application.');
         }

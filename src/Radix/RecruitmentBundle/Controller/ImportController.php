@@ -140,6 +140,7 @@ class ImportController extends Controller
        $job->setCreated(time());
        $job->setAccountid($accountid);
        $job->setApplymail($applymail);
+       $job->setAutopost(0);
        
        $em = $this->getDoctrine()->getManager();
        $em->persist($job);

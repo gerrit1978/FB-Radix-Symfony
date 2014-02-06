@@ -84,6 +84,13 @@ class Job
      */
     private $created;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="autopost", type="string", length=20, nullable=true)
+     */
+    private $autopost;
+
 
     /**
      * Get id
@@ -304,4 +311,28 @@ class Job
     {
         return $this->created;
     }
+
+    /**
+     * Set autopost
+     *
+     * @param string $autopost
+     * @return Job
+     */
+    public function setAutopost($autopost)
+    {
+        $this->autopost = $autopost;
+    
+        return $this;
+    }
+
+    /**
+     * Get autopost
+     *
+     * @return string 
+     */
+    public function getAutopost()
+    {
+        return $this->autopost;
+    }
+
 }

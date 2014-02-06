@@ -253,6 +253,57 @@ class FacebookHelper {
     
   }
   
+  public function postFromCron($accountid, $facebookid, $access_token, $params = array()) {
+
+    $facebook = new \Facebook($this->config);
+
+    $attachment = array('access_token' => $access_token);
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL,'https://graph.facebook.com/me/accounts?access_token=' . $access_token);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$result = curl_exec($ch);
+		curl_close ($ch); 
+
+    $data = json_decode($result)->data;
+
+/*
+    print "<pre>";
+    print_r($data);
+    print "</pre>";
+    exit();
+*/
+
+    foreach ($data as $delta => $object) {
+      if (isset($object->id) && $object->id == $facebookid) {
+        $access_token_for_page = $object->access_token;
+      }
+    }
+
+    $message = isset($params['message']) ? $params['message'] : 'New job online';
+    $link = $params['link'];
+ 
+		$attachment =  array(
+	    'access_token'  => $access_token_for_page,
+	    'message'       => $message,
+	    'link'          => $link,
+    );
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL,'https://graph.facebook.com/' . $facebookid . '/feed');
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $attachment);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$result = curl_exec($ch);
+		curl_close ($ch); 
+
+
+  }
+  
   
   public function inCanvas() {
     // THIS SUCKS….

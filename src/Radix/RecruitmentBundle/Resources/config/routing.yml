@@ -147,3 +147,7 @@ radix_admin_application_edit:
 radix_admin_watchdog:
   pattern: /admin/watchdog
   defaults: { _controller: RadixRecruitmentBundle:Admin:watchdog }
+  
+radix_cron:
+  pattern: /{accountid}/cron
+  defaults: { _controller: RadixRecruitmentBundle:Cron:cron }

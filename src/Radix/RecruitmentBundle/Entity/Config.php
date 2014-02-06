@@ -98,6 +98,14 @@ class Config
      */
     private $linkedinid;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="accesstoken", type="string", length=512)
+     */
+    private $accesstoken;
+
+
 
     /**
      * Get id
@@ -354,6 +362,28 @@ class Config
      */
     public function getLinkedinid() {
       return $this->linkedinid;
+    }
+
+
+    /**
+     * Set accesstoken
+     *
+     * @param string $accesstoken
+     * @return Config
+     */
+    public function setAccesstoken($accesstoken) {
+      $this->accesstoken = $accesstoken;
+      
+      return $this;
+    }
+    
+    /**
+     * Get accesstoken
+     *
+     * @return string
+     */
+    public function getAccesstoken() {
+      return $this->accesstoken;
     }
 
     
