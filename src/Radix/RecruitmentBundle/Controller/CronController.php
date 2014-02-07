@@ -59,6 +59,11 @@ class CronController extends Controller
         $job->setAutopost(time());
         $em->persist($job);
         $em->flush();
+
+				// log this
+				$carrot_helper->watchdog($accountid, 'notice', 'Job "' . $job->getTitle() . '" was auto posted on FB wall for account ' . $accountid . '.');
+
+
         
       }
       
