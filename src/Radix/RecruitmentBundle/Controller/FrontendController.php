@@ -50,7 +50,7 @@ class FrontendController extends Controller
       // The subscriber form
       $subscriber = new Subscriber();
       $subscriber->setAccountid($accountid);
-      $subscriber_form = $this->createFormBuilder($subscriber)
+      $subscriber_form = $this->createFormBuilder($subscriber, array('csrf_protection' => false))
         ->add('email', 'email', array('label' => FALSE, 'attr' => array('placeholder' => 'je e-mailadres')))
         ->add('Opslaan', 'submit')
         ->getForm();
@@ -218,7 +218,7 @@ class FrontendController extends Controller
       // get the form "Subscribe"
       $subscriber = new Subscriber();
       $subscriber->setAccountid($accountid);
-      $subscriber_form = $this->createFormBuilder($subscriber)
+      $subscriber_form = $this->createFormBuilder($subscriber, array('csrf_protection' => false))
         ->add('email', 'email', array('label' => FALSE, 'attr' => array('placeholder' => 'je e-mailadres')))
         ->add('Opslaan', 'submit')
         ->getForm();
@@ -492,7 +492,7 @@ class FrontendController extends Controller
       // get the form "Subscribe"
       $subscriber = new Subscriber();
       $subscriber->setAccountid($accountid);
-      $subscriber_form = $this->createFormBuilder($subscriber)
+      $subscriber_form = $this->createFormBuilder($subscriber, array('csrf_protection' => false))
         ->add('email', 'email', array('label' => FALSE, 'attr' => array('placeholder' => 'je e-mailadres')))
         ->add('Opslaan', 'submit')
         ->getForm();
