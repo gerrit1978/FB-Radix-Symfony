@@ -235,7 +235,6 @@ class FrontendController extends Controller
      * Controller Action for application page (manual)
      **/
     public function jobApplyAction(Request $request, $accountid, $id) {
-      
       $message = "";
     
       /**** SERVICES START ****/
@@ -364,7 +363,7 @@ class FrontendController extends Controller
         }
       }
 
-      $form = $this->createForm(new ApplicationType(), $application)
+      $form = $this->createForm(new ApplicationType(), $application, array('csrf_protection' => false))
         ->add('resumefile', 'file', array('label' => 'Je CV', 'required' => FALSE))
         ->add('coverfile', 'file', array('label' => 'Je sollicitatiebrief', 'required' => FALSE))
         ->add('Solliciteren', 'submit');
@@ -455,7 +454,7 @@ class FrontendController extends Controller
         
         return $this->redirect($this->generateUrl('radix_frontend', array('accountid' => $accountid)));
 
-      }
+      } 
 
       $carrot['form'] = $form->createView();
       $carrot['job'] = $job_output;
