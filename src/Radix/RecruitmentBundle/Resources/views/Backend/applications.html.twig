@@ -50,7 +50,7 @@ $(function() {
 <td>{{ application.city }}</td>
 <td>{{ application.jobLink|raw }}</td>
 <td>{{ application.created }}</td>
-<td><a href="{{ application.detailLink }}">bekijk</a></td>
+<td><a href="{{ application.detailLink }}">bekijk</a> {{ application.cover|raw }} {{ application.resume|raw }}</td>
 </tr>
 {% endfor %}
 </tbody>

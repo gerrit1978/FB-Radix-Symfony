@@ -132,7 +132,19 @@ class BackendController extends Controller
       
         // get job title for this application
         $application_jobid = $application->getJobid();
-        
+
+	      if ($application->coverpath) {
+	        $cover_output = "<a target='_blank' href='" . $this->generateUrl('radix_backend_application_attachment', array('accountid' => $accountid, 'applicationid' => $applicationid, 'type' => 'cover')) . "'>cover</a>";
+	      } else {
+	        $cover_output = "";
+	      }
+	      
+	      if ($application->resumepath) {
+	        $resume_output = "<a target='_blank' href='" . $this->generateUrl('radix_backend_application_attachment', array('accountid' => $accountid, 'applicationid' => $applicationid, 'type' => 'resume')) . "'>resume</a>";
+	      } else {
+	        $resume_output = "";
+	      }
+
         if ($application_jobid == '-1') {
           $job_link = "Spontaan solliciteren";
         } else {
@@ -154,6 +166,8 @@ class BackendController extends Controller
           'email' => $application->getEmail(),
           'city' => $application->getCity(),
           'jobLink' => $job_link,
+          'resume' => $resume_output,
+          'cover' => $cover_output,
           'detailLink' => $application_detail_link,
           'created' => date('d.m.Y H:i', $application->getCreated()),
           'class' => $class,
